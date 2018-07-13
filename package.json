@@ -1,0 +1,24 @@
+{
+  "name": "@nerdwallet/shepherd2",
+  "version": "1.0.0",
+  "description": "A utility for applying code changes across many repositories\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NerdWallet/shepherd2.git"
+  },
+  "keywords": [
+    "codemod",
+    "codemods",
+    "migration"
+  ],
+  "author": "Nathan Walters",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NerdWallet/shepherd2/issues"
+  },
+  "homepage": "https://github.com/NerdWallet/shepherd2#readme"
+}
