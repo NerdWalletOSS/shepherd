@@ -1,16 +1,15 @@
 #!/usr/bin/env node
-require("babel-polyfill");
+require('babel-polyfill');
 const { homedir } = require('os');
 const path = require('path');
-const fs = require('fs-extra')
+const fs = require('fs-extra');
 const program = require('commander');
 const Preferences = require('preferences');
-const async = require('async');
 
 const GithubAdapter = require('./adapters/github');
 const checkout = require('./commands/checkout');
 
-const list = (val) => val.split(',');
+const list = val => val.split(',');
 
 const shepherdDir = path.join(homedir(), '.shepherd');
 
@@ -22,7 +21,7 @@ const prefs = new Preferences('com.nerdwallet.shepherd', {
   format: 'yaml',
 });
 
-const handleCommand = (handler) => async (migration, options) => {
+const handleCommand = handler => async (migration, options) => {
   const migrationWorkingDirectory = path.join(prefs.workingDirectory, migration);
   await fs.ensureDir(migrationWorkingDirectory);
   const migrationContext = {
@@ -52,7 +51,7 @@ const addCommand = (name, description, handler) => {
     .command(`${name} <migration>`)
     .option('--repos <repos>', 'Comma-separated list of repos to operate on', list)
     .action(handleCommand(handler));
-}
+};
 
 addCommand('checkout', 'Check out any repositories that are candidates for a given migration', checkout);
 

@@ -1,23 +1,13 @@
-const simpleGit = require('simple-git');
-
-module.exports = async (context, options) => {
+module.exports = async (context) => {
   const {
-    shepherd: {
-      workingDirectory: shepherdWorkingDirectory,
-    },
-    migration: {
-      name: migrationName,
-      workingDirectory: migrationWorkingDirectory,
-      selectedRepos,
-    },
-    adapter
+    migration: { selectedRepos },
+    adapter,
   } = context;
 
   const repos = selectedRepos || await adapter.getCandidateRepos();
 
   console.log(`Cloning ${repos.length} repos`);
-  console.log(repos);
-  for (const repo of repos) {
-    await adapter.checkoutRepo(repo);
+  for (const repo of repos) { // eslint-disable-line no-restricted-syntax
+    await adapter.checkoutRepo(repo); // eslint-disable-line no-await-in-loop
   }
 };

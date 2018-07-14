@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 const path = require('path');
 const fs = require('fs-extra');
 const simpleGit = require('simple-git/promise');
@@ -46,6 +47,6 @@ class GithubAdapter {
   async getDataDir(repo) {
     return path.join(this.migrationContext.migration.workingDirectory, 'data', repo.owner, repo.name);
   }
-};
+}
 
 module.exports = GithubAdapter;

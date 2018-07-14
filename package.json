@@ -5,7 +5,8 @@
   "scripts": {
     "build": "babel src --out-dir lib",
     "build:watch": "npm run build -- --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint ./src --ext .js --ext .jsx",
+    "fix-lint": "npm run lint -- --fix"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,7 @@
     "shepherd2": "./lib/cli.js"
   },
   "dependencies": {
-    "async": "^2.6.1",
+    "babel-polyfill": "^6.26.0",
     "commander": "^2.16.0",
     "fs-extra": "^6.0.1",
     "lodash": "^4.17.10",
@@ -35,7 +36,11 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0"
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.10.0"
   }
 }
