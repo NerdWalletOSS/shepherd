@@ -27,6 +27,7 @@
     "shepherd2": "./lib/cli.js"
   },
   "dependencies": {
+    "@octokit/rest": "^15.9.4",
     "babel-polyfill": "^6.26.0",
     "commander": "^2.16.0",
     "fs-extra": "^6.0.1",
