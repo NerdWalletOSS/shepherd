@@ -1,10 +1,12 @@
-const { exec } = require('child-process-promise');
 const fs = require('fs-extra');
 const ora = require('ora');
 
-const removeRepoDirectories = (adapter, repo) => {
-  fs.removeSync(adapter.getRepoDir(repo));
-  fs.removeSync(adapter.getDataDir(repo));
+const execInRepo = require('../util/exec-in-repo');
+const { updateRepoList } = require('../util/persisted-data');
+
+const removeRepoDirectories = async (adapter, repo) => {
+  fs.removeSync(await adapter.getRepoDir(repo));
+  fs.removeSync(await adapter.getDataDir(repo));
 };
 
 module.exports = async (context) => {
@@ -23,52 +25,59 @@ module.exports = async (context) => {
     spinner.succeed(`Loaded ${repos.length} repos`);
   }
 
-  for (const repo of repos) {
-    const repoDir = await adapter.getRepoDir(repo);
+  const checkedOutRepos = [];
+  const discardedRepos = [];
 
+  for (const repo of repos) {
     console.log(`\n[${adapter.formatRepo(repo)}]`);
     let spinner = ora('Checking out repo').start();
     await adapter.checkoutRepo(repo);
     spinner.succeed('Checked out repo');
 
-    spinner = ora('Running should_migrate hooks').start();
+    spinner = ora('Running should_migrate steps').start();
     const shouldMigrateSteps = spec.should_migrate || [];
     let shouldMigrate = true;
     for (const step of shouldMigrateSteps) {
       try {
-        await exec(step, { cwd: repoDir });
+        await execInRepo(adapter, repo, step);
       } catch (e) {
+        shouldMigrate = false;
+        discardedRepos.push(repo);
         spinner.clear();
         console.warn(e.stderr);
         spinner.fail(`should_migrate step exited with exit code ${e.code}, skipping repo`);
-        shouldMigrate = false;
         break;
       }
     }
     if (!shouldMigrate) {
       removeRepoDirectories(adapter, repo);
     } else {
-      spinner.succeed('Repo passed all should_migrate hooks');
+      spinner.succeed('Repo passed all should_migrate steps');
 
-      spinner = ora('Running post_checkout hooks').start();
+      spinner = ora('Running post_checkout steps').start();
       const postCheckoutSteps = spec.post_checkout || [];
       let postCheckoutSucceeded = true;
       for (const step of postCheckoutSteps) {
         try {
-          await exec(step, { cwd: repoDir });
+          await execInRepo(adapter, repo, step);
         } catch (e) {
+          postCheckoutSucceeded = false;
+          discardedRepos.push(repo);
           spinner.clear();
           console.warn(e.stderr);
           spinner.fail(`post_checkout step exited with exit code ${e.code}, skipping repo`);
-          postCheckoutSucceeded = false;
           break;
         }
       }
       if (!postCheckoutSucceeded) {
         removeRepoDirectories(adapter, repo);
       } else {
-        spinner.succeed('Completed all post_checkout hooks');
+        spinner.succeed('post_checkout steps completed successfully');
+        checkedOutRepos.push(repo);
       }
     }
   }
+
+  // We'll persist this list of repos for use in future steps
+  updateRepoList(context, checkedOutRepos, discardedRepos);
 };

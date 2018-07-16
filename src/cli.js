@@ -8,7 +8,11 @@ const Preferences = require('preferences');
 
 const { loadSpec } = require('./util/spec');
 const { adapterForName } = require('./adapters');
+const { loadRepoList } = require('./util/persisted-data');
+
+// Commands
 const checkout = require('./commands/checkout');
+const apply = require('./commands/apply');
 
 const shepherdDir = path.join(homedir(), '.shepherd');
 const prefs = new Preferences('com.nerdwallet.shepherd', {
@@ -21,7 +25,7 @@ const prefs = new Preferences('com.nerdwallet.shepherd', {
 
 const handleCommand = handler => async (migration, options) => {
   const spec = loadSpec(migration);
-  const migrationWorkingDirectory = path.join(prefs.workingDirectory, migration);
+  const migrationWorkingDirectory = path.join(prefs.workingDirectory, spec.name);
   await fs.ensureDir(migrationWorkingDirectory);
   const migrationContext = {
     shepherd: {
@@ -38,6 +42,8 @@ const handleCommand = handler => async (migration, options) => {
   migrationContext.adapter = adapter;
   const selectedRepos = options.repos && options.repos.map(adapter.parseSelectedRepo);
   migrationContext.migration.selectedRepos = selectedRepos;
+  // The list of repos be null if migration hasn't started yet
+  migrationContext.migration.repos = loadRepoList(migrationContext);
   try {
     await handler(migrationContext, options);
   } catch (e) {
@@ -54,5 +60,6 @@ const addCommand = (name, description, handler) => {
 };
 
 addCommand('checkout', 'Check out any repositories that are candidates for a given migration', checkout);
+addCommand('apply', 'Apply a migration to all checked out repositories', apply);
 
 program.parse(process.argv);

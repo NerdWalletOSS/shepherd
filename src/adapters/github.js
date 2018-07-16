@@ -39,6 +39,10 @@ class GithubAdapter {
     return repos.filter(repo => selectedRepos.find(r => isEqual(repo, r)));
   }
 
+  reposEqual(repo1, repo2) {
+    return isEqual(repo1, repo2);
+  }
+
   formatRepo({ owner, name }) {
     return `${owner}/${name}`;
   }
