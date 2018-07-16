@@ -6,13 +6,11 @@ const fs = require('fs-extra');
 const program = require('commander');
 const Preferences = require('preferences');
 
-const GithubAdapter = require('./adapters/github');
+const { loadSpec } = require('./util/spec');
+const { adapterForName } = require('./adapters');
 const checkout = require('./commands/checkout');
 
-const list = val => val.split(',');
-
 const shepherdDir = path.join(homedir(), '.shepherd');
-
 const prefs = new Preferences('com.nerdwallet.shepherd', {
   workingDirectory: shepherdDir,
 }, {
@@ -22,6 +20,7 @@ const prefs = new Preferences('com.nerdwallet.shepherd', {
 });
 
 const handleCommand = handler => async (migration, options) => {
+  const spec = loadSpec(migration);
   const migrationWorkingDirectory = path.join(prefs.workingDirectory, migration);
   await fs.ensureDir(migrationWorkingDirectory);
   const migrationContext = {
@@ -29,12 +28,13 @@ const handleCommand = handler => async (migration, options) => {
       workingDirectory: prefs.workingDirectory,
     },
     migration: {
-      name: migration,
+      spec,
       migrationDirectory: null,
       workingDirectory: migrationWorkingDirectory,
     },
   };
-  const adapter = new GithubAdapter(migrationContext);
+  const Adapter = adapterForName(spec.adapter);
+  const adapter = new Adapter(migrationContext);
   migrationContext.adapter = adapter;
   const selectedRepos = options.repos && options.repos.map(adapter.parseSelectedRepo);
   migrationContext.migration.selectedRepos = selectedRepos;
@@ -49,7 +49,7 @@ const handleCommand = handler => async (migration, options) => {
 const addCommand = (name, description, handler) => {
   program
     .command(`${name} <migration>`)
-    .option('--repos <repos>', 'Comma-separated list of repos to operate on', list)
+    .option('--repos <repos>', 'Comma-separated list of repos to operate on', val => val.split(','))
     .action(handleCommand(handler));
 };
 

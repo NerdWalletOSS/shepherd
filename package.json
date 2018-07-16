@@ -28,10 +28,15 @@
   },
   "dependencies": {
     "@octokit/rest": "^15.9.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
+    "child-process-promise": "^2.2.1",
     "commander": "^2.16.0",
     "fs-extra": "^6.0.1",
+    "js-yaml": "^3.12.0",
     "lodash": "^4.17.10",
+    "netrc": "^0.1.4",
+    "ora": "^2.1.0",
     "preferences": "^1.0.2",
     "simple-git": "^1.96.0"
   },

@@ -3,17 +3,28 @@ const path = require('path');
 const fs = require('fs-extra');
 const simpleGit = require('simple-git/promise');
 const { isEqual } = require('lodash');
+const netrc = require('netrc');
+const octokit = require('@octokit/rest')();
+const { paginateSearch } = require('../util/octokit');
 
 class GithubAdapter {
   constructor(migrationContext) {
     this.migrationContext = migrationContext;
+
+    // Authenticate for future GitHub requests
+    const netrcAuth = netrc();
+    octokit.authenticate({
+      type: 'basic',
+      username: netrcAuth['api.github.com'].login,
+      password: netrcAuth['api.github.com'].password,
+    });
   }
 
   async getCandidateRepos() {
-    return [{
-      owner: 'NerdWallet',
-      name: 'shepherd',
-    }];
+    const searchResults = await paginateSearch(octokit.search.code)({
+      q: this.migrationContext.migration.spec.search_query,
+    });
+    return searchResults.map(r => this.parseSelectedRepo(r.repository.full_name));
   }
 
   parseSelectedRepo(repo) {
@@ -28,13 +39,17 @@ class GithubAdapter {
     return repos.filter(repo => selectedRepos.find(r => isEqual(repo, r)));
   }
 
+  formatRepo({ owner, name }) {
+    return `${owner}/${name}`;
+  }
+
   async checkoutRepo(repo) {
     const repoPath = `git@github.com:${repo.owner}/${repo.name}.git`;
     const localPath = await this.getRepoDir(repo);
 
     if (await fs.exists(localPath) && await simpleGit(localPath).checkIsRepo()) {
       // Repo already exists; just fetch
-      simpleGit(localPath).fetch('origin');
+      await simpleGit(localPath).fetch('origin');
     } else {
       await simpleGit().clone(repoPath, localPath);
     }

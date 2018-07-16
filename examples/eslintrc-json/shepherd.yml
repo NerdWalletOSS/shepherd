@@ -1,0 +1,9 @@
+name: 2018.07.16-eslintrc-json
+adapter: github
+search_query: org:NerdWallet path:/ filename:.eslintrc
+
+# Hooks
+should_migrate: ls .eslintrc # Check that this file actually exists in the repo
+post_checkout: npm install
+
+apply: mv .eslintrc .eslintrc.json

@@ -2,5 +2,9 @@
   "extends": "airbnb",
   "parserOptions": {
     "ecmaVersion": 2017
+  },
+  "rules": {
+    "no-await-in-loop": "off",
+    "no-restricted-syntax": "off"
   }
 }
