@@ -24,7 +24,7 @@ const updateRepoList = (migrationContext, checkedOutRepos, discardedRepos) => {
     return checkedOutRepos;
   }
   const { adapter } = migrationContext.migration;
-  const filteredRepos = existingRepos.filter(r => discardedRepos.find(r2 => adapter.reposEqual(r, r2)));
+  const filteredRepos = existingRepos.filter(r => !discardedRepos.find(r2 => adapter.reposEqual(r, r2)));
   for (const repo of checkedOutRepos) {
     if (!filteredRepos.find(r => adapter.reposEqual(repo, r))) {
       filteredRepos.push(repo);
