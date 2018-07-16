@@ -1,0 +1,8 @@
+name: testspec
+adapter: github
+search_query: filename:package.json
+
+# Hooks
+apply:
+  - echo hi
+  - echo bye
