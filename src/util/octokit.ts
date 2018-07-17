@@ -1,8 +1,9 @@
-const octokit = require('@octokit/rest')();
+import Octokit from '@octokit/rest';
+const octokit = new Octokit();
 
 type Method = (opts: any) => Promise<any>;
 
-module.exports.paginate = (method: Method, extractItems = (d: any) => d) => async (options: any) => {
+export const paginate = (method: Method, extractItems = (d: any) => d) => async (options: any) => {
   let response = await method({
     ...options,
     per_page: 100,
@@ -17,4 +18,4 @@ module.exports.paginate = (method: Method, extractItems = (d: any) => d) => asyn
 
 // Search responses have a slightly different structure than normal ones, so we
 // need to extract the items from a different key
-module.exports.paginateSearch = (method: Method) => module.exports.paginate(method, (data: any) => data.items);
+export const paginateSearch = (method: Method) => module.exports.paginate(method, (data: any) => data.items);

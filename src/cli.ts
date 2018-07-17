@@ -1,20 +1,21 @@
 #!/usr/bin/env node
 import 'babel-polyfill';
 
+import program from 'commander';
+import fs from 'fs-extra';
 import { homedir } from 'os';
 import path from 'path';
-import fs from 'fs-extra';
-import program from 'commander';
 import Preferences from 'preferences';
 
-import { MigrationContext, MigrationInfo } from "./migration-context";
-import { loadSpec } from './util/migration-spec';
 import { adapterForName } from './adapters';
+import { IMigrationContext } from './migration-context';
+import { loadSpec } from './util/migration-spec';
 import { loadRepoList } from './util/persisted-data';
 
 // Commands
-import checkout from './commands/checkout';
 import apply from './commands/apply';
+import checkout from './commands/checkout';
+import Logger from './logger';
 
 const shepherdDir = path.join(homedir(), '.shepherd');
 const prefs = new Preferences('com.nerdwallet.shepherd', {
@@ -25,26 +26,28 @@ const prefs = new Preferences('com.nerdwallet.shepherd', {
   format: 'yaml',
 });
 
-type CommandHandler = (context: MigrationContext, options: any) => Promise<void>
+type CommandHandler = (context: IMigrationContext, options: any) => Promise<void>;
 
-interface CLIOptions {
-  repos?: Array<string>
+interface ICliOptions {
+  repos?: string[];
 }
 
-const handleCommand = (handler: CommandHandler) => async (migration: string, options: CLIOptions) => {
+const handleCommand = (handler: CommandHandler) => async (migration: string, options: ICliOptions) => {
   const spec = loadSpec(migration);
   const migrationWorkingDirectory = path.join(prefs.workingDirectory, spec.name);
   await fs.ensureDir(migrationWorkingDirectory);
-  const migrationContext: MigrationContext = {
+  const logger = new Logger();
+  const migrationContext: IMigrationContext = {
+    migration: {
+      migrationDirectory: migration,
+      spec,
+      workingDirectory: migrationWorkingDirectory,
+    },
     shepherd: {
       workingDirectory: prefs.workingDirectory,
     },
-    migration: {
-      spec,
-      migrationDirectory: migration,
-      workingDirectory: migrationWorkingDirectory,
-    },
-  } as MigrationContext;
+    logger,
+  } as IMigrationContext;
   const adapter = adapterForName(spec.adapter, migrationContext);
   migrationContext.adapter = adapter;
   const selectedRepos = options.repos && options.repos.map(adapter.parseSelectedRepo);
@@ -54,7 +57,7 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
   try {
     await handler(migrationContext, options);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     process.exit(1);
   }
 };
@@ -62,7 +65,7 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
 const addCommand = (name: string, description: string, handler: CommandHandler) => {
   program
     .command(`${name} <migration>`, description)
-    .option('--repos <repos>', 'Comma-separated list of repos to operate on', val => val.split(','))
+    .option('--repos <repos>', 'Comma-separated list of repos to operate on', (val) => val.split(','))
     .action(handleCommand(handler));
 };
 

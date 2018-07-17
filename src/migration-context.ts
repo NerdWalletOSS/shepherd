@@ -1,20 +1,22 @@
-import { MigrationSpec } from './util/migration-spec';
-import BaseAdapter, { Repo } from './adapters/base';
+import BaseAdapter, { IRepo } from './adapters/base';
+import { ILoggerApi } from './logger';
+import { IMigrationSpec } from './util/migration-spec';
 
-export interface ShepherdInfo {
-    workingDirectory: string
+export interface IShepherdInfo {
+    workingDirectory: string;
 }
 
-export interface MigrationInfo {
-    spec: MigrationSpec,
-    migrationDirectory: string,
-    workingDirectory: string,
-    repos?: Array<Repo>,
-    selectedRepos?: Array<Repo>
+export interface IMigrationInfo {
+    spec: IMigrationSpec;
+    migrationDirectory: string;
+    workingDirectory: string;
+    repos?: IRepo[];
+    selectedRepos?: IRepo[];
 }
 
-export interface MigrationContext {
-  shepherd: ShepherdInfo,
-  migration: MigrationInfo,
-  adapter: BaseAdapter,
+export interface IMigrationContext {
+  shepherd: IShepherdInfo;
+  migration: IMigrationInfo;
+  adapter: BaseAdapter;
+  logger: ILoggerApi;
 }

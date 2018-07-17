@@ -1,20 +1,21 @@
 import fs from 'fs-extra';
 import ora from 'ora';
 
+import BaseAdapter, { IRepo } from '../adapters/base';
+import { IMigrationContext } from '../migration-context';
 import execInRepo from '../util/exec-in-repo';
 import { updateRepoList } from '../util/persisted-data';
-import { MigrationContext } from '../migration-context';
-import BaseAdapter, { Repo } from '../adapters/base';
 
-const removeRepoDirectories = async (adapter: BaseAdapter, repo: Repo) => {
+const removeRepoDirectories = async (adapter: BaseAdapter, repo: IRepo) => {
   fs.removeSync(await adapter.getRepoDir(repo));
   fs.removeSync(await adapter.getDataDir(repo));
 };
 
-export default async (context: MigrationContext) => {
+export default async (context: IMigrationContext) => {
   const {
     migration: { spec, selectedRepos },
     adapter,
+    logger,
   } = context;
 
   let repos;
@@ -31,7 +32,7 @@ export default async (context: MigrationContext) => {
   const discardedRepos = [];
 
   for (const repo of repos) {
-    console.log(`\n[${adapter.formatRepo(repo)}]`);
+    logger.info(`\n[${adapter.formatRepo(repo)}]`);
     let spinner = ora('Checking out repo').start();
     await adapter.checkoutRepo(repo);
     spinner.succeed('Checked out repo');
@@ -46,7 +47,7 @@ export default async (context: MigrationContext) => {
         shouldMigrate = false;
         discardedRepos.push(repo);
         spinner.clear();
-        console.warn(e.stderr);
+        logger.warn(e.stderr);
         spinner.fail(`should_migrate step exited with exit code ${e.code}, skipping repo`);
         break;
       }
@@ -66,7 +67,7 @@ export default async (context: MigrationContext) => {
           postCheckoutSucceeded = false;
           discardedRepos.push(repo);
           spinner.clear();
-          console.warn(e.stderr);
+          logger.warn(e.stderr);
           spinner.fail(`post_checkout step exited with exit code ${e.code}, skipping repo`);
           break;
         }

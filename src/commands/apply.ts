@@ -1,16 +1,17 @@
 import ora from 'ora';
 
-import { MigrationContext } from '../migration-context';
+import { IMigrationContext } from '../migration-context';
 import execInRepo from '../util/exec-in-repo';
 
-export default async (context: MigrationContext): Promise<void> => {
+export default async (context: IMigrationContext): Promise<void> => {
   const {
     migration: { spec, repos },
     adapter,
+    logger,
   } = context;
 
   for (const repo of (repos || [])) {
-    console.log(`\n[${adapter.formatRepo(repo)}]`);
+    logger.info(`\n[${adapter.formatRepo(repo)}]`);
     const spinner = ora('Running apply steps').start();
     let applySucceeded = true;
     for (const step of (spec.apply || [])) {
@@ -19,7 +20,7 @@ export default async (context: MigrationContext): Promise<void> => {
       } catch (e) {
         applySucceeded = false;
         spinner.clear();
-        console.warn(e.stderr);
+        logger.warn(e.stderr);
         spinner.fail(`apply step exited with exit code ${e.code}`);
         break;
       }

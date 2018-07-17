@@ -1,29 +1,29 @@
-import { MigrationContext } from '../migration-context';
+import { IMigrationContext } from '../migration-context';
 
-export interface Repo {
-  [key: string]: any,
+export interface IRepo {
+  [key: string]: any;
 }
 
 abstract class BaseAdapter {
-  protected migrationContext: MigrationContext;
+  protected migrationContext: IMigrationContext;
 
-  constructor(migrationContext: MigrationContext) {
+  constructor(migrationContext: IMigrationContext) {
     this.migrationContext = migrationContext;
   }
 
-  abstract async getCandidateRepos(): Promise<Array<Repo>>;
+  public abstract async getCandidateRepos(): Promise<IRepo[]>;
 
-  abstract parseSelectedRepo(repo: string): Repo;
+  public abstract parseSelectedRepo(repo: string): IRepo;
 
-  abstract reposEqual(repo1: Repo, repo2: Repo): boolean;
+  public abstract reposEqual(repo1: IRepo, repo2: IRepo): boolean;
 
-  abstract formatRepo(repo: Repo): string
+  public abstract formatRepo(repo: IRepo): string;
 
-  abstract async checkoutRepo(repo: Repo): Promise<void>;
+  public abstract async checkoutRepo(repo: IRepo): Promise<void>;
 
-  abstract async getRepoDir(repo: Repo): Promise<string>;
+  public abstract async getRepoDir(repo: IRepo): Promise<string>;
 
-  abstract async getDataDir(repo: Repo): Promise<string>
+  public abstract async getDataDir(repo: IRepo): Promise<string>;
 }
 
 export default BaseAdapter;

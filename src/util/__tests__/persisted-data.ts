@@ -1,12 +1,11 @@
 /* eslint-env jest */
-import path from 'path';
 import fs from 'jest-plugin-fs';
 import { isEqual } from 'lodash';
-import { Repo } from '../../adapters/base';
+import path from 'path';
+import { IRepo } from '../../adapters/base';
 
-
+import { IMigrationContext } from '../../migration-context';
 import { loadRepoList, updateRepoList } from '../persisted-data';
-import { MigrationContext } from '../../migration-context';
 
 jest.mock('fs', () => require('jest-plugin-fs/mock')); // eslint-disable-line global-require
 
@@ -17,9 +16,9 @@ const makeContext = () => ({
     workingDirectory: '/migration',
   },
   adapter: {
-    reposEqual: (r1: Repo, r2: Repo) => isEqual(r1, r2),
+    reposEqual: (r1: IRepo, r2: IRepo) => isEqual(r1, r2),
   },
-} as MigrationContext);
+} as IMigrationContext);
 
 describe('persisted-data', () => {
   beforeEach(() => fs.mock({
@@ -43,27 +42,27 @@ describe('persisted-data', () => {
 
   it('adds repo that was checked out', async () => {
     const checkedOutRepos = [{
-      owner: 'NerdWallet',
       name: 'test2',
+      owner: 'NerdWallet',
     }];
     const repos = updateRepoList(makeContext(), checkedOutRepos, []);
     expect(repos).toEqual([{
-      owner: 'NerdWallet',
       name: 'test',
-    }, {
       owner: 'NerdWallet',
+    }, {
       name: 'test2',
+      owner: 'NerdWallet',
     }]);
   });
 
   it('removes and adds repos at the same time', async () => {
     const checkedOutRepos = [{
-      owner: 'NerdWallet',
       name: 'test2',
+      owner: 'NerdWallet',
     }];
     const discardedRepos = [{
-      owner: 'NerdWallet',
       name: 'test',
+      owner: 'NerdWallet',
     }];
     const repos = updateRepoList(makeContext(), checkedOutRepos, discardedRepos);
     expect(repos).toEqual([{ owner: 'NerdWallet', name: 'test2' }]);

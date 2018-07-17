@@ -1,7 +1,7 @@
 import { exec } from 'child-process-promise';
-import BaseAdapter, { Repo } from '../adapters/base';
+import BaseAdapter, { IRepo } from '../adapters/base';
 
-export default async (adapter: BaseAdapter, repo: Repo, command: string) => {
+export default async (adapter: BaseAdapter, repo: IRepo, command: string) => {
   const repoDir: string = await adapter.getRepoDir(repo);
   const dataDir: string = await adapter.getDataDir(repo);
   const execOptions = {

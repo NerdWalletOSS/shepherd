@@ -1,36 +1,39 @@
 /* eslint-disable class-methods-use-this */
-import path from 'path';
+import Octokit from '@octokit/rest';
 import fs from 'fs-extra-promise';
-import simpleGit from 'simple-git/promise';
 import { isEqual } from 'lodash';
 import netrc from 'netrc';
-const octokit = require('@octokit/rest')();
+import path from 'path';
+import simpleGit from 'simple-git/promise';
 
-import BaseAdapter, { Repo } from './base';
-import { MigrationContext } from '../migration-context';
-const { paginateSearch } = require('../util/octokit');
+import { IMigrationContext } from '../migration-context';
+import { paginateSearch } from '../util/octokit';
+import BaseAdapter, { IRepo } from './base';
 
 class GithubAdapter extends BaseAdapter {
-  constructor(migrationContext: MigrationContext) {
+  private octokit: Octokit;
+  constructor(migrationContext: IMigrationContext) {
     super(migrationContext);
+
+    this.octokit = new Octokit();
 
     // Authenticate for future GitHub requests
     const netrcAuth = netrc();
-    octokit.authenticate({
+    this.octokit.authenticate({
       type: 'basic',
       username: netrcAuth['api.github.com'].login,
       password: netrcAuth['api.github.com'].password,
     });
   }
 
-  async getCandidateRepos(): Promise<Array<Repo>> {
-    const searchResults: Array<any> = await paginateSearch(octokit.search.code)({
+  public async getCandidateRepos(): Promise<IRepo[]> {
+    const searchResults: any[] = await paginateSearch(this.octokit.search.code)({
       q: this.migrationContext.migration.spec.search_query,
     });
-    return searchResults.map(r => this.parseSelectedRepo(r.repository.full_name));
+    return searchResults.map((r) => this.parseSelectedRepo(r.repository.full_name));
   }
 
-  parseSelectedRepo(repo: string): Repo {
+  public parseSelectedRepo(repo: string): IRepo {
     const [owner, name] = repo.split('/');
     if (!owner || !name) {
       throw new Error(`Could not parse repo "${repo}"`);
@@ -38,15 +41,15 @@ class GithubAdapter extends BaseAdapter {
     return { owner, name };
   }
 
-  reposEqual(repo1: Repo, repo2: Repo): boolean {
+  public reposEqual(repo1: IRepo, repo2: IRepo): boolean {
     return isEqual(repo1, repo2);
   }
 
-  formatRepo({ owner, name }: Repo): string {
+  public formatRepo({ owner, name }: IRepo): string {
     return `${owner}/${name}`;
   }
 
-  async checkoutRepo(repo: Repo): Promise<void> {
+  public async checkoutRepo(repo: IRepo): Promise<void> {
     const repoPath = `git@github.com:${repo.owner}/${repo.name}.git`;
     const localPath = await this.getRepoDir(repo);
 
@@ -58,11 +61,11 @@ class GithubAdapter extends BaseAdapter {
     }
   }
 
-  async getRepoDir(repo: Repo): Promise<string> {
+  public async getRepoDir(repo: IRepo): Promise<string> {
     return path.join(this.migrationContext.migration.workingDirectory, 'repos', repo.owner, repo.name);
   }
 
-  async getDataDir(repo: Repo): Promise<string> {
+  public async getDataDir(repo: IRepo): Promise<string> {
     return path.join(this.migrationContext.migration.workingDirectory, 'data', repo.owner, repo.name);
   }
 }

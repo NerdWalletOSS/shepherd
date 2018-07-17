@@ -1,12 +1,12 @@
-interface authData {
-  login: string,
-  password: string,
+interface IAuthData {
+  login: string;
+  password: string;
 }
 
-interface netrcData {
-  [domain: string]: authData,
+interface INetrcData {
+  [domain: string]: IAuthData;
 }
 
 declare module 'netrc' {
-  export default function() : netrcData;
+  export default function(): INetrcData;
 }
