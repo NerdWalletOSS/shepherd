@@ -1,6 +1,6 @@
-const yaml = require('js-yaml');
-const path = require('path');
-const fs = require('fs');
+import yaml from 'js-yaml';
+import path from 'path';
+import fs from 'fs';
 
 const PHASES = [
   'should_migrate',
@@ -9,8 +9,19 @@ const PHASES = [
   'pr_message',
 ];
 
-module.exports.loadSpec = (directory) => {
-  const docPath = path.join(directory, 'shepherd.yml');
+export interface MigrationSpec {
+  name: string,
+  adapter: string,
+  search_query: string,
+  should_migrate: Array<string>,
+  post_checkout: Array<string>,
+  apply: Array<string>,
+  pr_message: string,
+  
+}
+
+export function loadSpec(directory: string): MigrationSpec {
+  const docPath: string = path.join(directory, 'shepherd.yml');
   const doc = yaml.safeLoad(fs.readFileSync(docPath, 'utf8'));
   PHASES.forEach((phase) => {
     if (!(phase in doc)) return;

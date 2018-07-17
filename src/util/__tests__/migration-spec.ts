@@ -1,8 +1,8 @@
 /* eslint-env jest */
-const path = require('path');
-const { loadSpec } = require('../spec');
+import path from 'path';
+import { loadSpec } from '../migration-spec';
 
-const getSpecDirectory = name => path.join(__dirname, '..', '__fixtures__', 'specs', name);
+const getSpecDirectory = (name: string) => path.join(__dirname, '..', '__fixtures__', 'specs', name);
 
 describe('spec', () => {
   it('loads a simple spec', () => {

@@ -1,15 +1,17 @@
-const fs = require('fs-extra');
-const ora = require('ora');
+import fs from 'fs-extra';
+import ora from 'ora';
 
-const execInRepo = require('../util/exec-in-repo');
-const { updateRepoList } = require('../util/persisted-data');
+import execInRepo from '../util/exec-in-repo';
+import { updateRepoList } from '../util/persisted-data';
+import { MigrationContext } from '../migration-context';
+import BaseAdapter, { Repo } from '../adapters/base';
 
-const removeRepoDirectories = async (adapter, repo) => {
+const removeRepoDirectories = async (adapter: BaseAdapter, repo: Repo) => {
   fs.removeSync(await adapter.getRepoDir(repo));
   fs.removeSync(await adapter.getDataDir(repo));
 };
 
-module.exports = async (context) => {
+export default async (context: MigrationContext) => {
   const {
     migration: { spec, selectedRepos },
     adapter,

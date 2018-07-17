@@ -1,14 +1,15 @@
-const ora = require('ora');
+import ora from 'ora';
 
-const execInRepo = require('../util/exec-in-repo');
+import { MigrationContext } from '../migration-context';
+import execInRepo from '../util/exec-in-repo';
 
-module.exports = async (context) => {
+export default async (context: MigrationContext): Promise<void> => {
   const {
     migration: { spec, repos },
     adapter,
   } = context;
 
-  for (const repo of repos) {
+  for (const repo of (repos || [])) {
     console.log(`\n[${adapter.formatRepo(repo)}]`);
     const spinner = ora('Running apply steps').start();
     let applySucceeded = true;

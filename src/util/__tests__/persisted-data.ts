@@ -1,23 +1,25 @@
 /* eslint-env jest */
-const path = require('path');
-const fs = require('jest-plugin-fs').default;
-const { isEqual } = require('lodash');
+import path from 'path';
+import fs from 'jest-plugin-fs';
+import { isEqual } from 'lodash';
+import { Repo } from '../../adapters/base';
 
 
-const { loadRepoList, updateRepoList } = require('../persisted-data');
+import { loadRepoList, updateRepoList } from '../persisted-data';
+import { MigrationContext } from '../../migration-context';
 
 jest.mock('fs', () => require('jest-plugin-fs/mock')); // eslint-disable-line global-require
 
-const getFixture = name => fs.read(path.join(__dirname, '..', '__fixtures__', `${name}.yml`));
+const getFixture = (name: string) => fs.read(path.join(__dirname, '..', '__fixtures__', `${name}.yml`));
 
 const makeContext = () => ({
   migration: {
     workingDirectory: '/migration',
-    adapter: {
-      reposEqual: (r1, r2) => isEqual(r1, r2),
-    },
   },
-});
+  adapter: {
+    reposEqual: (r1: Repo, r2: Repo) => isEqual(r1, r2),
+  },
+} as MigrationContext);
 
 describe('persisted-data', () => {
   beforeEach(() => fs.mock({

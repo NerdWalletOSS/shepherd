@@ -1,15 +1,18 @@
 /* eslint-disable class-methods-use-this */
-const path = require('path');
-const fs = require('fs-extra');
-const simpleGit = require('simple-git/promise');
-const { isEqual } = require('lodash');
-const netrc = require('netrc');
+import path from 'path';
+import fs from 'fs-extra-promise';
+import simpleGit from 'simple-git/promise';
+import { isEqual } from 'lodash';
+import netrc from 'netrc';
 const octokit = require('@octokit/rest')();
+
+import BaseAdapter, { Repo } from './base';
+import { MigrationContext } from '../migration-context';
 const { paginateSearch } = require('../util/octokit');
 
-class GithubAdapter {
-  constructor(migrationContext) {
-    this.migrationContext = migrationContext;
+class GithubAdapter extends BaseAdapter {
+  constructor(migrationContext: MigrationContext) {
+    super(migrationContext);
 
     // Authenticate for future GitHub requests
     const netrcAuth = netrc();
@@ -20,14 +23,14 @@ class GithubAdapter {
     });
   }
 
-  async getCandidateRepos() {
-    const searchResults = await paginateSearch(octokit.search.code)({
+  async getCandidateRepos(): Promise<Array<Repo>> {
+    const searchResults: Array<any> = await paginateSearch(octokit.search.code)({
       q: this.migrationContext.migration.spec.search_query,
     });
     return searchResults.map(r => this.parseSelectedRepo(r.repository.full_name));
   }
 
-  parseSelectedRepo(repo) {
+  parseSelectedRepo(repo: string): Repo {
     const [owner, name] = repo.split('/');
     if (!owner || !name) {
       throw new Error(`Could not parse repo "${repo}"`);
@@ -35,19 +38,19 @@ class GithubAdapter {
     return { owner, name };
   }
 
-  reposEqual(repo1, repo2) {
+  reposEqual(repo1: Repo, repo2: Repo): boolean {
     return isEqual(repo1, repo2);
   }
 
-  formatRepo({ owner, name }) {
+  formatRepo({ owner, name }: Repo): string {
     return `${owner}/${name}`;
   }
 
-  async checkoutRepo(repo) {
+  async checkoutRepo(repo: Repo): Promise<void> {
     const repoPath = `git@github.com:${repo.owner}/${repo.name}.git`;
     const localPath = await this.getRepoDir(repo);
 
-    if (await fs.exists(localPath) && await simpleGit(localPath).checkIsRepo()) {
+    if (await fs.existsAsync(localPath) && await simpleGit(localPath).checkIsRepo()) {
       // Repo already exists; just fetch
       await simpleGit(localPath).fetch('origin');
     } else {
@@ -55,13 +58,13 @@ class GithubAdapter {
     }
   }
 
-  async getRepoDir(repo) {
+  async getRepoDir(repo: Repo): Promise<string> {
     return path.join(this.migrationContext.migration.workingDirectory, 'repos', repo.owner, repo.name);
   }
 
-  async getDataDir(repo) {
+  async getDataDir(repo: Repo): Promise<string> {
     return path.join(this.migrationContext.migration.workingDirectory, 'data', repo.owner, repo.name);
   }
 }
 
-module.exports = GithubAdapter;
+export default GithubAdapter;
