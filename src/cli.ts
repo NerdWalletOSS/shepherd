@@ -16,6 +16,7 @@ import { loadRepoList } from './util/persisted-data';
 import apply from './commands/apply';
 import checkout from './commands/checkout';
 import commit from './commands/commit';
+import push from './commands/push';
 import reset from './commands/reset';
 
 import Logger from './logger';
@@ -84,6 +85,7 @@ addCommand('checkout', 'Check out any repositories that are candidates for a giv
 addCommand('apply', 'Apply a migration to all checked out repositories', apply);
 addCommand('commit', 'Commit all changes for the specified migration', commit);
 addCommand('reset', 'Reset all changes for the specified migration', reset);
+addCommand('push', 'Push all changes for the specified migration', push);
 
 program.on('command:*', () => {
   logger.error(`Error: no such command "${program.args[0]}"`);

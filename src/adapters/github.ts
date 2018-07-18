@@ -73,6 +73,11 @@ class GithubAdapter extends BaseAdapter {
     await simpleGit(localPath).clean('f', ['-d']);
   }
 
+  public async pushRepo(repo: IRepo): Promise<void> {
+    const localPath = await this.getRepoDir(repo);
+    await simpleGit(localPath).push('origin', 'HEAD', { '-f': null, '-d': null });
+  }
+
   public async getRepoDir(repo: IRepo): Promise<string> {
     return path.join(this.migrationContext.migration.workingDirectory, 'repos', repo.owner, repo.name);
   }
