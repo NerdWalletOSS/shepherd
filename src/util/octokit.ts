@@ -1,10 +1,12 @@
 import Octokit from '@octokit/rest';
 const octokit = new Octokit();
 
+type DataExtractor = (d: any) => any[];
 type Method = (opts: any) => Promise<any>;
 
-export const paginate = (method: Method, extractItems = (d: any) => d) => async (options: any) => {
-  let response = await method({
+export const paginate =
+  (method: Method, extractItems: DataExtractor = (d: any) => d) => async (options: any): Promise<any[]> => {
+  let response: any = await method({
     ...options,
     per_page: 100,
   });

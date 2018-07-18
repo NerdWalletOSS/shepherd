@@ -15,6 +15,8 @@ import { loadRepoList } from './util/persisted-data';
 // Commands
 import apply from './commands/apply';
 import checkout from './commands/checkout';
+import commit from './commands/commit';
+
 import Logger from './logger';
 
 const shepherdDir = path.join(homedir(), '.shepherd');
@@ -37,7 +39,7 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
   const migrationWorkingDirectory = path.join(prefs.workingDirectory, spec.name);
   await fs.ensureDir(migrationWorkingDirectory);
   const logger = new Logger();
-  const migrationContext: IMigrationContext = {
+  const migrationContext = {
     migration: {
       migrationDirectory: migration,
       spec,
@@ -64,12 +66,14 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
 
 const addCommand = (name: string, description: string, handler: CommandHandler) => {
   program
-    .command(`${name} <migration>`, description)
+    .command(`${name} <migration>`)
+    .description(description)
     .option('--repos <repos>', 'Comma-separated list of repos to operate on', (val) => val.split(','))
     .action(handleCommand(handler));
 };
 
 addCommand('checkout', 'Check out any repositories that are candidates for a given migration', checkout);
 addCommand('apply', 'Apply a migration to all checked out repositories', apply);
+addCommand('commit', 'Commit all changes for the specified migration', commit);
 
-program.parse(process.argv);
+program.parse(process.argv)

@@ -3,15 +3,15 @@ import { ILoggerApi } from './logger';
 import { IMigrationSpec } from './util/migration-spec';
 
 export interface IShepherdInfo {
-    workingDirectory: string;
+  workingDirectory: string;
 }
 
 export interface IMigrationInfo {
-    spec: IMigrationSpec;
-    migrationDirectory: string;
-    workingDirectory: string;
-    repos?: IRepo[];
-    selectedRepos?: IRepo[];
+  spec: IMigrationSpec;
+  migrationDirectory: string;
+  workingDirectory: string;
+  repos: IRepo[] | null;
+  selectedRepos?: IRepo[];
 }
 
 export interface IMigrationContext {

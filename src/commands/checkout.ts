@@ -1,9 +1,9 @@
 import fs from 'fs-extra';
-import ora from 'ora';
 
 import BaseAdapter, { IRepo } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
 import execInRepo from '../util/exec-in-repo';
+import forEachRepo from '../util/for-each-repo';
 import { updateRepoList } from '../util/persisted-data';
 
 const removeRepoDirectories = async (adapter: BaseAdapter, repo: IRepo) => {
@@ -20,24 +20,31 @@ export default async (context: IMigrationContext) => {
 
   let repos;
   if (selectedRepos) {
-    ora(`Using ${selectedRepos.length} selected repos`).succeed();
+    logger.spinner(`Using ${selectedRepos.length} selected repos`).succeed();
     repos = selectedRepos;
   } else {
-    const spinner = ora('Loading candidate repos from GitHub').start();
+    const spinner = logger.spinner('Loading candidate repos from GitHub');
     repos = await adapter.getCandidateRepos();
     spinner.succeed(`Loaded ${repos.length} repos`);
   }
 
-  const checkedOutRepos = [];
-  const discardedRepos = [];
+  context.migration.repos = repos;
 
-  for (const repo of repos) {
-    logger.info(`\n[${adapter.formatRepo(repo)}]`);
-    let spinner = ora('Checking out repo').start();
-    await adapter.checkoutRepo(repo);
-    spinner.succeed('Checked out repo');
+  const checkedOutRepos: IRepo[] = [];
+  const discardedRepos: IRepo[] = [];
 
-    spinner = ora('Running should_migrate steps').start();
+  forEachRepo(context, async (repo) => {
+    let spinner = logger.spinner('Checking out repo');
+    try {
+      await adapter.checkoutRepo(repo);
+      spinner.succeed('Checked out repo');
+    } catch (e) {
+      logger.warn(e);
+      spinner.fail('Failed to check out repo, skipping');
+      return;
+    }
+
+    spinner = logger.spinner('Running should_migrate steps');
     const shouldMigrateSteps = spec.should_migrate || [];
     let shouldMigrate = true;
     for (const step of shouldMigrateSteps) {
@@ -46,8 +53,7 @@ export default async (context: IMigrationContext) => {
       } catch (e) {
         shouldMigrate = false;
         discardedRepos.push(repo);
-        spinner.clear();
-        logger.warn(e.stderr);
+        logger.warn(e.stderr.strim());
         spinner.fail(`should_migrate step exited with exit code ${e.code}, skipping repo`);
         break;
       }
@@ -55,9 +61,9 @@ export default async (context: IMigrationContext) => {
     if (!shouldMigrate) {
       removeRepoDirectories(adapter, repo);
     } else {
-      spinner.succeed('Repo passed all should_migrate steps');
+      spinner.succeed('Completed all should_migrate steps successfully');
 
-      spinner = ora('Running post_checkout steps').start();
+      spinner = logger.spinner('Running post_checkout steps');
       const postCheckoutSteps = spec.post_checkout || [];
       let postCheckoutSucceeded = true;
       for (const step of postCheckoutSteps) {
@@ -66,8 +72,7 @@ export default async (context: IMigrationContext) => {
         } catch (e) {
           postCheckoutSucceeded = false;
           discardedRepos.push(repo);
-          spinner.clear();
-          logger.warn(e.stderr);
+          logger.warn(e.stderr.trim());
           spinner.fail(`post_checkout step exited with exit code ${e.code}, skipping repo`);
           break;
         }
@@ -75,11 +80,11 @@ export default async (context: IMigrationContext) => {
       if (!postCheckoutSucceeded) {
         removeRepoDirectories(adapter, repo);
       } else {
-        spinner.succeed('post_checkout steps completed successfully');
+        spinner.succeed('Completed all post_checkout steps successfully');
         checkedOutRepos.push(repo);
       }
     }
-  }
+  });
 
   // We'll persist this list of repos for use in future steps
   updateRepoList(context, checkedOutRepos, discardedRepos);

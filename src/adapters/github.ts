@@ -27,10 +27,10 @@ class GithubAdapter extends BaseAdapter {
   }
 
   public async getCandidateRepos(): Promise<IRepo[]> {
-    const searchResults: any[] = await paginateSearch(this.octokit.search.code)({
+    const searchResults = await paginateSearch(this.octokit.search.code)({
       q: this.migrationContext.migration.spec.search_query,
     });
-    return searchResults.map((r) => this.parseSelectedRepo(r.repository.full_name));
+    return searchResults.map((r: any) => this.parseSelectedRepo(r.repository.full_name));
   }
 
   public parseSelectedRepo(repo: string): IRepo {
@@ -59,6 +59,12 @@ class GithubAdapter extends BaseAdapter {
     } else {
       await simpleGit().clone(repoPath, localPath);
     }
+  }
+
+  public async commitRepo(repo: IRepo): Promise<void> {
+    const { migration: { spec } } = this.migrationContext;
+    const localPath = await this.getRepoDir(repo);
+    await simpleGit(localPath).commit(`Shepherd: ${spec.name}`, './*');
   }
 
   public async getRepoDir(repo: IRepo): Promise<string> {

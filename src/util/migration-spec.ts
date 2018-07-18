@@ -21,7 +21,7 @@ export interface IMigrationSpec {
 }
 
 export function loadSpec(directory: string): IMigrationSpec {
-  const docPath: string = path.join(directory, 'shepherd.yml');
+  const docPath = path.join(directory, 'shepherd.yml');
   const doc = yaml.safeLoad(fs.readFileSync(docPath, 'utf8'));
   PHASES.forEach((phase) => {
     if (!(phase in doc)) { return; }
