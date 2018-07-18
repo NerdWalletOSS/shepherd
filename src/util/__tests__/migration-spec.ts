@@ -11,10 +11,12 @@ describe('spec', () => {
       name: 'testspec',
       adapter: 'github',
       search_query: 'filename:package.json',
-      apply: [
-        'echo hi',
-        'echo bye',
-      ],
+      hooks: {
+        apply: [
+          'echo hi',
+          'echo bye',
+        ],
+      },
     });
   });
 
@@ -24,10 +26,12 @@ describe('spec', () => {
       name: 'testspec',
       adapter: 'github',
       search_query: 'filename:package.json',
-      should_migrate: ['echo 1'],
-      post_checkout: ['echo 2'],
-      apply: ['echo 3'],
-      pr_message: ['echo 4'],
+      hooks: {
+        should_migrate: ['echo 1'],
+        post_checkout: ['echo 2'],
+        apply: ['echo 3'],
+        pr_message: ['echo 4'],
+      },
     });
   });
 });

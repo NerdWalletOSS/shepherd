@@ -2,7 +2,7 @@ name: testspec
 adapter: github
 search_query: filename:package.json
 
-# Hooks
-apply:
-  - echo hi
-  - echo bye
+hooks:
+  apply:
+    - echo hi
+    - echo bye

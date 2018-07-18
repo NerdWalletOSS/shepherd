@@ -2,8 +2,8 @@ name: testspec
 adapter: github
 search_query: filename:package.json
 
-# Hooks
-should_migrate: echo 1
-post_checkout: echo 2
-apply: echo 3
-pr_message: echo 4
+hooks:
+  should_migrate: echo 1
+  post_checkout: echo 2
+  apply: echo 3
+  pr_message: echo 4

@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 
 import BaseAdapter, { IRepo } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
-import execInRepo from '../util/exec-in-repo';
+import executeSteps from '../util/execute-steps';
 import forEachRepo from '../util/for-each-repo';
 import { updateRepoList } from '../util/persisted-data';
 
@@ -34,7 +34,7 @@ export default async (context: IMigrationContext) => {
   const discardedRepos: IRepo[] = [];
 
   forEachRepo(context, async (repo) => {
-    let spinner = logger.spinner('Checking out repo');
+    const spinner = logger.spinner('Checking out repo');
     try {
       await adapter.checkoutRepo(repo);
       spinner.succeed('Checked out repo');
@@ -44,43 +44,23 @@ export default async (context: IMigrationContext) => {
       return;
     }
 
-    spinner = logger.spinner('Running should_migrate steps');
-    const shouldMigrateSteps = spec.should_migrate || [];
-    let shouldMigrate = true;
-    for (const step of shouldMigrateSteps) {
-      try {
-        await execInRepo(adapter, repo, step);
-      } catch (e) {
-        shouldMigrate = false;
-        discardedRepos.push(repo);
-        logger.warn(e.stderr.strim());
-        spinner.fail(`should_migrate step exited with exit code ${e.code}, skipping repo`);
-        break;
-      }
-    }
+    logger.info('> Running should_migrate steps');
+    const shouldMigrate = await executeSteps(context, repo, 'should_migrate');
     if (!shouldMigrate) {
+      discardedRepos.push(repo);
       removeRepoDirectories(adapter, repo);
+      logger.error('> Error running should_migrate steps; skipping repo');
     } else {
-      spinner.succeed('Completed all should_migrate steps successfully');
+      logger.info('> Completed all should_migrate steps successfully');
 
-      spinner = logger.spinner('Running post_checkout steps');
-      const postCheckoutSteps = spec.post_checkout || [];
-      let postCheckoutSucceeded = true;
-      for (const step of postCheckoutSteps) {
-        try {
-          await execInRepo(adapter, repo, step);
-        } catch (e) {
-          postCheckoutSucceeded = false;
-          discardedRepos.push(repo);
-          logger.warn(e.stderr.trim());
-          spinner.fail(`post_checkout step exited with exit code ${e.code}, skipping repo`);
-          break;
-        }
-      }
+      logger.info('> Running post_checkout steps');
+      const postCheckoutSucceeded = await executeSteps(context, repo, 'post_checkout');
       if (!postCheckoutSucceeded) {
+        discardedRepos.push(repo);
         removeRepoDirectories(adapter, repo);
+        logger.error('> Error running post_checkout steps; skipping repo');
       } else {
-        spinner.succeed('Completed all post_checkout steps successfully');
+        logger.info('> Completed all post_checkout steps successfully');
         checkedOutRepos.push(repo);
       }
     }

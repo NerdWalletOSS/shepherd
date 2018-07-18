@@ -39,6 +39,9 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
   const migrationWorkingDirectory = path.join(prefs.workingDirectory, spec.name);
   await fs.ensureDir(migrationWorkingDirectory);
   const logger = new Logger();
+
+  // We can't use type-checking on this context just yet since we have to dynamically
+  // assign some properties
   const migrationContext = {
     migration: {
       migrationDirectory: migration,
@@ -49,13 +52,17 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
       workingDirectory: prefs.workingDirectory,
     },
     logger,
-  } as IMigrationContext;
+  } as any;
+
   const adapter = adapterForName(spec.adapter, migrationContext);
   migrationContext.adapter = adapter;
+
   const selectedRepos = options.repos && options.repos.map(adapter.parseSelectedRepo);
   migrationContext.migration.selectedRepos = selectedRepos;
+
   // The list of repos be null if migration hasn't started yet
   migrationContext.migration.repos = loadRepoList(migrationContext);
+
   try {
     await handler(migrationContext, options);
   } catch (e) {
@@ -76,4 +83,4 @@ addCommand('checkout', 'Check out any repositories that are candidates for a giv
 addCommand('apply', 'Apply a migration to all checked out repositories', apply);
 addCommand('commit', 'Commit all changes for the specified migration', commit);
 
-program.parse(process.argv)
+program.parse(process.argv);
