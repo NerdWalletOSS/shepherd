@@ -9,13 +9,13 @@ export default async (context: IMigrationContext) => {
   } = context;
 
   forEachRepo(context, async (repo) => {
-    const spinner = logger.spinner('Committing changes');
+    const spinner = logger.spinner('Resetting changes');
     try {
-      await adapter.commitRepo(repo);
-      spinner.succeed('Changes committed');
+      await adapter.resetRepo(repo);
+      spinner.succeed('Reset changes');
     } catch (e) {
       logger.error(e);
-      spinner.fail('Failed to commit changes');
+      spinner.fail('Failed to reset changes');
     }
   });
 };

@@ -1,3 +1,6 @@
+import { ChildProcessPromise } from 'child-process-promise';
+import util from 'util';
+import chalk from '../../node_modules/chalk';
 import { IRepo } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
 import execInRepo from '../util/exec-in-repo';
@@ -14,13 +17,15 @@ export default async (context: IMigrationContext, repo: IRepo, phase: string): P
   } = context;
   const steps = hooks[phase] || [];
   for (const step of steps) {
-    const spinner = logger.spinner(`\$ ${step}`);
+    logger.info(`\$ ${step}`);
     try {
-      await execInRepo(adapter, repo, step);
-      spinner.succeed();
+      const { promise, childProcess } = await execInRepo(adapter, repo, step);
+      childProcess.stdout.on('data', (out) => logger.info(out.toString().trim()));
+      childProcess.stderr.on('data', (out) => logger.info(out.toString().trim()));
+      await promise;
+      logger.info(chalk.green(`Step "${step}" exited with 0\n`));
     } catch (e) {
-      logger.error(e.stderr.trim());
-      spinner.warn(`should_migrate step exited with exit code ${e.code}`);
+      logger.warn(`Step "${step}" exited with ${e.code}\n`);
       return false;
     }
   }

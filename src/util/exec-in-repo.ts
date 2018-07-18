@@ -1,7 +1,13 @@
-import { exec } from 'child-process-promise';
+import { ChildProcessPromise, spawn } from 'child-process-promise';
+import { ChildProcess } from 'child_process';
 import BaseAdapter, { IRepo } from '../adapters/base';
 
-export default async (adapter: BaseAdapter, repo: IRepo, command: string) => {
+interface IExecRepoResult {
+  promise: Promise<ChildProcess>;
+  childProcess: ChildProcess;
+}
+
+export default async (adapter: BaseAdapter, repo: IRepo, command: string): Promise<IExecRepoResult> => {
   const repoDir = await adapter.getRepoDir(repo);
   const dataDir = await adapter.getDataDir(repo);
   const execOptions = {
@@ -11,6 +17,11 @@ export default async (adapter: BaseAdapter, repo: IRepo, command: string) => {
       REPO_DIR: repoDir,
       DATA_DIR: dataDir,
     },
+    shell: true,
   };
-  await exec(command, execOptions);
+  const promise = spawn(command, [], execOptions) as ChildProcessPromise;
+  return {
+    promise,
+    childProcess: promise.childProcess,
+  };
 };

@@ -25,27 +25,27 @@ export default class Logger implements ILoggerApi {
   private oraInstance: any = null;
   private spinnerActive = false;
 
-  public debug(message: string): void {
+  public debug = (message: string): void => {
     this.log('debug', message);
   }
 
-  public info(message: string): void {
+  public info = (message: string): void => {
     this.log('info', message);
   }
 
-  public warn(message: string): void {
+  public warn = (message: string): void => {
     this.log('warn', message);
   }
 
-  public error(message: string): void {
+  public error = (message: string): void => {
     this.log('error', message);
   }
 
-  public fatal(message: string): void {
+  public fatal = (message: string): void => {
     this.log('fatal', message);
   }
 
-  public spinner(message: string): ISpinner {
+  public spinner = (message: string): ISpinner => {
     if (this.oraInstance) {
       this.oraInstance.stop();
     }
@@ -75,7 +75,7 @@ export default class Logger implements ILoggerApi {
     };
   }
 
-  private log(level: string, message: string) {
+  private log = (level: string, message: string) => {
     let color = (msg: string) => msg;
     let output = process.stdout;
 

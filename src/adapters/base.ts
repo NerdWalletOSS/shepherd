@@ -23,6 +23,8 @@ abstract class BaseAdapter {
 
   public abstract async commitRepo(repo: IRepo): Promise<void>;
 
+  public abstract async resetRepo(repo: IRepo): Promise<void>;
+
   public abstract async getRepoDir(repo: IRepo): Promise<string>;
 
   public abstract async getDataDir(repo: IRepo): Promise<string>;

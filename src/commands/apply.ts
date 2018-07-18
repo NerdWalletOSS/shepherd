@@ -12,9 +12,17 @@ export default async (context: IMigrationContext): Promise<void> => {
 
   forEachRepo(context, async (repo) => {
     logger.info('> Running apply steps');
-    const applySucceeded = executeSteps(context, repo, 'apply');
+    const applySucceeded = await executeSteps(context, repo, 'apply');
     if (!applySucceeded) {
-      // TODO handle this - reset repository?
+      logger.error('> Failed to run all apply steps');
+      const spinner = logger.spinner('Resetting repo');
+      try {
+        await adapter.resetRepo(repo);
+        spinner.succeed('Successfully reset repo');
+      } catch (e) {
+        logger.error(e);
+        spinner.fail('Failed to reset repo');
+      }
     } else {
       logger.info('> Completed all apply steps successfully');
     }

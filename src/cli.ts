@@ -16,6 +16,7 @@ import { loadRepoList } from './util/persisted-data';
 import apply from './commands/apply';
 import checkout from './commands/checkout';
 import commit from './commands/commit';
+import reset from './commands/reset';
 
 import Logger from './logger';
 
@@ -27,6 +28,7 @@ const prefs = new Preferences('com.nerdwallet.shepherd', {
   file: path.join(shepherdDir, 'prefs.yaml'),
   format: 'yaml',
 });
+const logger = new Logger();
 
 type CommandHandler = (context: IMigrationContext, options: any) => Promise<void>;
 
@@ -38,7 +40,6 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
   const spec = loadSpec(migration);
   const migrationWorkingDirectory = path.join(prefs.workingDirectory, spec.name);
   await fs.ensureDir(migrationWorkingDirectory);
-  const logger = new Logger();
 
   // We can't use type-checking on this context just yet since we have to dynamically
   // assign some properties
@@ -82,5 +83,11 @@ const addCommand = (name: string, description: string, handler: CommandHandler) 
 addCommand('checkout', 'Check out any repositories that are candidates for a given migration', checkout);
 addCommand('apply', 'Apply a migration to all checked out repositories', apply);
 addCommand('commit', 'Commit all changes for the specified migration', commit);
+addCommand('reset', 'Reset all changes for the specified migration', reset);
+
+program.on('command:*', () => {
+  logger.error(`Error: no such command "${program.args[0]}"`);
+  process.exit(1);
+});
 
 program.parse(process.argv);

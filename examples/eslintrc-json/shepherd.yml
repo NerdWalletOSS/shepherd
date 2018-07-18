@@ -8,4 +8,7 @@ hooks:
   - echo "Hello world!"
   - sleep 10
 
-  apply: mv .eslintrc .eslintrc.json
+  apply:
+  - mv .eslintrc .eslintrc.json
+  - echo "Hello, there!"
+  - echo "rip rip rip\nnice!" 1>&2

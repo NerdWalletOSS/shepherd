@@ -67,6 +67,12 @@ class GithubAdapter extends BaseAdapter {
     await simpleGit(localPath).commit(`Shepherd: ${spec.name}`, './*');
   }
 
+  public async resetRepo(repo: IRepo): Promise<void> {
+    const localPath = await this.getRepoDir(repo);
+    await simpleGit(localPath).reset('hard');
+    await simpleGit(localPath).clean('f', ['-d']);
+  }
+
   public async getRepoDir(repo: IRepo): Promise<string> {
     return path.join(this.migrationContext.migration.workingDirectory, 'repos', repo.owner, repo.name);
   }
