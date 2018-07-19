@@ -3,7 +3,6 @@ import forEachRepo from '../util/for-each-repo';
 
 export default async (context: IMigrationContext) => {
   const {
-    migration: { spec, repos },
     adapter,
     logger,
   } = context;

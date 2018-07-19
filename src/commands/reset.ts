@@ -2,11 +2,7 @@ import { IMigrationContext } from '../migration-context';
 import forEachRepo from '../util/for-each-repo';
 
 export default async (context: IMigrationContext) => {
-  const {
-    migration: { spec, repos },
-    adapter,
-    logger,
-  } = context;
+  const { adapter, logger } = context;
 
   forEachRepo(context, async (repo) => {
     const spinner = logger.spinner('Resetting changes');

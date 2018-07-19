@@ -12,3 +12,4 @@ hooks:
   - mv .eslintrc .eslintrc.json
   - echo "Hello, there!"
   - echo "rip rip rip\nnice!" 1>&2
+  pr_message: $MIGRATION_DIR/pr.sh

@@ -16,6 +16,7 @@ import { loadRepoList } from './util/persisted-data';
 import apply from './commands/apply';
 import checkout from './commands/checkout';
 import commit from './commands/commit';
+import prPreview from './commands/pr-preview';
 import push from './commands/push';
 import reset from './commands/reset';
 
@@ -38,34 +39,34 @@ interface ICliOptions {
 }
 
 const handleCommand = (handler: CommandHandler) => async (migration: string, options: ICliOptions) => {
-  const spec = loadSpec(migration);
-  const migrationWorkingDirectory = path.join(prefs.workingDirectory, spec.name);
-  await fs.ensureDir(migrationWorkingDirectory);
-
-  // We can't use type-checking on this context just yet since we have to dynamically
-  // assign some properties
-  const migrationContext = {
-    migration: {
-      migrationDirectory: migration,
-      spec,
-      workingDirectory: migrationWorkingDirectory,
-    },
-    shepherd: {
-      workingDirectory: prefs.workingDirectory,
-    },
-    logger,
-  } as any;
-
-  const adapter = adapterForName(spec.adapter, migrationContext);
-  migrationContext.adapter = adapter;
-
-  const selectedRepos = options.repos && options.repos.map(adapter.parseSelectedRepo);
-  migrationContext.migration.selectedRepos = selectedRepos;
-
-  // The list of repos be null if migration hasn't started yet
-  migrationContext.migration.repos = loadRepoList(migrationContext);
-
   try {
+    const spec = loadSpec(migration);
+    const migrationWorkingDirectory = path.join(prefs.workingDirectory, spec.name);
+    await fs.ensureDir(migrationWorkingDirectory);
+
+    // We can't use type-checking on this context just yet since we have to dynamically
+    // assign some properties
+    const migrationContext = {
+      migration: {
+        migrationDirectory: path.resolve(migration),
+        spec,
+        workingDirectory: migrationWorkingDirectory,
+      },
+      shepherd: {
+        workingDirectory: prefs.workingDirectory,
+      },
+      logger,
+    } as any;
+
+    const adapter = adapterForName(spec.adapter, migrationContext);
+    migrationContext.adapter = adapter;
+
+    const selectedRepos = options.repos && options.repos.map(adapter.parseSelectedRepo);
+    migrationContext.migration.selectedRepos = selectedRepos;
+
+    // The list of repos be null if migration hasn't started yet
+    migrationContext.migration.repos = loadRepoList(migrationContext);
+
     await handler(migrationContext, options);
   } catch (e) {
     logger.error(e);
@@ -86,6 +87,7 @@ addCommand('apply', 'Apply a migration to all checked out repositories', apply);
 addCommand('commit', 'Commit all changes for the specified migration', commit);
 addCommand('reset', 'Reset all changes for the specified migration', reset);
 addCommand('push', 'Push all changes for the specified migration', push);
+addCommand('pr-preview', 'View a preview of the PR messages for the specified migration', prPreview);
 
 program.on('command:*', () => {
   logger.error(`Error: no such command "${program.args[0]}"`);

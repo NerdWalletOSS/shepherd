@@ -1,7 +1,14 @@
 declare module 'child-process-promise' {
   import { ChildProcess, SpawnOptions, ExecOptions } from "child_process";
 
-  export class ChildProcessPromise extends Promise<ChildProcess> {
+  export interface ChildProcessResult {
+    childProcess: ChildProcess;
+    stdout?: string;
+    stderr?: string;
+    code: number;
+  }
+
+  export class ChildProcessPromise extends Promise<ChildProcessResult> {
     childProcess: ChildProcess;
   }
 
@@ -13,6 +20,6 @@ declare module 'child-process-promise' {
     stderr?: string;
   }
 
-  export function exec(command: string, options: ExecOptions): Promise<ChildProcess>;
-  export function spawn(command: string, args: string[], options: SpawnOptions): Promise<ChildProcess>;
+  export function exec(command: string, options: ExecOptions): ChildProcessPromise;
+  export function spawn(command: string, args: string[], options: SpawnOptions): ChildProcessPromise;
 }

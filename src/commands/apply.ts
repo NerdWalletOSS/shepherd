@@ -1,19 +1,14 @@
 import { IMigrationContext } from '../migration-context';
-import execInRepo from '../util/exec-in-repo';
 import executeSteps from '../util/execute-steps';
 import forEachRepo from '../util/for-each-repo';
 
 export default async (context: IMigrationContext): Promise<void> => {
-  const {
-    migration: { spec, repos },
-    adapter,
-    logger,
-  } = context;
+  const { adapter, logger } = context;
 
   forEachRepo(context, async (repo) => {
     logger.info('> Running apply steps');
-    const applySucceeded = await executeSteps(context, repo, 'apply');
-    if (!applySucceeded) {
+    const stepsResults = await executeSteps(context, repo, 'apply');
+    if (!stepsResults.succeeded) {
       logger.error('> Failed to run all apply steps');
       const spinner = logger.spinner('Resetting repo');
       try {

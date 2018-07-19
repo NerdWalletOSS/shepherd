@@ -13,14 +13,14 @@ const removeRepoDirectories = async (adapter: BaseAdapter, repo: IRepo) => {
 
 export default async (context: IMigrationContext) => {
   const {
-    migration: { spec, selectedRepos },
+    migration: { selectedRepos },
     adapter,
     logger,
   } = context;
 
   let repos;
   if (selectedRepos) {
-    logger.spinner(`Using ${selectedRepos.length} selected repos`).succeed();
+    logger.info(`Using ${selectedRepos.length} selected repos`);
     repos = selectedRepos;
   } else {
     const spinner = logger.spinner('Loading candidate repos from GitHub');
@@ -45,22 +45,22 @@ export default async (context: IMigrationContext) => {
     }
 
     logger.info('> Running should_migrate steps');
-    const shouldMigrate = await executeSteps(context, repo, 'should_migrate');
-    if (!shouldMigrate) {
+    const stepsResults = await executeSteps(context, repo, 'should_migrate');
+    if (!stepsResults.succeeded) {
       discardedRepos.push(repo);
       removeRepoDirectories(adapter, repo);
-      logger.error('> Error running should_migrate steps; skipping repo');
+      logger.spinner('Error running should_migrate steps; skipping repo').fail();
     } else {
-      logger.info('> Completed all should_migrate steps successfully');
+      logger.spinner('Completed all should_migrate steps successfully').succeed();
 
       logger.info('> Running post_checkout steps');
-      const postCheckoutSucceeded = await executeSteps(context, repo, 'post_checkout');
-      if (!postCheckoutSucceeded) {
+      const postCheckoutStepsResults = await executeSteps(context, repo, 'post_checkout');
+      if (!postCheckoutStepsResults.succeeded) {
         discardedRepos.push(repo);
         removeRepoDirectories(adapter, repo);
-        logger.error('> Error running post_checkout steps; skipping repo');
+        logger.spinner('Error running post_checkout steps; skipping repo').fail();
       } else {
-        logger.info('> Completed all post_checkout steps successfully');
+        logger.spinner('Completed all post_checkout steps successfully').succeed();
         checkedOutRepos.push(repo);
       }
     }
