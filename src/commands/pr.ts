@@ -19,16 +19,23 @@ export default async (context: IMigrationContext) => {
     const stepResults = await executeSteps(context, repo, 'pr_message', false);
     if (!stepResults.succeeded) {
       spinner.fail('Failed to generate PR message');
-    } else {
-      spinner.succeed('Generated PR message');
-      const message = generatePrMessage(stepResults);
-      logger.info('=========');
-      if (message) {
-        logger.info(message);
-      } else {
-        logger.warn('[No message contents]');
-      }
-      logger.info('=========');
+      return;
+    }
+
+    const message = generatePrMessage(stepResults);
+    if (!message) {
+      spinner.warn('Generated PR message was empty');
+      return;
+    }
+    spinner.succeed('Generated PR message');
+
+    const prSpinner = logger.spinner('Creating pull request');
+    try {
+      await context.adapter.prRepo(repo, message);
+      prSpinner.succeed('Pull request created');
+    } catch (e) {
+      logger.error(e);
+      prSpinner.fail('Failed to create pull request');
     }
   });
 };

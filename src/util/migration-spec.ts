@@ -20,7 +20,8 @@ export interface IMigrationHooks {
 export type MigrationPhase = [keyof IMigrationHooks];
 
 export interface IMigrationSpec {
-  name: string;
+  id: string;
+  title: string;
   adapter: string;
   search_query: string;
   hooks: IMigrationHooks;

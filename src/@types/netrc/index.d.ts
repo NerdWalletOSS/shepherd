@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 interface IAuthData {
   login: string;
   password: string;

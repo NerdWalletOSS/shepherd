@@ -12,12 +12,14 @@ import BaseAdapter, { IRepo } from './base';
 
 class GithubAdapter extends BaseAdapter {
   private octokit: Octokit;
+  private branchName: string;
   constructor(migrationContext: IMigrationContext) {
     super(migrationContext);
 
-    this.octokit = new Octokit();
+    this.branchName = migrationContext.migration.spec.id;
 
     // Authenticate for future GitHub requests
+    this.octokit = new Octokit();
     const netrcAuth = netrc();
     this.octokit.authenticate({
       type: 'basic',
@@ -59,12 +61,21 @@ class GithubAdapter extends BaseAdapter {
     } else {
       await simpleGit().clone(repoPath, localPath);
     }
+
+    // We'll immediately create and switch to a new branch
+    try {
+      await simpleGit(localPath).checkoutLocalBranch(this.branchName);
+    } catch (e) {
+      // This branch probably already exists; we'll just switch to it
+      // to make sure we're on the right branch for the commit phase
+      await simpleGit(localPath).checkout(this.branchName);
+    }
   }
 
   public async commitRepo(repo: IRepo): Promise<void> {
     const { migration: { spec } } = this.migrationContext;
     const localPath = await this.getRepoDir(repo);
-    await simpleGit(localPath).commit(`Shepherd: ${spec.name}`, './*');
+    await simpleGit(localPath).commit(`Shepherd: ${spec.title}`, './*');
   }
 
   public async resetRepo(repo: IRepo): Promise<void> {
@@ -76,6 +87,24 @@ class GithubAdapter extends BaseAdapter {
   public async pushRepo(repo: IRepo): Promise<void> {
     const localPath = await this.getRepoDir(repo);
     await simpleGit(localPath).push('origin', 'HEAD', { '-f': null, '-d': null });
+  }
+
+  public async prRepo(repo: IRepo, message: string): Promise<void> {
+    const { migration: { spec } } = this.migrationContext;
+    const { owner, name } = repo;
+    // We need to figure out the "default" branch to create a pull request
+    const githubReop = await this.octokit.repos.get({
+      owner,
+      repo: name,
+    });
+    await this.octokit.pullRequests.create({
+      owner,
+      repo: name,
+      head: this.branchName,
+      base: githubReop.data.default_branch,
+      title: spec.title,
+      body: message,
+    });
   }
 
   public async getRepoDir(repo: IRepo): Promise<string> {

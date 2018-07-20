@@ -1,5 +1,7 @@
+/* tslint:disable */
+
 declare module 'child-process-promise' {
-  import { ChildProcess, SpawnOptions, ExecOptions } from "child_process";
+  import { ChildProcess, ExecOptions, SpawnOptions } from 'child_process';
 
   export interface ChildProcessResult {
     childProcess: ChildProcess;
@@ -13,11 +15,11 @@ declare module 'child-process-promise' {
   }
 
   export class ChildProcessError extends Error {
-    name: string;
-    code: number;
-    childProcess: ChildProcess;
-    stdout?: string;
-    stderr?: string;
+    public name: string;
+    public code: number;
+    public childProcess: ChildProcess;
+    public stdout?: string;
+    public stderr?: string;
   }
 
   export function exec(command: string, options: ExecOptions): ChildProcessPromise;
