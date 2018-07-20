@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import ora from 'ora';
+import { format } from 'util';
 
 export interface ISpinner {
   start(): void;
@@ -101,7 +102,7 @@ export default class Logger implements ILoggerApi {
       this.oraInstance.stop();
     }
 
-    output.write(color(message + '\n'));
+    output.write(color(format(message) + '\n'));
 
     if (this.spinnerActive) {
       // Resume the spinner!

@@ -16,6 +16,7 @@ import { loadRepoList } from './util/persisted-data';
 import apply from './commands/apply';
 import checkout from './commands/checkout';
 import commit from './commands/commit';
+import list from './commands/list';
 import prPreview from './commands/pr-preview';
 import push from './commands/push';
 import reset from './commands/reset';
@@ -41,7 +42,7 @@ interface ICliOptions {
 const handleCommand = (handler: CommandHandler) => async (migration: string, options: ICliOptions) => {
   try {
     const spec = loadSpec(migration);
-    const migrationWorkingDirectory = path.join(prefs.workingDirectory, spec.name);
+    const migrationWorkingDirectory = path.join(prefs.workingDirectory, spec.id);
     await fs.ensureDir(migrationWorkingDirectory);
 
     // We can't use type-checking on this context just yet since we have to dynamically
@@ -74,20 +75,23 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
   }
 };
 
-const addCommand = (name: string, description: string, handler: CommandHandler) => {
-  program
-    .command(`${name} <migration>`)
-    .description(description)
-    .option('--repos <repos>', 'Comma-separated list of repos to operate on', (val) => val.split(','))
-    .action(handleCommand(handler));
+const addCommand = (name: string, description: string, repos: boolean, handler: CommandHandler) => {
+  const subprogram = program.command(`${name} <migration>`).description(description);
+  if (repos) {
+    subprogram.option('--repos <repos>', 'Comma-separated list of repos to operate on', (val) => val.split(','));
+  }
+  subprogram.action(handleCommand(handler));
 };
 
-addCommand('checkout', 'Check out any repositories that are candidates for a given migration', checkout);
-addCommand('apply', 'Apply a migration to all checked out repositories', apply);
-addCommand('commit', 'Commit all changes for the specified migration', commit);
-addCommand('reset', 'Reset all changes for the specified migration', reset);
-addCommand('push', 'Push all changes for the specified migration', push);
-addCommand('pr-preview', 'View a preview of the PR messages for the specified migration', prPreview);
+addCommand('checkout', 'Check out any repositories that are candidates for a given migration', true, checkout);
+addCommand('apply', 'Apply a migration to all checked out repositories', true, apply);
+addCommand('commit', 'Commit all changes for the specified migration', true, commit);
+addCommand('reset', 'Reset all changes for the specified migration', true, reset);
+addCommand('push', 'Push all changes for the specified migration', true, push);
+addCommand('pr-preview', 'View a preview of the PR messages for the specified migration', true, prPreview);
+
+// These commands don't take --repos arguments
+addCommand('list', 'List all cehcked out repositories for the given migartion', false, list);
 
 program.on('command:*', () => {
   logger.error(`Error: no such command "${program.args[0]}"`);
