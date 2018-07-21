@@ -4,11 +4,5 @@ adapter: github
 search_query: org:NerdWallet path:/ filename:.eslintrc
 hooks:
   should_migrate: ls .eslintrc # Check that this file actually exists in the repo
-  post_checkout:
-  - echo "Hello world!"
-  - sleep 10
-  apply:
-  - mv .eslintrc .eslintrc.json
-  - echo "Hello, there!"
-  - echo "rip rip rip\nnice!" 1>&2
-  pr_message: $MIGRATION_DIR/pr.sh
+  apply: mv .eslintrc .eslintrc.json
+  pr_message: $SHEPHERD_MIGRATION_DIR/pr.sh

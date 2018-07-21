@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import logSymbols from 'log-symbols';
 import ora from 'ora';
 import { format } from 'util';
 
@@ -14,11 +15,20 @@ export interface ISpinner {
 }
 
 export interface ILoggerApi {
+  // Basic logging
   debug(message: string): void;
   info(message: string): void;
   warn(message: string): void;
   error(message: string): void;
   fatal(message: string): void;
+
+  // Logging with fancy icons
+  succeedIcon(message: string): void;
+  failIcon(message: string): void;
+  warnIcon(message: string): void;
+  infoIcon(message: string): void;
+
+  // Support for progress spinners
   spinner(message: string): ISpinner;
 }
 
@@ -44,6 +54,22 @@ export default class Logger implements ILoggerApi {
 
   public fatal = (message: string): void => {
     this.log('fatal', message);
+  }
+
+  public succeedIcon = (message: string): void => {
+    this.info(`${logSymbols.success} ${message}`);
+  }
+
+  public failIcon = (message: string): void => {
+    this.error(`${logSymbols.success} ${message}`);
+  }
+
+  public warnIcon = (message: string): void => {
+    this.warn(`${logSymbols.warning} ${message}`);
+  }
+
+  public infoIcon = (message: string): void => {
+    this.info(`${logSymbols.info} ${message}`);
   }
 
   public spinner = (message: string): ISpinner => {

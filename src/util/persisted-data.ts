@@ -35,6 +35,8 @@ const updateRepoList = (migrationContext: IMigrationContext, checkedOutRepos: IR
       filteredRepos.push(repo);
     }
   }
+
+  fs.writeFileSync(getRepoListFile(migrationContext), yaml.safeDump(filteredRepos));
   return filteredRepos;
 };
 

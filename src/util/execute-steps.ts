@@ -21,7 +21,7 @@ export default async (
   context: IMigrationContext,
   repo: IRepo,
   phase: string,
-  showOutput?: boolean,
+  showOutput: boolean = true,
 ): Promise<IStepsResults> => {
   const {
     migration: {
@@ -42,7 +42,7 @@ export default async (
   for (const step of steps) {
     logger.info(`\$ ${step}`);
     try {
-      const { promise, childProcess } = await execInRepo(context, repo, step);
+      const { promise, childProcess } = execInRepo(context, repo, step);
       if (showOutput) {
         childProcess.stdout.on('data', (out) => logger.info(out.toString().trim()));
         childProcess.stderr.on('data', (out) => logger.info(out.toString().trim()));

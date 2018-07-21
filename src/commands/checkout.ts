@@ -7,8 +7,8 @@ import forEachRepo from '../util/for-each-repo';
 import { updateRepoList } from '../util/persisted-data';
 
 const removeRepoDirectories = async (adapter: BaseAdapter, repo: IRepo) => {
-  fs.removeSync(await adapter.getRepoDir(repo));
-  fs.removeSync(await adapter.getDataDir(repo));
+  fs.removeSync(adapter.getRepoDir(repo));
+  fs.removeSync(adapter.getDataDir(repo));
 };
 
 export default async (context: IMigrationContext) => {
@@ -33,7 +33,7 @@ export default async (context: IMigrationContext) => {
   const checkedOutRepos: IRepo[] = [];
   const discardedRepos: IRepo[] = [];
 
-  forEachRepo(context, async (repo) => {
+  await forEachRepo(context, async (repo) => {
     const spinner = logger.spinner('Checking out repo');
     try {
       await adapter.checkoutRepo(repo);
@@ -49,18 +49,18 @@ export default async (context: IMigrationContext) => {
     if (!stepsResults.succeeded) {
       discardedRepos.push(repo);
       removeRepoDirectories(adapter, repo);
-      logger.spinner('Error running should_migrate steps; skipping repo').fail();
+      logger.failIcon('Error running should_migrate steps; skipping repo');
     } else {
-      logger.spinner('Completed all should_migrate steps successfully').succeed();
+      logger.succeedIcon('Completed all should_migrate steps successfully');
 
       logger.info('> Running post_checkout steps');
       const postCheckoutStepsResults = await executeSteps(context, repo, 'post_checkout');
       if (!postCheckoutStepsResults.succeeded) {
         discardedRepos.push(repo);
         removeRepoDirectories(adapter, repo);
-        logger.spinner('Error running post_checkout steps; skipping repo').fail();
+        logger.failIcon('Error running post_checkout steps; skipping repo');
       } else {
-        logger.spinner('Completed all post_checkout steps successfully').succeed();
+        logger.succeedIcon('Completed all post_checkout steps successfully');
         checkedOutRepos.push(repo);
       }
     }

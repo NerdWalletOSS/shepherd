@@ -1,9 +1,10 @@
 /* eslint-env jest */
 import fs from 'jest-plugin-fs';
+import yaml from 'js-yaml';
 import { isEqual } from 'lodash';
 import path from 'path';
-import { IRepo } from '../../adapters/base';
 
+import { IRepo } from '../../adapters/base';
 import { IMigrationContext } from '../../migration-context';
 import { loadRepoList, updateRepoList } from '../persisted-data';
 
@@ -38,6 +39,7 @@ describe('persisted-data', () => {
     }];
     const repos = updateRepoList(makeContext(), [], discardedRepos);
     expect(repos).toEqual([]);
+    expect(yaml.safeLoad(fs.files()['/migration/repos.yml'])).toEqual([]);
   });
 
   it('adds repo that was checked out', async () => {
@@ -46,13 +48,15 @@ describe('persisted-data', () => {
       owner: 'NerdWallet',
     }];
     const repos = updateRepoList(makeContext(), checkedOutRepos, []);
-    expect(repos).toEqual([{
+    const expected = [{
       name: 'test',
       owner: 'NerdWallet',
     }, {
       name: 'test2',
       owner: 'NerdWallet',
-    }]);
+    }];
+    expect(repos).toEqual(expected);
+    expect(yaml.safeLoad(fs.files()['/migration/repos.yml'])).toEqual(expected);
   });
 
   it('removes and adds repos at the same time', async () => {
@@ -65,6 +69,11 @@ describe('persisted-data', () => {
       owner: 'NerdWallet',
     }];
     const repos = updateRepoList(makeContext(), checkedOutRepos, discardedRepos);
-    expect(repos).toEqual([{ owner: 'NerdWallet', name: 'test2' }]);
+    const expected = [{
+      owner: 'NerdWallet',
+      name: 'test2',
+    }];
+    expect(repos).toEqual(expected);
+    expect(yaml.safeLoad(fs.files()['/migration/repos.yml'])).toEqual(expected);
   });
 });

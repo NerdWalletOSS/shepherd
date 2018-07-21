@@ -8,17 +8,17 @@ interface IExecRepoResult {
   childProcess: ChildProcess;
 }
 
-export default async (context: IMigrationContext, repo: IRepo, command: string): Promise<IExecRepoResult> => {
-  const repoDir = await context.adapter.getRepoDir(repo);
-  const dataDir = await context.adapter.getDataDir(repo);
+export default (context: IMigrationContext, repo: IRepo, command: string): IExecRepoResult => {
+  const repoDir = context.adapter.getRepoDir(repo);
+  const dataDir = context.adapter.getDataDir(repo);
   const migrationDir = context.migration.migrationDirectory;
   const execOptions = {
     cwd: repoDir,
     env: {
       ...process.env,
-      REPO_DIR: repoDir,
-      DATA_DIR: dataDir,
-      MIGRATION_DIR: migrationDir,
+      SHEPHERD_REPO_DIR: repoDir,
+      SHEPHERD_DATA_DIR: dataDir,
+      SHEPHERD_MIGRATION_DIR: migrationDir,
     },
     shell: true,
     capture: [ 'stdout', 'stderr' ],

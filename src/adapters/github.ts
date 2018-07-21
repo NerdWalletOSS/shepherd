@@ -4,7 +4,7 @@ import fs from 'fs-extra-promise';
 import { isEqual } from 'lodash';
 import netrc from 'netrc';
 import path from 'path';
-import simpleGit from 'simple-git/promise';
+import simpleGit, { SimpleGit } from 'simple-git/promise';
 
 import { IMigrationContext } from '../migration-context';
 import { paginateSearch } from '../util/octokit';
@@ -53,40 +53,38 @@ class GithubAdapter extends BaseAdapter {
 
   public async checkoutRepo(repo: IRepo): Promise<void> {
     const repoPath = `git@github.com:${repo.owner}/${repo.name}.git`;
-    const localPath = await this.getRepoDir(repo);
+    const localPath = this.getRepoDir(repo);
 
-    if (await fs.existsAsync(localPath) && await simpleGit(localPath).checkIsRepo()) {
+    if (await fs.existsAsync(localPath) && await this.git(repo).checkIsRepo()) {
       // Repo already exists; just fetch
-      await simpleGit(localPath).fetch('origin');
+      await this.git(repo).fetch('origin');
     } else {
       await simpleGit().clone(repoPath, localPath);
     }
 
     // We'll immediately create and switch to a new branch
     try {
-      await simpleGit(localPath).checkoutLocalBranch(this.branchName);
+      await this.git(repo).checkoutLocalBranch(this.branchName);
     } catch (e) {
       // This branch probably already exists; we'll just switch to it
       // to make sure we're on the right branch for the commit phase
-      await simpleGit(localPath).checkout(this.branchName);
+      await this.git(repo).checkout(this.branchName);
     }
   }
 
   public async commitRepo(repo: IRepo): Promise<void> {
     const { migration: { spec } } = this.migrationContext;
-    const localPath = await this.getRepoDir(repo);
-    await simpleGit(localPath).commit(`Shepherd: ${spec.title}`, './*');
+    await this.git(repo).add('.');
+    await this.git(repo).commit(`Shepherd: ${spec.title}`, './*');
   }
 
   public async resetRepo(repo: IRepo): Promise<void> {
-    const localPath = await this.getRepoDir(repo);
-    await simpleGit(localPath).reset('hard');
-    await simpleGit(localPath).clean('f', ['-d']);
+    await this.git(repo).reset('hard');
+    await this.git(repo).clean('f', ['-d']);
   }
 
   public async pushRepo(repo: IRepo): Promise<void> {
-    const localPath = await this.getRepoDir(repo);
-    await simpleGit(localPath).push('origin', 'HEAD', { '-f': null, '-d': null });
+    await this.git(repo).push('origin', 'HEAD', { '-f': null });
   }
 
   public async prRepo(repo: IRepo, message: string): Promise<void> {
@@ -107,12 +105,18 @@ class GithubAdapter extends BaseAdapter {
     });
   }
 
-  public async getRepoDir(repo: IRepo): Promise<string> {
+  public getRepoDir(repo: IRepo): string {
     return path.join(this.migrationContext.migration.workingDirectory, 'repos', repo.owner, repo.name);
   }
 
-  public async getDataDir(repo: IRepo): Promise<string> {
+  public getDataDir(repo: IRepo): string {
     return path.join(this.migrationContext.migration.workingDirectory, 'data', repo.owner, repo.name);
+  }
+
+  private git(repo: IRepo): SimpleGit {
+    const git = simpleGit(this.getRepoDir(repo));
+    git.silent(true);
+    return git;
   }
 }
 
