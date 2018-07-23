@@ -1,7 +1,9 @@
-import { IRepo } from '../adapters/base';
-import { IMigrationContext } from '../migration-context';
-import executeSteps, { IStepsResults } from './execute-steps';
+import { IStepsResults } from './execute-steps';
 
 export default (results: IStepsResults): string => {
-  return results.stepResults.map((r) => r.stdout).filter((r) => r).join('').trim();
+  let message = results.stepResults.map((r) => r.stdout).filter((r) => r).join('').trim();
+  // We'll add a friendly footer too
+  message += '\n\n---\n\n';
+  message += '*This change was executed automatically with [Shepherd](https://github.com/NerdWallet/shepherd).* 💚🤖';
+  return message;
 };

@@ -61,7 +61,7 @@ export default class Logger implements ILoggerApi {
   }
 
   public failIcon = (message: string): void => {
-    this.error(`${logSymbols.success} ${message}`);
+    this.error(`${logSymbols.error} ${message}`);
   }
 
   public warnIcon = (message: string): void => {

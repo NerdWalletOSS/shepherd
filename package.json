@@ -42,6 +42,7 @@
     "netrc": "^0.1.4",
     "ora": "^2.1.0",
     "preferences": "^1.0.2",
+    "semver": "^5.5.0",
     "simple-git": "^1.96.0"
   },
   "devDependencies": {
