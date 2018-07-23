@@ -1,7 +1,7 @@
 id: 2018.07.20-react-16
 title: Update all packages to be React 16 compatible
 adapter: github
-search_query: org:NerdWallet path:/ filename:package.json
+search_query: org:NerdWallet path:/ filename:package.json react
 hooks:
   should_migrate: node $SHEPHERD_MIGRATION_DIR/should_migrate.js
   apply: node $SHEPHERD_MIGRATION_DIR/apply.js

@@ -23,7 +23,7 @@ export default async (context: IMigrationContext) => {
     logger.info(`Using ${selectedRepos.length} selected repos`);
     repos = selectedRepos;
   } else {
-    const spinner = logger.spinner('Loading candidate repos from GitHub');
+    const spinner = logger.spinner('Loading candidate repos');
     repos = await adapter.getCandidateRepos();
     spinner.succeed(`Loaded ${repos.length} repos`);
   }
@@ -65,6 +65,9 @@ export default async (context: IMigrationContext) => {
       }
     }
   });
+
+  logger.info('');
+  logger.succeedIcon(`Checked out ${checkedOutRepos.length} out of ${repos.length} repos`);
 
   // We'll persist this list of repos for use in future steps
   updateRepoList(context, checkedOutRepos, discardedRepos);
