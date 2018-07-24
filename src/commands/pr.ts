@@ -1,7 +1,7 @@
 import { IMigrationContext } from '../migration-context';
 import executeSteps from '../util/execute-steps';
 import forEachRepo from '../util/for-each-repo';
-import generatePrMessage from '../util/generate-pr-message';
+import { generatePrMessageWithFooter } from '../util/generate-pr-message';
 
 export default async (context: IMigrationContext) => {
   const {
@@ -22,7 +22,7 @@ export default async (context: IMigrationContext) => {
       return;
     }
 
-    const message = generatePrMessage(stepResults);
+    const message = generatePrMessageWithFooter(stepResults);
     if (!message) {
       spinner.warn('Generated PR message was empty');
       return;
