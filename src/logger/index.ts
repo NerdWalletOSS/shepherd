@@ -14,7 +14,7 @@ export interface ISpinner {
   render(): void;
 }
 
-export interface ILoggerApi {
+export interface ILogger {
   // Basic logging
   debug(message: string): void;
   info(message: string): void;
@@ -32,7 +32,7 @@ export interface ILoggerApi {
   spinner(message: string): ISpinner;
 }
 
-export default class Logger implements ILoggerApi {
+export default class ConsoleLogger implements ILogger {
   private oraInstance: any = null;
   private spinnerActive = false;
 

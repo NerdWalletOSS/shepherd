@@ -1,5 +1,5 @@
 import IRepoAdapter, { IRepo } from './adapters/base';
-import { ILoggerApi } from './logger';
+import { ILogger } from './logger';
 import { IMigrationSpec } from './util/migration-spec';
 
 export interface IShepherdInfo {
@@ -18,5 +18,5 @@ export interface IMigrationContext {
   shepherd: IShepherdInfo;
   migration: IMigrationInfo;
   adapter: IRepoAdapter;
-  logger: ILoggerApi;
+  logger: ILogger;
 }

@@ -22,7 +22,7 @@ import prPreview from './commands/pr-preview';
 import push from './commands/push';
 import reset from './commands/reset';
 
-import Logger from './logger';
+import ConsoleLogger from './logger';
 
 const shepherdDir = path.join(homedir(), '.shepherd');
 const prefs = new Preferences('com.nerdwallet.shepherd', {
@@ -32,7 +32,7 @@ const prefs = new Preferences('com.nerdwallet.shepherd', {
   file: path.join(shepherdDir, 'prefs.yaml'),
   format: 'yaml',
 });
-const logger = new Logger();
+const logger = new ConsoleLogger();
 
 type CommandHandler = (context: IMigrationContext, options: any) => Promise<void>;
 
