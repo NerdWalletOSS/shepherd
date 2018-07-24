@@ -5,7 +5,7 @@ import forEachRepo from '../util/for-each-repo';
 export default async (context: IMigrationContext): Promise<void> => {
   const { adapter, logger } = context;
 
-  forEachRepo(context, async (repo) => {
+  await forEachRepo(context, async (repo) => {
     const resetSpinner = logger.spinner('Resetting repo before apply');
     try {
       await adapter.resetRepo(repo);

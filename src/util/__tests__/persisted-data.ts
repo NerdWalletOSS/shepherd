@@ -37,7 +37,7 @@ describe('persisted-data', () => {
       owner: 'NerdWallet',
       name: 'test',
     }];
-    const repos = updateRepoList(makeContext(), [], discardedRepos);
+    const repos = await updateRepoList(makeContext(), [], discardedRepos);
     expect(repos).toEqual([]);
     expect(yaml.safeLoad(fs.files()['/migration/repos.yml'])).toEqual([]);
   });
@@ -47,7 +47,7 @@ describe('persisted-data', () => {
       name: 'test2',
       owner: 'NerdWallet',
     }];
-    const repos = updateRepoList(makeContext(), checkedOutRepos, []);
+    const repos = await updateRepoList(makeContext(), checkedOutRepos, []);
     const expected = [{
       name: 'test',
       owner: 'NerdWallet',
@@ -68,7 +68,7 @@ describe('persisted-data', () => {
       name: 'test',
       owner: 'NerdWallet',
     }];
-    const repos = updateRepoList(makeContext(), checkedOutRepos, discardedRepos);
+    const repos = await updateRepoList(makeContext(), checkedOutRepos, discardedRepos);
     const expected = [{
       owner: 'NerdWallet',
       name: 'test2',

@@ -14,7 +14,7 @@ export default async (context: IMigrationContext) => {
     return;
   }
 
-  forEachRepo(context, async (repo) => {
+  await forEachRepo(context, async (repo) => {
     const spinner = logger.spinner('Generating PR message');
     const stepResults = await executeSteps(context, repo, 'pr_message', false);
     if (!stepResults.succeeded) {

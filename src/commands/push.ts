@@ -4,7 +4,7 @@ import forEachRepo from '../util/for-each-repo';
 export default async (context: IMigrationContext) => {
   const { adapter, logger } = context;
 
-  forEachRepo(context, async (repo) => {
+  await forEachRepo(context, async (repo) => {
     const spinner = logger.spinner('Pushing changes');
     try {
       await adapter.pushRepo(repo);

@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs from 'fs-extra-promise';
 
 import IRepoAdapter, { IRepo } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
@@ -7,8 +7,8 @@ import forEachRepo from '../util/for-each-repo';
 import { updateRepoList } from '../util/persisted-data';
 
 const removeRepoDirectories = async (adapter: IRepoAdapter, repo: IRepo) => {
-  fs.removeSync(adapter.getRepoDir(repo));
-  fs.removeSync(adapter.getDataDir(repo));
+  await fs.removeAsync(adapter.getRepoDir(repo));
+  await fs.removeAsync(adapter.getDataDir(repo));
 };
 
 export default async (context: IMigrationContext) => {
@@ -48,7 +48,7 @@ export default async (context: IMigrationContext) => {
     const stepsResults = await executeSteps(context, repo, 'should_migrate');
     if (!stepsResults.succeeded) {
       discardedRepos.push(repo);
-      removeRepoDirectories(adapter, repo);
+      await removeRepoDirectories(adapter, repo);
       logger.failIcon('Error running should_migrate steps; skipping repo');
     } else {
       logger.succeedIcon('Completed all should_migrate steps successfully');
@@ -57,7 +57,7 @@ export default async (context: IMigrationContext) => {
       const postCheckoutStepsResults = await executeSteps(context, repo, 'post_checkout');
       if (!postCheckoutStepsResults.succeeded) {
         discardedRepos.push(repo);
-        removeRepoDirectories(adapter, repo);
+        await removeRepoDirectories(adapter, repo);
         logger.failIcon('Error running post_checkout steps; skipping repo');
       } else {
         logger.succeedIcon('Completed all post_checkout steps successfully');
@@ -70,5 +70,5 @@ export default async (context: IMigrationContext) => {
   logger.succeedIcon(`Checked out ${checkedOutRepos.length} out of ${repos.length} repos`);
 
   // We'll persist this list of repos for use in future steps
-  updateRepoList(context, checkedOutRepos, discardedRepos);
+  await updateRepoList(context, checkedOutRepos, discardedRepos);
 };

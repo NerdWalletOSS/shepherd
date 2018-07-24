@@ -5,7 +5,7 @@
   "scripts": {
     "build": "babel src --out-dir lib --extensions \".js,.ts\"",
     "build:watch": "npm run build -- --watch --verbose",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "lint": "tslint -p . -c tslint.json 'src/**/*.ts'",
     "fix-lint": "npm run lint -- --fix",
     "test": "jest src/"
   },

@@ -7,7 +7,7 @@ export default async (context: IMigrationContext) => {
     logger,
   } = context;
 
-  forEachRepo(context, async (repo) => {
+  await forEachRepo(context, async (repo) => {
     const spinner = logger.spinner('Committing changes');
     try {
       await adapter.commitRepo(repo);

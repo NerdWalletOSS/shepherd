@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs-extra-promise';
 import yaml from 'js-yaml';
 import { differenceWith, unionWith } from 'lodash';
 import path from 'path';
@@ -18,22 +18,26 @@ const loadRepoList = (migrationContext: IMigrationContext): IRepo[] | null => {
   return yaml.safeLoad(fs.readFileSync(repoListFile, 'utf8'));
 };
 
-const updateRepoList = (migrationContext: IMigrationContext, checkedOutRepos: IRepo[], discardedRepos: IRepo[]) => {
+const updateRepoList = async (
+  migrationContext: IMigrationContext,
+  checkedOutRepos: IRepo[],
+  discardedRepos: IRepo[],
+): Promise<IRepo[]> => {
   // We need to keep the list of repos in sync with what's actually on disk
   // To do this, we'll load the existing list, delete any repos that were not
   // kept during the checkout process (perhaps they failed a new should_migrate check),
   // and add any repos that were newly checked out, removing duplicates as appropriate
-  const existingRepos = loadRepoList(migrationContext);
+  const existingRepos = await loadRepoList(migrationContext);
   if (!existingRepos) {
     // No repos stored yet, we can update this list directly
-    fs.writeFileSync(getRepoListFile(migrationContext), yaml.safeDump(checkedOutRepos));
+    await fs.writeFileAsync(getRepoListFile(migrationContext), yaml.safeDump(checkedOutRepos));
     return checkedOutRepos;
   }
 
   const { reposEqual } = migrationContext.adapter;
   const repos = unionWith(differenceWith(existingRepos, discardedRepos, reposEqual), checkedOutRepos, reposEqual);
 
-  fs.writeFileSync(getRepoListFile(migrationContext), yaml.safeDump(repos));
+  await fs.writeFileAsync(getRepoListFile(migrationContext), yaml.safeDump(repos));
   return repos;
 };
 
