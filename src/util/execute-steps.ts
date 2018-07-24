@@ -51,7 +51,7 @@ export default async (
       logger.info(chalk.green(`Step "${step}" exited with 0`));
       results.stepResults.push({
         step,
-        succeeded: false,
+        succeeded: true,
         stdout: childProcessResult.stdout,
         stderr: childProcessResult.stderr,
       });
