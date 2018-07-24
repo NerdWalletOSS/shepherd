@@ -4,34 +4,28 @@ export interface IRepo {
   [key: string]: any;
 }
 
-abstract class BaseAdapter {
-  protected migrationContext: IMigrationContext;
+interface IRepoAdapter {
+  getCandidateRepos(): Promise<IRepo[]>;
 
-  constructor(migrationContext: IMigrationContext) {
-    this.migrationContext = migrationContext;
-  }
+  parseSelectedRepo(repo: string): IRepo;
 
-  public abstract async getCandidateRepos(): Promise<IRepo[]>;
+  reposEqual(repo1: IRepo, repo2: IRepo): boolean;
 
-  public abstract parseSelectedRepo(repo: string): IRepo;
+  formatRepo(repo: IRepo): string;
 
-  public abstract reposEqual(repo1: IRepo, repo2: IRepo): boolean;
+  checkoutRepo(repo: IRepo): Promise<void>;
 
-  public abstract formatRepo(repo: IRepo): string;
+  commitRepo(repo: IRepo): Promise<void>;
 
-  public abstract async checkoutRepo(repo: IRepo): Promise<void>;
+  resetRepo(repo: IRepo): Promise<void>;
 
-  public abstract async commitRepo(repo: IRepo): Promise<void>;
+  pushRepo(repo: IRepo): Promise<void>;
 
-  public abstract async resetRepo(repo: IRepo): Promise<void>;
+  prRepo(repo: IRepo, message: string): Promise<void>;
 
-  public abstract async pushRepo(repo: IRepo): Promise<void>;
+  getRepoDir(repo: IRepo): string;
 
-  public abstract async prRepo(repo: IRepo, message: string): Promise<void>;
-
-  public abstract getRepoDir(repo: IRepo): string;
-
-  public abstract getDataDir(repo: IRepo): string;
+  getDataDir(repo: IRepo): string;
 }
 
-export default BaseAdapter;
+export default IRepoAdapter;

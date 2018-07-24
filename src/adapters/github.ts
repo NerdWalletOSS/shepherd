@@ -8,14 +8,14 @@ import simpleGit, { SimpleGit } from 'simple-git/promise';
 
 import { IMigrationContext } from '../migration-context';
 import { paginateSearch } from '../util/octokit';
-import BaseAdapter, { IRepo } from './base';
+import IRepoAdapter, { IRepo } from './base';
 
-class GithubAdapter extends BaseAdapter {
+class GithubAdapter implements IRepoAdapter {
+  private migrationContext: IMigrationContext;
   private octokit: Octokit;
   private branchName: string;
   constructor(migrationContext: IMigrationContext) {
-    super(migrationContext);
-
+    this.migrationContext = migrationContext;
     this.branchName = migrationContext.migration.spec.id;
 
     // Authenticate for future GitHub requests

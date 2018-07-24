@@ -1,8 +1,8 @@
 import { IMigrationContext } from '../migration-context';
-import BaseAdapter from './base';
+import IRepoAdapter from './base';
 import GithubAdapter from './github';
 
-export function adapterForName(name: string, context: IMigrationContext): BaseAdapter {
+export function adapterForName(name: string, context: IMigrationContext): IRepoAdapter {
   switch (name) {
     case 'github':
       return new GithubAdapter(context);

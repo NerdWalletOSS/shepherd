@@ -1,12 +1,12 @@
 import fs from 'fs-extra';
 
-import BaseAdapter, { IRepo } from '../adapters/base';
+import IRepoAdapter, { IRepo } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
 import executeSteps from '../util/execute-steps';
 import forEachRepo from '../util/for-each-repo';
 import { updateRepoList } from '../util/persisted-data';
 
-const removeRepoDirectories = async (adapter: BaseAdapter, repo: IRepo) => {
+const removeRepoDirectories = async (adapter: IRepoAdapter, repo: IRepo) => {
   fs.removeSync(adapter.getRepoDir(repo));
   fs.removeSync(adapter.getDataDir(repo));
 };
