@@ -100,7 +100,7 @@ class GithubAdapter implements IRepoAdapter {
     const { migration: { spec } } = this.migrationContext;
     const { owner, name } = repo;
     // We need to figure out the "default" branch to create a pull request
-    const githubReop = await this.octokit.repos.get({
+    const githubRepo = await this.octokit.repos.get({
       owner,
       repo: name,
     });
@@ -108,7 +108,7 @@ class GithubAdapter implements IRepoAdapter {
       owner,
       repo: name,
       head: this.branchName,
-      base: githubReop.data.default_branch,
+      base: githubRepo.data.default_branch,
       title: spec.title,
       body: message,
     });
