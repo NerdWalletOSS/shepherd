@@ -1,5 +1,6 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
+import { differenceWith, unionWith } from 'lodash';
 import path from 'path';
 
 import { IRepo } from '../adapters/base';
@@ -28,16 +29,12 @@ const updateRepoList = (migrationContext: IMigrationContext, checkedOutRepos: IR
     fs.writeFileSync(getRepoListFile(migrationContext), yaml.safeDump(checkedOutRepos));
     return checkedOutRepos;
   }
-  const { adapter } = migrationContext;
-  const filteredRepos = existingRepos.filter((r) => !discardedRepos.find((r2) => adapter.reposEqual(r, r2)));
-  for (const repo of checkedOutRepos) {
-    if (!filteredRepos.find((r) => adapter.reposEqual(repo, r))) {
-      filteredRepos.push(repo);
-    }
-  }
 
-  fs.writeFileSync(getRepoListFile(migrationContext), yaml.safeDump(filteredRepos));
-  return filteredRepos;
+  const { reposEqual } = migrationContext.adapter;
+  const repos = unionWith(differenceWith(existingRepos, discardedRepos, reposEqual), checkedOutRepos, reposEqual);
+
+  fs.writeFileSync(getRepoListFile(migrationContext), yaml.safeDump(repos));
+  return repos;
 };
 
 export {
