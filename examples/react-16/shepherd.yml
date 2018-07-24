@@ -4,5 +4,6 @@ adapter: github
 search_query: org:NerdWallet path:/ filename:package.json react
 hooks:
   should_migrate: node $SHEPHERD_MIGRATION_DIR/should_migrate.js
-  apply: node $SHEPHERD_MIGRATION_DIR/apply.js
+  apply: node $SHEPHERD_MIGRATION_DIR/apply.js && npm i prop-types && npm uninstall react-addons-test-utils &&
+         git grep -l react-addons-test-utils | xargs sed -i '' 's/react-addons-test-utils/react-dom\/test-utils/g'
   pr_message: npx @nerdwallet/nw-react react@16 --pr
