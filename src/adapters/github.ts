@@ -18,14 +18,23 @@ class GithubAdapter implements IRepoAdapter {
     this.migrationContext = migrationContext;
     this.branchName = migrationContext.migration.spec.id;
 
-    // Authenticate for future GitHub requests
     this.octokit = new Octokit();
-    const netrcAuth = netrc();
-    this.octokit.authenticate({
-      type: 'basic',
-      username: netrcAuth['api.github.com'].login,
-      password: netrcAuth['api.github.com'].password,
-    });
+    // We'll first try to auth with a token, then with .netrc
+    if (process.env.GITHUB_TOKEN) {
+      this.octokit.authenticate({
+        type: 'oauth',
+        token: process.env.GITHUB_TOKEN,
+      });
+    } else {
+      const netrcAuth = netrc();
+      // TODO: we could probably fail gracefully if there's no GITHUB_TOKEN
+      // and also no .netrc credentials
+      this.octokit.authenticate({
+        type: 'basic',
+        username: netrcAuth['api.github.com'].login,
+        password: netrcAuth['api.github.com'].password,
+      });
+    }
   }
 
   public async getCandidateRepos(): Promise<IRepo[]> {
