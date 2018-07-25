@@ -1,0 +1,11 @@
+{
+  "name": "@nerdwallet/shepherd-migration-react-16",
+  "private": true,
+  "description": "A migration for React 16 support",
+  "author": "Fracis John",
+  "license": "MIT",
+  "dependencies": {
+    "@nerdwallet/nw-react": "^2.0.7",
+    "semver": "^5.5.0"
+  }
+}
