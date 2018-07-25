@@ -67,7 +67,7 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
     migrationContext.migration.selectedRepos = selectedRepos;
 
     // The list of repos be null if migration hasn't started yet
-    migrationContext.migration.repos = loadRepoList(migrationContext);
+    migrationContext.migration.repos = await loadRepoList(migrationContext);
 
     await handler(migrationContext, options);
   } catch (e) {

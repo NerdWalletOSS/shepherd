@@ -28,7 +28,7 @@ describe('persisted-data', () => {
   afterEach(() => fs.restore());
 
   it('loads repo list from a file', async () => {
-    const repos = loadRepoList(makeContext());
+    const repos = await loadRepoList(makeContext());
     expect(repos).toEqual([{ owner: 'NerdWallet', name: 'test' }]);
   });
 

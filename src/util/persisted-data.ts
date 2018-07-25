@@ -10,12 +10,12 @@ const getRepoListFile = (migrationContext: IMigrationContext) => {
   return path.join(migrationContext.migration.workingDirectory, 'repos.yml');
 };
 
-const loadRepoList = (migrationContext: IMigrationContext): IRepo[] | null => {
+const loadRepoList = async (migrationContext: IMigrationContext): Promise<IRepo[] | null> => {
   const repoListFile = getRepoListFile(migrationContext);
-  if (!fs.existsSync(repoListFile)) {
+  if (!await fs.existsAsync(repoListFile)) {
     return null;
   }
-  return yaml.safeLoad(fs.readFileSync(repoListFile, 'utf8'));
+  return yaml.safeLoad(await fs.readFileAsync(repoListFile, 'utf8'));
 };
 
 const updateRepoList = async (
