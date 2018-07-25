@@ -1,0 +1,11 @@
+{
+  "name": "@nerdwallet/shepherd-migration-js-libs",
+  "private": true,
+  "description": "A migration for JS libs to indy",
+  "author": "Fracis John",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "semver": "^5.5.0",
+    "sort-package-json": "^1.15.0"
+  }
+}

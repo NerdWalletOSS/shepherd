@@ -1,0 +1,7 @@
+id: 2018.07.25-js-libs-to-indy
+title: Migrate to Indy
+adapter: github
+search_query: org:NerdWallet path:/ filename:publish.sh -filename:Jenkinsfile
+hooks:
+  apply: node $SHEPHERD_MIGRATION_DIR/apply.js
+  pr_message: $SHEPHERD_MIGRATION_DIR/pr.sh
