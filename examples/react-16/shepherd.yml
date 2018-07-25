@@ -3,7 +3,9 @@ title: Update all packages to be React 16 compatible
 adapter: github
 search_query: org:NerdWallet path:/ filename:package.json react
 hooks:
-  should_migrate: node $SHEPHERD_MIGRATION_DIR/should_migrate.js
+  should_migrate:
+    - node $SHEPHERD_MIGRATION_DIR/should_migrate.js
+    - git log -1 --format=%cd | grep 2018 --silent # Only migrate things that have seen commits in 2018
   apply:
     - node $SHEPHERD_MIGRATION_DIR/apply.js
     - npm i prop-types
