@@ -28,6 +28,7 @@ export default async (context: IMigrationContext, handler: RepoHandler) => {
     // Quick sanity check in case we're working from user-selected repos
     const repoDir = adapter.getRepoDir(repo);
     if (!await existsAsync(repoDir)) {
+      // TODO disable this during the checkout phase
       logger.error(`Directory ${repoDir} does not exist`);
     }
     await handler(repo);
