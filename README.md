@@ -46,11 +46,14 @@ Let's go through this line-by-line:
 - `adapter` specifies what version control adapter should be used for performing operations on repos (clone, branch, commit, push, etc.). Currently Shepherd only has a GitHub adapter, but you could create a Bitbucket or GitLab adapter if you don't use GitHub.
 - `search_query` is specific to the GitHub adapter. It uses GitHub's [code search qualifiers] to identify repositories that are candidates for a migration. If a repository contains a file matching the search, it will be considered a candidate for this migration.
 
-The options under `hooks` specify the meat of a migration. They tell Shepherd how to determine if a repo should be migrated, how to actually perform the migration, how to generate a pull request message for each repository, and more. Each hook consists of one or more standard executables that Shepherd will execute in sequence. Let's go through each one.
+The options under `hooks` specify the meat of a migration. They tell Shepherd how to determine if a repo should be migrated, how to actually perform the migration, how to generate a pull request message for each repository, and more. Each hook consists of one or more standard executables that Shepherd will execute in sequence.
 
 - `should_migrate` is a sequence of commands to execute to determine if a repo actually requires a migration. If any of them exit with a non-zero value, that signifies to Shepherd that the repo should not be migrated. For instance, the second step in the above `should_migrate` hook would fail if the repo was last modified in 2017, since `grep` would exit with a non-zero value.
+- `post_checkout` is a sequence of commands to be executed once a repo has been checked out and passed any `should_migrate` checks. This is a convenient place to do anything that will only need to be done once per repo, such as installing any dependencies.
 - `apply` is a sequence of commands that will actually execute the migration. This example is very simple: we're just using `mv` to rename a file. However, this hook could contain arbitrarily many, potentially complex commands, depending on the requirements of your particualr migration.
 - `pr_message` is a sequence of commands that will be used to generate a pull request message for a repository. In the simplest case, this can just be a static message, but you could also programmatically generate a message that calls out particular things that might need human attention. Anything written to `stdout` will be used for the message. If multiple commands are specified, the output from each one will be concatenated together.
+
+`should_migrate` and `post_checkout` are optional; `apply` and `pr_message` are required.
 
 Each of these commands will be executed with the workign directory set to the target repository. Shepherd exposes some context to each command via specific environment variables:
 
@@ -98,6 +101,6 @@ Run `shepherd --help` to see available commands and descriptions for each one.
 
 ### Developing
 
-Run `npm install` to install dependencies, and the `npm install -g` to make the `shepherd` executable available on your `PATH`.
+Run `npm install` to install dependencies, and then `npm install -g` to make the `shepherd` executable available on your `PATH`.
 
-Shepherd2 is written in TypeScript, which requires compilation to JavaScript. When developing Shepherd2, it's recommended to run `npm run build:watch` in a separate terminal. This will constantly recompile the source code as you edit it.
+Shepherd is written in TypeScript, which requires compilation to JavaScript. When developing Shepherd, it's recommended to run `npm run build:watch` in a separate terminal. This will constantly recompile the source code as you edit it.
