@@ -14,26 +14,36 @@ class GithubAdapter implements IRepoAdapter {
   private migrationContext: IMigrationContext;
   private octokit: Octokit;
   private branchName: string;
-  constructor(migrationContext: IMigrationContext) {
+
+  /**
+   * Constructs a new GitHub adapter. The second parameter allows for
+   * dependency injection during testing. If an Octokit instance is not
+   * provided, one will be created and authenticated automatically.
+   */
+  constructor(migrationContext: IMigrationContext, octokit?: Octokit) {
     this.migrationContext = migrationContext;
     this.branchName = migrationContext.migration.spec.id;
 
-    this.octokit = new Octokit();
-    // We'll first try to auth with a token, then with .netrc
-    if (process.env.GITHUB_TOKEN) {
-      this.octokit.authenticate({
-        type: 'oauth',
-        token: process.env.GITHUB_TOKEN,
-      });
+    if (octokit) {
+      this.octokit = octokit;
     } else {
-      const netrcAuth = netrc();
-      // TODO: we could probably fail gracefully if there's no GITHUB_TOKEN
-      // and also no .netrc credentials
-      this.octokit.authenticate({
-        type: 'basic',
-        username: netrcAuth['api.github.com'].login,
-        password: netrcAuth['api.github.com'].password,
-      });
+      this.octokit = new Octokit();
+      // We'll first try to auth with a token, then with .netrc
+      if (process.env.GITHUB_TOKEN) {
+        this.octokit.authenticate({
+          type: 'oauth',
+          token: process.env.GITHUB_TOKEN,
+        });
+      } else {
+        const netrcAuth = netrc();
+        // TODO: we could probably fail gracefully if there's no GITHUB_TOKEN
+        // and also no .netrc credentials
+        this.octokit.authenticate({
+          type: 'basic',
+          username: netrcAuth['api.github.com'].login,
+          password: netrcAuth['api.github.com'].password,
+        });
+      }
     }
   }
 
