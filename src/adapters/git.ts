@@ -3,7 +3,6 @@ import fs from 'fs-extra-promise';
 import simpleGit, { SimpleGit } from 'simple-git/promise';
 
 import { IMigrationContext } from '../migration-context';
-import { paginateSearch } from '../util/octokit';
 import IRepoAdapter, { IRepo } from './base';
 
 abstract class GitAdapter implements IRepoAdapter {

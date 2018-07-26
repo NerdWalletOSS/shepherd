@@ -1,14 +1,12 @@
 /* eslint-disable class-methods-use-this */
 import Octokit from '@octokit/rest';
-import fs from 'fs-extra-promise';
 import { isEqual } from 'lodash';
 import netrc from 'netrc';
 import path from 'path';
-import simpleGit, { SimpleGit } from 'simple-git/promise';
 
 import { IMigrationContext } from '../migration-context';
 import { paginateSearch } from '../util/octokit';
-import IRepoAdapter, { IRepo } from './base';
+import { IRepo } from './base';
 import GitAdapter from './git';
 
 class GithubAdapter extends GitAdapter {
