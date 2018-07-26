@@ -4,13 +4,13 @@ import yaml from 'js-yaml';
 import { isEqual } from 'lodash';
 import path from 'path';
 
-import { IRepo } from '../../adapters/base';
-import { IMigrationContext } from '../../migration-context';
-import { loadRepoList, updateRepoList } from '../persisted-data';
+import { IRepo } from '../adapters/base';
+import { IMigrationContext } from '../migration-context';
+import { loadRepoList, updateRepoList } from './persisted-data';
 
 jest.mock('fs', () => require('jest-plugin-fs/mock')); // eslint-disable-line global-require
 
-const getFixture = (name: string) => fs.read(path.join(__dirname, '..', '__fixtures__', `${name}.yml`));
+const getFixture = (name: string) => fs.read(path.join(__dirname, '__fixtures__', `${name}.yml`));
 
 const makeContext = () => ({
   migration: {
