@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import Octokit from '@octokit/rest';
+import chalk from 'chalk';
 import fs from 'fs-extra-promise';
 import { isEqual } from 'lodash';
 import netrc from 'netrc';
@@ -112,6 +113,90 @@ class GithubAdapter implements IRepoAdapter {
       title: spec.title,
       body: message,
     });
+  }
+
+  public async repoStatus(repo: IRepo): Promise<string[]> {
+    const { owner, name } = repo;
+    const status: string[] = [];
+
+    // First, check for a pull request
+    const pullRequests = await this.octokit.pullRequests.getAll({
+      owner,
+      repo: name,
+      head: `${owner}:${this.branchName}`,
+    });
+
+
+
+    if (pullRequests.data && pullRequests.data.length) {
+      // GitHub's API is weird - you need a second query to get information about mergeability
+      const { data: pullRequest } = await this.octokit.pullRequests.get({
+        owner,
+        repo: name,
+        number: pullRequests.data[0].number,
+      });
+
+      status.push(`PR #${pullRequest.number} [${pullRequest.html_url}]`);
+      if (pullRequest.merged_at) {
+        status.push(`PR was merged at ${pullRequest.merged_at}`);
+      } else if (pullRequest.mergeable && pullRequest.mergeable_state === 'clean') {
+        status.push(chalk.green('PR is mergeable!'));
+      } else {
+        status.push(chalk.red('PR is not mergeable'));
+        // Let's see what's blocking us
+        // Sadly, we can only get information about failing status checks, not being blocked
+        // by things like required reviews
+        const combinedStatus = await this.octokit.repos.getCombinedStatusForRef({
+          owner,
+          repo: name,
+          ref: this.branchName,
+        });
+
+        const { statuses } = combinedStatus.data;
+        const anyPending = statuses.some((s: any) => s.state === 'pending');
+        const anyFailing = statuses.some((s: any) => s.state === 'error' || s.state === 'failure');
+
+        const recordStatus = (s: any) => status.push(`${s.context} ${chalk.dim(`- ${s.description}`)}`);
+
+        if (anyPending) {
+          status.push(chalk.underline.yellow('Pending status checks'));
+          statuses.forEach((s: any) => {
+            if (s.state !== 'pending') {
+              return;
+            }
+            recordStatus(s);
+          });
+        }
+
+        if (anyFailing) {
+          status.push(chalk.underline.red('Failing status checks'));
+          statuses.forEach((s: any) => {
+            if (!(s.state === 'error' || s.state === 'failure')) {
+              return;
+            }
+            recordStatus(s);
+          });
+        }
+      }
+    } else {
+      try {
+        // This will throw an exception if the branch does not exist
+        await this.octokit.repos.getBranch({
+          owner,
+          repo: name,
+          branch: this.branchName,
+        });
+        status.push('No PR exists');
+      } catch (e) {
+        if (e.code === 404) {
+          status.push('No branch or PR exists');
+        } else {
+          throw e;
+        }
+      }
+    }
+
+    return status;
   }
 
   public getRepoDir(repo: IRepo): string {

@@ -21,6 +21,7 @@ import pr from './commands/pr';
 import prPreview from './commands/pr-preview';
 import push from './commands/push';
 import reset from './commands/reset';
+import status from './commands/status';
 
 import ConsoleLogger from './logger';
 
@@ -91,6 +92,7 @@ addCommand('reset', 'Reset all changes for the specified migration', true, reset
 addCommand('push', 'Push all changes for the specified migration', true, push);
 addCommand('pr-preview', 'View a preview of the PR messages for the specified migration', true, prPreview);
 addCommand('pr', 'Create PRs for the specified migration', true, pr);
+addCommand('status', 'Check the status of each repository for this migration', true, status);
 
 // These commands don't take --repos arguments
 addCommand('list', 'List all cehcked out repositories for the given migartion', false, list);
