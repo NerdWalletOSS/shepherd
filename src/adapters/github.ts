@@ -126,8 +126,6 @@ class GithubAdapter implements IRepoAdapter {
       head: `${owner}:${this.branchName}`,
     });
 
-
-
     if (pullRequests.data && pullRequests.data.length) {
       // GitHub's API is weird - you need a second query to get information about mergeability
       const { data: pullRequest } = await this.octokit.pullRequests.get({
