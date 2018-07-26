@@ -104,14 +104,34 @@ class GithubAdapter implements IRepoAdapter {
       owner,
       repo: name,
     });
-    await this.octokit.pullRequests.create({
+
+    // Let's check if a PR already exists
+    const { data: pullRequests } = await this.octokit.pullRequests.getAll({
       owner,
       repo: name,
-      head: this.branchName,
-      base: githubRepo.data.default_branch,
-      title: spec.title,
-      body: message,
+      head: `${owner}:${this.branchName}`,
     });
+
+    if (pullRequests && pullRequests.length) {
+      // A PR likely already exists - let's assume we can update it
+      await this.octokit.pullRequests.update({
+        owner,
+        repo: name,
+        number: pullRequests[0].number,
+        title: spec.title,
+        body: message,
+      });
+    } else {
+      // No PR yet - we have to create it
+      await this.octokit.pullRequests.create({
+        owner,
+        repo: name,
+        head: this.branchName,
+        base: githubRepo.data.default_branch,
+        title: spec.title,
+        body: message,
+      });
+    }
   }
 
   public getRepoDir(repo: IRepo): string {
