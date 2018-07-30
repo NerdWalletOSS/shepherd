@@ -115,7 +115,7 @@ class GithubAdapter implements IRepoAdapter {
     });
   }
 
-  public async repoStatus(repo: IRepo): Promise<string[]> {
+  public async repoPrStatus(repo: IRepo): Promise<string[]> {
     const { owner, name } = repo;
     const status: string[] = [];
 
