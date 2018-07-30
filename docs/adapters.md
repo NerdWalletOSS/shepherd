@@ -20,11 +20,11 @@ This translates to "an object with arbitrary string keys and arbitrary values". 
 
 Even though a repository object doesn't have a well-defined schema, Shepherd still needs to be able to derive information from repo objects, such as where a repository is checked out or how to format a repository object for printing. To accomplish this, adapters are required to have functions that allow Shepherd to query them for information about a specific repository.
 
-- `parseSelectedRepo(repo: string): IRepo`: When repositories are specified via the `--repos` option in the CLI, Shepherd needs to be able to turn those strings into an adapter's concept of a repository. This function accepts a string from the `--repos` option and turns it into a repo object. For example, the GitHub adapter would take the string `NerdWallet/shepherd` and return the object `{ owner: 'NerdWallet', name: 'shepherd' }`
+- `parseRepo(repo: string): IRepo`: When repositories are specified via the `--repos` option in the CLI, Shepherd needs to be able to turn those strings into an adapter's concept of a repository. This function accepts a string from the `--repos` option and turns it into a repo object. For example, the GitHub adapter would take the string `NerdWallet/shepherd` and return the object `{ owner: 'NerdWallet', name: 'shepherd' }`
+
+- `stringifyRepo(repo: IRepo): string;`: This function takes a repository object and should return a human-readable representation of it for use when printing status messages. For example, the GitHub adapter would take the object `{ owner: 'NerdWallet', name: 'shepherd' }` and return `NerdWallet/shepherd`. This should likely be the inverse of the `parseRepo` function, although Shepherd doesn't rely on that being the case.
 
 - `reposEqual(repo1: IRepo, repo2: IRepo): boolean`: This function takes two repository objects and indicates if they represent the same repository.
-
-- `formatRepo(repo: IRepo): string;`: This function takes a repository object and should return a human-readable representation of it for use when printing status messages. For example, the GitHub adapter would take the object `{ owner: 'NerdWallet', name: 'shepherd' }` and return `NerdWallet/shepherd`. This should essentially be the inverse of the `parseSelectedRepo` function.
 
 - `getRepoDir(repo: IRepo): string;`: This function takes a repository and returns the absolute path to the directory where this repo is checked out to.
 

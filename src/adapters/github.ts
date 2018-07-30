@@ -40,10 +40,10 @@ class GithubAdapter extends GitAdapter {
     const searchResults = await paginateSearch(this.octokit, this.octokit.search.code)({
       q: this.migrationContext.migration.spec.search_query,
     });
-    return searchResults.map((r: any) => this.parseSelectedRepo(r.repository.full_name)).sort();
+    return searchResults.map((r: any) => this.parseRepo(r.repository.full_name)).sort();
   }
 
-  public parseSelectedRepo(repo: string): IRepo {
+  public parseRepo(repo: string): IRepo {
     const [owner, name] = repo.split('/');
     if (!owner || !name) {
       throw new Error(`Could not parse repo "${repo}"`);
@@ -55,7 +55,7 @@ class GithubAdapter extends GitAdapter {
     return isEqual(repo1, repo2);
   }
 
-  public formatRepo({ owner, name }: IRepo): string {
+  public stringifyRepo({ owner, name }: IRepo): string {
     return `${owner}/${name}`;
   }
 

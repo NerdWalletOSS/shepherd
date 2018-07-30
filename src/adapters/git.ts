@@ -15,11 +15,11 @@ abstract class GitAdapter implements IRepoAdapter {
 
   public abstract getCandidateRepos(): Promise<IRepo[]>;
 
-  public abstract parseSelectedRepo(repo: string): IRepo;
+  public abstract parseRepo(repo: string): IRepo;
 
   public abstract reposEqual(repo1: IRepo, repo2: IRepo): boolean;
 
-  public abstract formatRepo(repo: IRepo): string;
+  public abstract stringifyRepo(repo: IRepo): string;
 
   public abstract getRepoDir(repo: IRepo): string;
 
