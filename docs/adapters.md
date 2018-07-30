@@ -18,9 +18,9 @@ interface IRepo {
 
 This translates to "an object with arbitrary string keys and arbitrary values". This doesn't offer much in the way of type-checking, but it does allow us to make clear when a function requires a repo object as opposed to some other arbitrary object.
 
-Even though a Shepherd object doesn't have a well-defined schema, Shepherd still needs to be able to derive information from repo objects, such as where a repository is checked out or how to format a repository object for printing. To accomplish this, adapters are required to have functions that allows Shepherd to query them for information about a specific repository.
+Even though a repository object doesn't have a well-defined schema, Shepherd still needs to be able to derive information from repo objects, such as where a repository is checked out or how to format a repository object for printing. To accomplish this, adapters are required to have functions that allow Shepherd to query them for information about a specific repository.
 
-- `parseSelectedRepo(repo: string): IRepo`: When repositories are specified via the `--repos` option in the CLI, Shepherd needs to be able to turn those strings into an adapter's concept of a repository. This function accepts a string from the `--repos` object and turns it into a repo object. For example, the GitHub adapter would take the string `NerdWallet/shepherd` and return the object `{ owner: 'NerdWallet', name: 'shepherd' }`
+- `parseSelectedRepo(repo: string): IRepo`: When repositories are specified via the `--repos` option in the CLI, Shepherd needs to be able to turn those strings into an adapter's concept of a repository. This function accepts a string from the `--repos` option and turns it into a repo object. For example, the GitHub adapter would take the string `NerdWallet/shepherd` and return the object `{ owner: 'NerdWallet', name: 'shepherd' }`
 
 - `reposEqual(repo1: IRepo, repo2: IRepo): boolean`: This function takes two repository objects and indicates if they represent the same repository.
 
