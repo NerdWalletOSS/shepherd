@@ -7,11 +7,11 @@ export interface IRepo {
 interface IRepoAdapter {
   getCandidateRepos(): Promise<IRepo[]>;
 
-  parseSelectedRepo(repo: string): IRepo;
+  parseRepo(repo: string): IRepo;
 
   reposEqual(repo1: IRepo, repo2: IRepo): boolean;
 
-  formatRepo(repo: IRepo): string;
+  stringifyRepo(repo: IRepo): string;
 
   checkoutRepo(repo: IRepo): Promise<void>;
 
