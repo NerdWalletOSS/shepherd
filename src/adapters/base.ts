@@ -23,6 +23,8 @@ interface IRepoAdapter {
 
   prRepo(repo: IRepo, message: string): Promise<void>;
 
+  repoPrStatus(repo: IRepo): Promise<string[]>;
+
   getRepoDir(repo: IRepo): string;
 
   getDataDir(repo: IRepo): string;
