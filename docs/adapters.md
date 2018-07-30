@@ -4,14 +4,14 @@ Shepherd is designed to be agnostic to the type of repositories it operates on. 
 
 An adapter exposes a consistent interface for common repository operations, which are then used by Shepherd as you execute commands to perform a migration. The interface for an adapter is specified in `src/adapters/base.ts`.
 
-### Repositories
+## Repositories
 
-Shepherd intentionally leaves it up to each adapter to specify what actually defines a "repository" actually consists of. For instance, a GitHub repository might be specified by an owner and a repository name, whereas a Subversion repository could be represented by a URL.
+Shepherd intentionally leaves it up to each adapter to specify what a "repository" actually consists of. For instance, a GitHub repository might be specified by an owner and a repository name, whereas a Subversion repository could be represented by a URL.
 
 Here's the TypeScript interface for an object describing a repository:
 
 ```ts
-export interface IRepo {
+interface IRepo {
   [key: string]: any;
 }
 ```
