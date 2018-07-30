@@ -64,7 +64,7 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
     const adapter = adapterForName(spec.adapter, migrationContext);
     migrationContext.adapter = adapter;
 
-    const selectedRepos = options.repos && options.repos.map(adapter.parseSelectedRepo);
+    const selectedRepos = options.repos && options.repos.map(adapter.parseRepo);
     migrationContext.migration.selectedRepos = selectedRepos;
 
     // The list of repos be null if migration hasn't started yet

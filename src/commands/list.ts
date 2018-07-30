@@ -9,6 +9,6 @@ export default async (context: IMigrationContext) => {
   } = context;
 
   for (const repo of (repos || [])) {
-    logger.info(adapter.formatRepo(repo));
+    logger.info(adapter.stringifyRepo(repo));
   }
 };

@@ -19,7 +19,7 @@
     "migration"
   ],
   "author": "Nathan Walters",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/NerdWallet/shepherd2/issues"
   },
