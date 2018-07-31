@@ -44,6 +44,9 @@ export default async (context: IMigrationContext) => {
       return;
     }
 
+    // We need to create the data directory before running should_migrate
+    await fs.mkdirsAsync(adapter.getDataDir(repo));
+
     logger.info('> Running should_migrate steps');
     const stepsResults = await executeSteps(context, repo, 'should_migrate');
     if (!stepsResults.succeeded) {
