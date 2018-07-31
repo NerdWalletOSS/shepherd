@@ -11,3 +11,4 @@ hooks:
     - node $SHEPHERD_MIGRATION_DIR/apply.js
     - npm install lodash@latest --save
     - npm run fix-lint
+  pr_message: $SHEPHERD_MIGRATION_DIR/pr.sh
