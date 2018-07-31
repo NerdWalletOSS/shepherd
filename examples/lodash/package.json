@@ -1,0 +1,12 @@
+{
+  "name": "@nerdwallet/shepherd-migration-lodash",
+  "private": true,
+  "description": "A migration from Lodash 3 to 4",
+  "author": "Nathan Walters",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "jscodeshift": "^0.5.1",
+    "lodash3": "^3.10.1",
+    "semver": "^5.5.0"
+  }
+}
