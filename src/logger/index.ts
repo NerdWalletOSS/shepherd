@@ -12,6 +12,7 @@ export interface ISpinner {
   info(text?: string): void;
   clear(): void;
   render(): void;
+  destroy(): void;
 }
 
 export interface ILogger {
@@ -99,6 +100,13 @@ export default class ConsoleLogger implements ILogger {
       info: finish('info'),
       clear: () => this.oraInstance && this.oraInstance.clear(),
       render: () => this.oraInstance && this.oraInstance.render(),
+      destroy: () => {
+        if (this.oraInstance) {
+          this.oraInstance.stop();
+          this.oraInstance = null;
+          this.spinnerActive = false;
+        }
+      },
     };
   }
 

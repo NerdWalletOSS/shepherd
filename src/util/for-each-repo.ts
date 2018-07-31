@@ -24,7 +24,7 @@ export default async (context: IMigrationContext, handler: RepoHandler) => {
   }
 
   for (const repo of repos) {
-    logger.info(chalk.bold(`\n[${adapter.formatRepo(repo)}]`));
+    logger.info(chalk.bold(`\n[${adapter.stringifyRepo(repo)}]`));
     // Quick sanity check in case we're working from user-selected repos
     const repoDir = adapter.getRepoDir(repo);
     if (!await existsAsync(repoDir)) {
