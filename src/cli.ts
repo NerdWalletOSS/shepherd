@@ -61,7 +61,7 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
       logger,
     } as any;
 
-    const adapter = adapterForName(spec.adapter, migrationContext);
+    const adapter = adapterForName(spec.adapter.type, migrationContext);
     migrationContext.adapter = adapter;
 
     const selectedRepos = options.repos && options.repos.map(adapter.parseRepo);
