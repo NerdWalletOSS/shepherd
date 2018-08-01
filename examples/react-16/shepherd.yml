@@ -14,7 +14,7 @@ hooks:
     - [ -f client/main.jsx ] && sed -i '' 's/ReactDOM\.render/ReactDOM\.hydrate/g' client/main.jsx
     - npm uninstall react-router
     - npm install @nerdwallet/react-router
-    - git grep -l react-router -- client/**/*.js{,x} | xargs sed -i '' 's/react-router/@nerdwallet/react-router/g'
+    - git grep -l react-router -- client/**/*.js{,x} | xargs sed -i '' 's/react-router/@nerdwallet\/react-router/g'
     - $SHEPHERD_MIGRATION_DIR/update_transition_group.sh
     - rm -rf node_modules
     - rm package-lock.json
