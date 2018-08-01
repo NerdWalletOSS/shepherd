@@ -32,7 +32,7 @@ describe('GithubAdapter', () => {
     it('creates a new PR if one does not exist', async () => {
       const octokit = mockPrOctokit({ data: [] });
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
-      await adapter.prRepo({ owner: 'NerdWallet', name: 'shepherd' }, 'Test PR message');
+      await adapter.createPullRequest({ owner: 'NerdWallet', name: 'shepherd' }, 'Test PR message');
       const createMock: jest.Mock = octokit.pullRequests.create as jest.Mock;
       expect(createMock).toBeCalledWith({
         owner: 'NerdWallet',
@@ -51,7 +51,7 @@ describe('GithubAdapter', () => {
         }],
       });
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
-      await adapter.prRepo({ owner: 'NerdWallet', name: 'shepherd' }, 'Test PR message, part 2');
+      await adapter.createPullRequest({ owner: 'NerdWallet', name: 'shepherd' }, 'Test PR message, part 2');
       const updateMock: jest.Mock = octokit.pullRequests.update as jest.Mock;
       expect(updateMock).toBeCalledWith({
         owner: 'NerdWallet',

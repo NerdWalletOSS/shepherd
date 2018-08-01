@@ -68,7 +68,7 @@ class GithubAdapter extends GitAdapter {
     return `${owner}/${name}`;
   }
 
-  public async prRepo(repo: IRepo, message: string): Promise<void> {
+  public async createPullRequest(repo: IRepo, message: string): Promise<void> {
     const { migration: { spec } } = this.migrationContext;
     const { owner, name } = repo;
     // We need to figure out the "default" branch to create a pull request
@@ -106,7 +106,7 @@ class GithubAdapter extends GitAdapter {
     }
   }
 
-  public async repoPrStatus(repo: IRepo): Promise<string[]> {
+  public async getPullRequestStatus(repo: IRepo): Promise<string[]> {
     const { owner, name } = repo;
     const status: string[] = [];
 

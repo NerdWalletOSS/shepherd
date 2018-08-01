@@ -61,9 +61,9 @@ abstract class GitAdapter implements IRepoAdapter {
     await this.git(repo).push('origin', 'HEAD', { '-f': null });
   }
 
-  public abstract prRepo(repo: IRepo, message: string): Promise<void>;
+  public abstract createPullRequest(repo: IRepo, message: string): Promise<void>;
 
-  public abstract repoPrStatus(repo: IRepo): Promise<string[]>;
+  public abstract getPullRequestStatus(repo: IRepo): Promise<string[]>;
 
   protected abstract getRepositoryUrl(repo: IRepo): string;
 

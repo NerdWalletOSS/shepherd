@@ -21,9 +21,9 @@ interface IRepoAdapter {
 
   pushRepo(repo: IRepo): Promise<void>;
 
-  prRepo(repo: IRepo, message: string): Promise<void>;
+  createPullRequest(repo: IRepo, message: string): Promise<void>;
 
-  repoPrStatus(repo: IRepo): Promise<string[]>;
+  getPullRequestStatus(repo: IRepo): Promise<string[]>;
 
   getRepoDir(repo: IRepo): string;
 
