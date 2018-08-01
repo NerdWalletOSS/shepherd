@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import { cloneDeep } from 'lodash';
-import { normalizeSpec, validateSpec } from '../migration-spec';
+import { normalizeSpec, validateSpec } from './migration-spec';
 
 describe('normalizeSpec', () => {
   it('loads a simple spec', () => {

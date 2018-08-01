@@ -4,9 +4,9 @@ import jestFs from 'jest-plugin-fs';
 import yaml from 'js-yaml';
 import { isEqual } from 'lodash';
 
-import { IRepo } from '../../adapters/base';
-import { IMigrationContext } from '../../migration-context';
-import { loadRepoList, updateRepoList } from '../persisted-data';
+import { IRepo } from '../adapters/base';
+import { IMigrationContext } from '../migration-context';
+import { loadRepoList, updateRepoList } from './persisted-data';
 
 jest.mock('fs', () => require('jest-plugin-fs/mock')); // eslint-disable-line global-require
 

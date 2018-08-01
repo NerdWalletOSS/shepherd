@@ -13,27 +13,35 @@ import GitAdapter from './git';
 class GithubAdapter extends GitAdapter {
   private octokit: Octokit;
 
-  constructor(migrationContext: IMigrationContext) {
+  /**
+   * Constructs a new GitHub adapter. The second parameter allows for
+   * dependency injection during testing. If an Octokit instance is not
+   * provided, one will be created and authenticated automatically.
+   */
+  constructor(migrationContext: IMigrationContext, octokit?: Octokit) {
     super(migrationContext);
     this.migrationContext = migrationContext;
-    this.branchName = migrationContext.migration.spec.id;
 
-    this.octokit = new Octokit();
-    // We'll first try to auth with a token, then with .netrc
-    if (process.env.GITHUB_TOKEN) {
-      this.octokit.authenticate({
-        type: 'oauth',
-        token: process.env.GITHUB_TOKEN,
-      });
+    if (octokit) {
+      this.octokit = octokit;
     } else {
-      const netrcAuth = netrc();
-      // TODO: we could probably fail gracefully if there's no GITHUB_TOKEN
-      // and also no .netrc credentials
-      this.octokit.authenticate({
-        type: 'basic',
-        username: netrcAuth['api.github.com'].login,
-        password: netrcAuth['api.github.com'].password,
-      });
+      this.octokit = new Octokit();
+      // We'll first try to auth with a token, then with .netrc
+      if (process.env.GITHUB_TOKEN) {
+        this.octokit.authenticate({
+          type: 'oauth',
+          token: process.env.GITHUB_TOKEN,
+        });
+      } else {
+        const netrcAuth = netrc();
+        // TODO: we could probably fail gracefully if there's no GITHUB_TOKEN
+        // and also no .netrc credentials
+        this.octokit.authenticate({
+          type: 'basic',
+          username: netrcAuth['api.github.com'].login,
+          password: netrcAuth['api.github.com'].password,
+        });
+      }
     }
   }
 
@@ -60,7 +68,7 @@ class GithubAdapter extends GitAdapter {
     return `${owner}/${name}`;
   }
 
-  public async prRepo(repo: IRepo, message: string): Promise<void> {
+  public async createPullRequest(repo: IRepo, message: string): Promise<void> {
     const { migration: { spec } } = this.migrationContext;
     const { owner, name } = repo;
     // We need to figure out the "default" branch to create a pull request
@@ -68,17 +76,37 @@ class GithubAdapter extends GitAdapter {
       owner,
       repo: name,
     });
-    await this.octokit.pullRequests.create({
+
+    // Let's check if a PR already exists
+    const { data: pullRequests } = await this.octokit.pullRequests.getAll({
       owner,
       repo: name,
-      head: this.branchName,
-      base: githubRepo.data.default_branch,
-      title: spec.title,
-      body: message,
+      head: `${owner}:${this.branchName}`,
     });
+
+    if (pullRequests && pullRequests.length) {
+      // A PR likely already exists - let's assume we can update it
+      await this.octokit.pullRequests.update({
+        owner,
+        repo: name,
+        number: pullRequests[0].number,
+        title: spec.title,
+        body: message,
+      });
+    } else {
+      // No PR yet - we have to create it
+      await this.octokit.pullRequests.create({
+        owner,
+        repo: name,
+        head: this.branchName,
+        base: githubRepo.data.default_branch,
+        title: spec.title,
+        body: message,
+      });
+    }
   }
 
-  public async repoPrStatus(repo: IRepo): Promise<string[]> {
+  public async getPullRequestStatus(repo: IRepo): Promise<string[]> {
     const { owner, name } = repo;
     const status: string[] = [];
 

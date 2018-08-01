@@ -6,7 +6,7 @@ export default async (context: IMigrationContext) => {
 
   await forEachRepo(context, async (repo) => {
     const spinner = logger.spinner('Determining repo PR status');
-    const status = await adapter.repoPrStatus(repo);
+    const status = await adapter.getPullRequestStatus(repo);
     spinner.destroy();
     status.forEach((s) => logger.info(s));
   });
