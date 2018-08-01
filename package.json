@@ -7,7 +7,7 @@
     "build:watch": "npm run build -- --watch --verbose",
     "lint": "tslint -p . -c tslint.json 'src/**/*.ts'",
     "fix-lint": "npm run lint -- --fix",
-    "test": "jest src/"
+    "test": "jest --coverage src/"
   },
   "repository": {
     "type": "git",
