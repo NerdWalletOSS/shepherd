@@ -5,7 +5,11 @@ import { IMigrationContext } from '../migration-context';
 
 type RepoHandler = (repo: IRepo) => Promise<void>;
 
-export default async (context: IMigrationContext, handler: RepoHandler) => {
+interface IOptions {
+  noWarnMissingDirectory?: boolean;
+}
+
+export default async (context: IMigrationContext, handler: RepoHandler, options?: IOptions) => {
   const {
     migration: {
       repos: migrationRepos,
@@ -14,6 +18,8 @@ export default async (context: IMigrationContext, handler: RepoHandler) => {
     logger,
     adapter,
   } = context;
+
+  const opts = options || {};
 
   // if `selectedRepos` is specified, we should use that instead of the full repo list
   let repos;
@@ -25,12 +31,13 @@ export default async (context: IMigrationContext, handler: RepoHandler) => {
 
   for (const repo of repos) {
     logger.info(chalk.bold(`\n[${adapter.stringifyRepo(repo)}]`));
+
     // Quick sanity check in case we're working from user-selected repos
     const repoDir = adapter.getRepoDir(repo);
-    if (!await existsAsync(repoDir)) {
-      // TODO disable this during the checkout phase
+    if (!opts.noWarnMissingDirectory && !await existsAsync(repoDir)) {
       logger.error(`Directory ${repoDir} does not exist`);
     }
+
     await handler(repo);
   }
 };

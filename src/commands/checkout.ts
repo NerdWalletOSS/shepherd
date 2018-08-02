@@ -64,6 +64,8 @@ export default async (context: IMigrationContext) => {
         checkedOutRepos.push(repo);
       }
     }
+  }, {
+    noWarnMissingDirectory: true,
   });
 
   logger.info('');

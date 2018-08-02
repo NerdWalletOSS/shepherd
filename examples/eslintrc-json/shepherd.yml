@@ -1,4 +1,4 @@
-id: 2018.07.16-eslintrc-json
+id: 2018.07.16-eslintrc-json-1
 title: Rename all .eslintrc files to .eslintrc.json
 adapter:
   type: github
