@@ -31,13 +31,10 @@ export default async (context: IMigrationContext, param1: (RepoHandler | IOption
     handler = param2 as RepoHandler;
   }
 
-  let { warnMissingDirectory } = options;
-  if (warnMissingDirectory === undefined) {
-    // Default to true
-    warnMissingDirectory = true;
-  }
+  // We want to show these warnings by default and allow opt-out of them
+  const { warnMissingDirectory = true } = options;
 
-  // if `selectedRepos` is specified, we should use that instead of the full repo list
+  // If `selectedRepos` is specified, we should use that instead of the full repo list
   let repos;
   if (selectedRepos && selectedRepos.length) {
     repos = selectedRepos;
