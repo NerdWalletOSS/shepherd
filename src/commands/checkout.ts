@@ -33,7 +33,9 @@ export default async (context: IMigrationContext) => {
   const checkedOutRepos: IRepo[] = [];
   const discardedRepos: IRepo[] = [];
 
-  await forEachRepo(context, async (repo) => {
+  const options = { warnMissingDirectory: false };
+
+  await forEachRepo(context, options, async (repo) => {
     const spinner = logger.spinner('Checking out repo');
     try {
       await adapter.checkoutRepo(repo);
@@ -64,8 +66,6 @@ export default async (context: IMigrationContext) => {
         checkedOutRepos.push(repo);
       }
     }
-  }, {
-    noWarnMissingDirectory: true,
   });
 
   logger.info('');
