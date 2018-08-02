@@ -47,7 +47,7 @@ class GithubAdapter extends GitAdapter {
 
   public async getCandidateRepos(): Promise<IRepo[]> {
     const searchResults = await paginateSearch(this.octokit, this.octokit.search.code)({
-      q: this.migrationContext.migration.spec.search_query,
+      q: this.migrationContext.migration.spec.adapter.search_query,
     });
     return searchResults.map((r: any) => this.parseRepo(r.repository.full_name)).sort();
   }
