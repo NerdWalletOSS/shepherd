@@ -7,15 +7,20 @@ hooks:
     - node $SHEPHERD_MIGRATION_DIR/should_migrate.js
     - git log -1 --format=%cd | grep 2018 --silent # Only migrate things that have seen commits in 2018
   apply:
+    # Run nw-react tool
     - node $SHEPHERD_MIGRATION_DIR/apply.js
+    # Add prop-types dependency
     - npm install prop-types
+    # Update test-utils usage
     - npm uninstall react-addons-test-utils
     - git grep -l react-addons-test-utils -- ':!package.json' ':!package-lock.json' | xargs sed -i '' 's/react-addons-test-utils/react-dom\/test-utils/g'
+    # Use ReactDOM.hydrate()
     - [ -f client/main.jsx ] && sed -i '' 's/ReactDOM\.render/ReactDOM\.hydrate/g' client/main.jsx
-    - npm uninstall react-router
-    - npm install @nerdwallet/react-router
-    - git grep -l react-router -- client/**/*.js{,x} | xargs sed -i '' 's/react-router/@nerdwallet\/react-router/g'
+    # Update to @nerdwallet/react-router if on react-router@1
+    - $SHEPHERD_MIGRATION_DIR/update_react_router.sh
+    # Update to react-transition-group
     - $SHEPHERD_MIGRATION_DIR/update_transition_group.sh
+    # Regenerate package-lock
     - rm -rf node_modules
     - rm package-lock.json
     - npm install

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if ! grep react-addons-css-transition-group package.json > /dev/null
 then
   exit 0
