@@ -1,5 +1,3 @@
-import { IMigrationContext } from '../migration-context';
-
 export interface IRepo {
   [key: string]: any;
 }

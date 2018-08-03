@@ -114,7 +114,6 @@ describe('persisted-data migration', () => {
   afterEach(() => jestFs.restore());
 
   it('migrates from a YAML file to a JSON file when loadRepoList is called', async () => {
-    const repos = await loadRepoList(makeContext());
     expect(JSON.parse(jestFs.files()['/migration/repos.json'])).toEqual(reposFixture);
     expect(jestFs.files()['/migration/repos.yml']).toBe(undefined);
   });
