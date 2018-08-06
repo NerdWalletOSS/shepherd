@@ -38,11 +38,17 @@ abstract class GitAdapter implements IRepoAdapter {
 
     // We'll immediately create and switch to a new branch
     try {
-      await this.git(repo).checkoutLocalBranch(this.branchName);
+      await this.git(repo).checkout(
+        ['-b', this.branchName, `origin/${this.branchName}`],
+      );
     } catch (e) {
-      // This branch probably already exists; we'll just switch to it
-      // to make sure we're on the right branch for the commit phase
-      await this.git(repo).checkout(this.branchName);
+      try {
+        await this.git(repo).checkoutLocalBranch(this.branchName);
+      } catch (e) {
+        // This branch probably already exists; we'll just switch to it
+        // to make sure we're on the right branch for the commit phase
+        await this.git(repo).checkout(this.branchName);
+      }
     }
   }
 
