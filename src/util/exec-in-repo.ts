@@ -1,6 +1,6 @@
 import { ChildProcessPromise, spawn } from 'child-process-promise';
 import { ChildProcess } from 'child_process';
-import IRepoAdapter, { IRepo } from '../adapters/base';
+import { IRepo } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
 
 interface IExecRepoResult {

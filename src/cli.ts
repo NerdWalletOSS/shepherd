@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import 'babel-polyfill';
 
 import program from 'commander';
 import fs from 'fs-extra';
