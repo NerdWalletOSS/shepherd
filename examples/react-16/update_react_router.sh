@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! node has_react_router_1.js package.json
+if ! node $SHEPHERD_MIGRATION_DIR/has_react_router_1.js package.json
 then
   exit 0
 fi

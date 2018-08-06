@@ -55,7 +55,6 @@ abstract class GitAdapter implements IRepoAdapter {
     // `Shepherd: ` (legacy). If it does, we're good to go. Otherwise,
     // abort.
     const commitLog = await this.git(repo).log();
-    const { message } = commitLog.latest;
     return this.isShepherdCommitMessage(commitLog.latest.message);
   }
 
