@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "A utility for applying code changes across many repositories",
   "scripts": {
-    "build": "babel src --out-dir lib --extensions \".js,.ts\"",
-    "build:watch": "npm run build -- --watch --verbose",
+    "build": "tsc",
+    "build:watch": "npm run build -- --watch",
     "lint": "tslint -p . -c tslint.json 'src/**/*.ts'",
     "fix-lint": "npm run lint -- --fix",
     "test": "jest --coverage src/"
@@ -30,7 +30,6 @@
   "dependencies": {
     "@octokit/rest": "^15.9.4",
     "@types/js-yaml": "^3.11.2",
-    "babel-polyfill": "^6.26.0",
     "chalk": "^2.4.1",
     "child-process-promise": "^2.2.1",
     "commander": "^2.16.0",
@@ -46,12 +45,6 @@
     "simple-git": "^1.96.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.54",
-    "@babel/core": "^7.0.0-beta.54",
-    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.54",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.54",
-    "@babel/preset-env": "^7.0.0-beta.54",
-    "@babel/preset-typescript": "^7.0.0-beta.54",
     "@types/fs-extra": "^5.0.4",
     "@types/fs-extra-promise": "^1.0.7",
     "@types/jest": "^23.3.0",
@@ -78,9 +71,6 @@
       "jsx",
       "json",
       "node"
-    ],
-    "setupFiles": [
-      "<rootDir>/jest.init.js"
     ]
   }
 }

@@ -4,13 +4,6 @@ import yaml from 'js-yaml';
 import { cloneDeep, mapValues } from 'lodash';
 import path from 'path';
 
-const PHASES = [
-  'should_migrate',
-  'post_checkout',
-  'apply',
-  'pr_message',
-];
-
 export interface IMigrationHooks {
   should_migrate?: string[];
   post_checkout?: string[];
