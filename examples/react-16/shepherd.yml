@@ -16,7 +16,7 @@ hooks:
     - npm uninstall react-addons-test-utils
     - git grep -l react-addons-test-utils -- ':!package.json' ':!package-lock.json' | xargs sed -i '' 's/react-addons-test-utils/react-dom\/test-utils/g'
     # Use ReactDOM.hydrate()
-    - [ -f client/main.jsx ] && sed -i '' 's/ReactDOM\.render/ReactDOM\.hydrate/g' client/main.jsx
+    - [ -f client/main.jsx ] && sed -i '' 's/ReactDOM\.render/ReactDOM\.hydrate/g' client/main.jsx || echo 'No client/main.jsx file found, skipping ReactDOM.render -> hydrate replacement'
     # Update to @nerdwallet/react-router if on react-router@1
     - $SHEPHERD_MIGRATION_DIR/update_react_router.sh
     # Update to react-transition-group
