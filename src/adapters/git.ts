@@ -90,7 +90,7 @@ abstract class GitAdapter implements IRepoAdapter {
   public async commitRepo(repo: IRepo): Promise<void> {
     const { migration: { spec } } = this.migrationContext;
     await this.git(repo).add('.');
-    await this.git(repo).commit(`Shepherd: ${spec.title}`);
+    await this.git(repo).commit(`[shepherd] ${spec.title}`);
   }
 
   public async resetRepo(repo: IRepo): Promise<void> {
