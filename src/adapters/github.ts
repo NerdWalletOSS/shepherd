@@ -85,14 +85,21 @@ class GithubAdapter extends GitAdapter {
     });
 
     if (pullRequests && pullRequests.length) {
-      // A PR likely already exists - let's assume we can update it
-      await this.octokit.pullRequests.update({
-        owner,
-        repo: name,
-        number: pullRequests[0].number,
-        title: spec.title,
-        body: message,
-      });
+      const pullRequest = pullRequests[0];
+      if (pullRequest.state === 'open') {
+        // A pull request exists and is open, let's update it
+        await this.octokit.pullRequests.update({
+          owner,
+          repo: name,
+          number: pullRequests[0].number,
+          title: spec.title,
+          body: message,
+        });
+      } else {
+        // A pull request exists but it was already closed - don't update it
+        // TODO proper status reporting without errors
+        throw new Error('Could not update pull request; it was already closed');
+      }
     } else {
       // No PR yet - we have to create it
       await this.octokit.pullRequests.create({
@@ -115,6 +122,7 @@ class GithubAdapter extends GitAdapter {
       owner,
       repo: name,
       head: `${owner}:${this.branchName}`,
+      state: 'all',
     });
 
     if (pullRequests.data && pullRequests.data.length) {

@@ -10,7 +10,7 @@ if (fs.existsSync(process.cwd() + '/Jenkinsfile') && !fs.existsSync(process.cwd(
   isLibrary = true;
 }
 
-const cmd = `npx @nerdwallet/nw-react react@16 --interactive=false ${
+const cmd = `${__dirname}/node_modules/.bin/nw-react react@16 --interactive=false ${
   isLibrary ? '--library' : ''
 }`;
 cp.execSync(cmd, { stdio: 'inherit' });

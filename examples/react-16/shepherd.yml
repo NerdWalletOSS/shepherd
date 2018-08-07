@@ -16,7 +16,8 @@ hooks:
     - npm uninstall react-addons-test-utils
     - git grep -l react-addons-test-utils -- ':!package.json' ':!package-lock.json' | xargs sed -i '' 's/react-addons-test-utils/react-dom\/test-utils/g'
     # Use ReactDOM.hydrate()
-    - if [ -f client/main.jsx ]; then; sed -i '' 's/ReactDOM\.render/ReactDOM\.hydrate/g' client/main.jsx; fi
+    - >
+      [ -f client/main.jsx ] && sed -i '' 's/ReactDOM\.render/ReactDOM\.hydrate/g' client/main.jsx || true
     # Update to @nerdwallet/react-router if on react-router@1
     - $SHEPHERD_MIGRATION_DIR/update_react_router.sh
     # Update to react-transition-group
@@ -25,4 +26,4 @@ hooks:
     - rm -rf node_modules
     - rm package-lock.json
     - npm install
-  pr_message: npx @nerdwallet/nw-react react@16 --pr
+  pr_message: $SHEPHERD_MIGRATION_DIR/node_modules/.bin/nw-react react@16 --pr

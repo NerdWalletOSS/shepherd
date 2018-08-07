@@ -8,7 +8,7 @@ const packageJson = JSON.parse(fs.readFileSync(packageJsonPath));
 // Check react-router version
 const deps = packageJson.dependencies;
 const reactRouterVersion = deps && deps['react-router']
-const isVersionOne = semver.intersects('^1', reactRouterVersion);
+const isVersionOne = reactRouterVersion && semver.intersects('^1', reactRouterVersion);
 
 // Exit zero only if react-router@1 exists
 if (isVersionOne) {
