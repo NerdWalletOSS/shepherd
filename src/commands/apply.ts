@@ -22,22 +22,19 @@ export default async (context: IMigrationContext): Promise<void> => {
       updateRepoSpinner.succeed('Successfully updated repo');
     } catch (e) {
       logger.error(e);
-      updateRepoSpinner.fail('Failed to update repo; not applying migration');
-      return;
+      updateRepoSpinner.fail('Failed to update repo. Proceed with caution!');
     }
 
     const canResetBranchSpinner = logger.spinner('Checking if branch can be reset');
     try {
       const canResetBranch = await adapter.canResetBranch(repo);
       if (!canResetBranch) {
-        canResetBranchSpinner.fail('Cannot reset branch; not applying migration');
-        return;
+        canResetBranchSpinner.fail('Cannot reset branch. Proceed with caution!');
       }
       canResetBranchSpinner.succeed('Branch is able to be reset');
     } catch (e) {
       logger.error(e);
-      canResetBranchSpinner.fail('Cannot reset branch; not applying migration');
-      return;
+      canResetBranchSpinner.fail('Cannot reset branch. Proceed with caution!');
     }
 
     const resetBranchSpinner = logger.spinner('Resetting branch');
@@ -46,8 +43,7 @@ export default async (context: IMigrationContext): Promise<void> => {
       resetBranchSpinner.succeed('Successfully reset branch');
     } catch (e) {
       logger.error(e);
-      resetBranchSpinner.fail('Failed to reset branch; not applying migration');
-      return;
+      resetBranchSpinner.fail('Failed to reset branch. Proceed with caution!');
     }
 
     logger.infoIcon('Running apply steps');
