@@ -26,4 +26,4 @@ hooks:
     - rm -rf node_modules
     - rm package-lock.json
     - npm install
-  pr_message: npx @nerdwallet/nw-react react@16 --pr
+  pr_message: $SHEPHERD_MIGRATION_DIR/node_modules/.bin/nw-react react@16 --pr
