@@ -41,8 +41,8 @@ export default async (context: IMigrationContext) => {
       await adapter.checkoutRepo(repo);
       spinner.succeed('Checked out repo');
     } catch (e) {
-      logger.warn(e);
-      spinner.fail('Failed to check out repo, skipping');
+      logger.error(e);
+      spinner.fail('Failed to check out repo; skipping');
       return;
     }
 
@@ -51,7 +51,7 @@ export default async (context: IMigrationContext) => {
     if (!stepsResults.succeeded) {
       discardedRepos.push(repo);
       await removeRepoDirectories(adapter, repo);
-      logger.failIcon('Error running should_migrate steps; skipping repo');
+      logger.failIcon('Error running should_migrate steps; skipping');
     } else {
       logger.succeedIcon('Completed all should_migrate steps successfully');
 
@@ -60,7 +60,7 @@ export default async (context: IMigrationContext) => {
       if (!postCheckoutStepsResults.succeeded) {
         discardedRepos.push(repo);
         await removeRepoDirectories(adapter, repo);
-        logger.failIcon('Error running post_checkout steps; skipping repo');
+        logger.failIcon('Error running post_checkout steps; skipping');
       } else {
         logger.succeedIcon('Completed all post_checkout steps successfully');
         checkedOutRepos.push(repo);
@@ -69,8 +69,13 @@ export default async (context: IMigrationContext) => {
   });
 
   logger.info('');
-  logger.succeedIcon(`Checked out ${checkedOutRepos.length} out of ${repos.length} repos`);
+  logger.info(`Checked out ${checkedOutRepos.length} out of ${repos.length} repos`);
+
+  const mappedCheckedOutRepos = [];
+  for (const repo of checkedOutRepos) {
+    mappedCheckedOutRepos.push(await adapter.mapRepoAfterCheckout(repo));
+  }
 
   // We'll persist this list of repos for use in future steps
-  await updateRepoList(context, checkedOutRepos, discardedRepos);
+  await updateRepoList(context, mappedCheckedOutRepos, discardedRepos);
 };
