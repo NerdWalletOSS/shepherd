@@ -42,8 +42,11 @@ export default async (context: IMigrationContext, param1: (RepoHandler | IOption
     repos = migrationRepos || [];
   }
 
+  let index = 0;
   for (const repo of repos) {
-    logger.info(chalk.bold(`\n[${adapter.stringifyRepo(repo)}]`));
+    index += 1;
+    const indexString = chalk.dim(`${index}/${repos.length}`);
+    logger.info(chalk.bold(`\n[${adapter.stringifyRepo(repo)}] ${indexString}`));
 
     // Quick sanity check in case we're working from user-selected repos
     const repoDir = adapter.getRepoDir(repo);
