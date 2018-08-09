@@ -2,7 +2,8 @@ import { IMigrationContext } from '../migration-context';
 import executeSteps from '../util/execute-steps';
 import forEachRepo from '../util/for-each-repo';
 
-export default async (context: IMigrationContext): Promise<void> => {
+export default async (context: IMigrationContext, options: any): Promise<void> => {
+  console.log(options);
   const { adapter, logger } = context;
 
   await forEachRepo(context, async (repo) => {
@@ -54,13 +55,17 @@ export default async (context: IMigrationContext): Promise<void> => {
     }
 
     logger.error('> Failed to run all apply steps');
-    const spinner = logger.spinner('Resetting repo');
-    try {
-      await adapter.resetRepo(repo);
-      spinner.succeed('Successfully reset repo');
-    } catch (e) {
-      logger.error(e);
-      spinner.fail('Failed to reset repo');
+    if (options.resetOnError) {
+      const spinner = logger.spinner('Resetting repo');
+      try {
+        await adapter.resetRepo(repo);
+        spinner.succeed('Successfully reset repo');
+      } catch (e) {
+        logger.error(e);
+        spinner.fail('Failed to reset repo');
+      }
+    } else {
+      logger.info('Not resetting repo');
     }
   });
 };
