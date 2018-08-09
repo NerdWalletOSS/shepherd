@@ -17,9 +17,10 @@ module.exports = (fileInfo, api) => {
 
   const lodashIdentifier = lodashImports.nodes()[0].specifiers[0].local.name;
 
-  // Find any method call like _.get(...) and replace it with get(...)
   // We'll remember a list of all methods used so we can construct imports
   const methods = [];
+
+  // Find any method call like _.get(...) and replace it with get(...)
   ast
     .find(j.CallExpression, {
       callee: {
@@ -35,6 +36,22 @@ module.exports = (fileInfo, api) => {
       if (methods.indexOf(memberName) === -1) methods.push(memberName);
       path.replace(b.callExpression(b.identifier(memberName), node.arguments));
     });
+
+  // Some may also be accessing members of the lodash object and passing them around,
+  // such as `arr.map(_.identity). Handle that too.
+  ast
+    .find(j.MemberExpression, {
+      object: {
+        type: 'Identifier',
+        name: '_',
+      },
+    })
+    .forEach(path => {
+      const { node } = path;
+      const memberName = node.property.name;
+      if (methods.indexOf(memberName) === -1) methods.push(memberName);
+      path.replace(b.identifier(memberName));
+    })
 
   // We can now generate some fancy new imports
   const newImportSpecifiers = methods

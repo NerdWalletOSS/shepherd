@@ -6,6 +6,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "jscodeshift": "^0.5.1",
+    "lodash-codemods": "^1.0.2",
     "lodash3": "^3.10.1",
     "semver": "^5.5.0"
   }

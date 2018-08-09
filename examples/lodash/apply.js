@@ -15,7 +15,8 @@ const deps = v3deps.length ? v3deps : v4deps;
 process.chdir(process.env.SHEPHERD_MIGRATION_DIR);
 
 const runCodemod = (codemodPath) => {
-  const cmd = `npx jscodeshift --extensions js,jsx --ignore-pattern "node_modules" --transform ${codemodPath} ${process.env.SHEPHERD_REPO_DIR}`;
+  // We need to use babylon for modern syntax like decorators
+  const cmd = `npx jscodeshift --extensions js,jsx --ignore-pattern "node_modules" --parser babylon --transform ${codemodPath} ${process.env.SHEPHERD_REPO_DIR}`;
   console.log(`$ ${cmd}`);
   execSync(cmd, { stdio: 'inherit' });
 }

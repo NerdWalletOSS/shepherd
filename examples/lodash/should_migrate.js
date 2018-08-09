@@ -30,8 +30,15 @@ if (!version3deps.length && !version4deps.length) {
 
 if (version3deps.length && version4deps.length) {
   console.error('Cannot handle mix of dependency versions');
-  version3deps.map(console.log);
-  version4deps.map(console.log);
+  console.error('[version 3]');
+  version3deps.map(d => console.error(d));
+  console.error('[version 4]');
+  version4deps.map(d => console.error(d));
+  process.exit(1);
+}
+
+if (!version3deps.length && version4deps.length) {
+  console.error('Repo already uses Lodash 4');
   process.exit(1);
 }
 
