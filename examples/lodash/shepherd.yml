@@ -1,7 +1,8 @@
 id: 2018.07.30-lodash-3-to-4
 title: Update Lodash to the latest version
-adapter: github
-search_query: org:NerdWallet path:/ filename:package.json lodash
+adapter: 
+  type: github
+  search_query: org:NerdWallet path:/ filename:package.json lodash
 hooks:
   should_migrate:
     - git log -1 --format=%cd | grep 2018 # Only migrate things that have seen commits in 2018
