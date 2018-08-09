@@ -6,16 +6,37 @@ import path from 'path';
 import { IRepo } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
 
+const jsonStringify = (data: any) => JSON.stringify(data, undefined, 2);
+
+/**
+ * This is to support people who started using Shepherd before we switched to
+ * storing state in JSON. It'll read an existing YAML file, write it to a JSON
+ * file, and delete the old YAML file.
+ */
+const migrateToJsonIfNeeded = async (migrationContext: IMigrationContext) => {
+  const legacyFile = getLegacyRepoListFile(migrationContext);
+  if (await fs.existsAsync(legacyFile)) {
+    const data = yaml.safeLoad(await fs.readFileAsync(legacyFile, 'utf8'));
+    await fs.writeFileAsync(getRepoListFile(migrationContext), jsonStringify(data));
+    await fs.unlinkAsync(legacyFile);
+  }
+};
+
 const getRepoListFile = (migrationContext: IMigrationContext) => {
+  return path.join(migrationContext.migration.workingDirectory, 'repos.json');
+};
+
+const getLegacyRepoListFile = (migrationContext: IMigrationContext) => {
   return path.join(migrationContext.migration.workingDirectory, 'repos.yml');
 };
 
 const loadRepoList = async (migrationContext: IMigrationContext): Promise<IRepo[] | null> => {
+  await migrateToJsonIfNeeded(migrationContext);
   const repoListFile = getRepoListFile(migrationContext);
   if (!await fs.existsAsync(repoListFile)) {
     return null;
   }
-  return yaml.safeLoad(await fs.readFileAsync(repoListFile, 'utf8'));
+  return JSON.parse(await fs.readFileAsync(repoListFile, 'utf8'));
 };
 
 const updateRepoList = async (
@@ -30,14 +51,14 @@ const updateRepoList = async (
   const existingRepos = await loadRepoList(migrationContext);
   if (!existingRepos) {
     // No repos stored yet, we can update this list directly
-    await fs.writeFileAsync(getRepoListFile(migrationContext), yaml.safeDump(checkedOutRepos));
+    await fs.writeFileAsync(getRepoListFile(migrationContext), JSON.stringify(checkedOutRepos));
     return checkedOutRepos;
   }
 
   const { reposEqual } = migrationContext.adapter;
   const repos = unionWith(differenceWith(existingRepos, discardedRepos, reposEqual), checkedOutRepos, reposEqual);
 
-  await fs.writeFileAsync(getRepoListFile(migrationContext), yaml.safeDump(repos));
+  await fs.writeFileAsync(getRepoListFile(migrationContext), JSON.stringify(repos));
   return repos;
 };
 

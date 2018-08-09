@@ -1,5 +1,3 @@
-import { IMigrationContext } from '../migration-context';
-
 export interface IRepo {
   [key: string]: any;
 }
@@ -15,15 +13,21 @@ interface IRepoAdapter {
 
   checkoutRepo(repo: IRepo): Promise<void>;
 
-  commitRepo(repo: IRepo): Promise<void>;
-
   resetRepo(repo: IRepo): Promise<void>;
+
+  updateRepo(repo: IRepo): Promise<void>;
+
+  canResetBranch(repo: IRepo): Promise<boolean>;
+
+  resetBranch(repo: IRepo): Promise<void>;
+
+  commitRepo(repo: IRepo): Promise<void>;
 
   pushRepo(repo: IRepo): Promise<void>;
 
-  prRepo(repo: IRepo, message: string): Promise<void>;
+  createPullRequest(repo: IRepo, message: string): Promise<void>;
 
-  repoPrStatus(repo: IRepo): Promise<string[]>;
+  getPullRequestStatus(repo: IRepo): Promise<string[]>;
 
   getRepoDir(repo: IRepo): string;
 

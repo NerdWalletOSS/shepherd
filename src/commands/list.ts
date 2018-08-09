@@ -1,5 +1,4 @@
 import { IMigrationContext } from '../migration-context';
-import forEachRepo from '../util/for-each-repo';
 
 export default async (context: IMigrationContext) => {
   const {

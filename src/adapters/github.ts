@@ -13,33 +13,41 @@ import GitAdapter from './git';
 class GithubAdapter extends GitAdapter {
   private octokit: Octokit;
 
-  constructor(migrationContext: IMigrationContext) {
+  /**
+   * Constructs a new GitHub adapter. The second parameter allows for
+   * dependency injection during testing. If an Octokit instance is not
+   * provided, one will be created and authenticated automatically.
+   */
+  constructor(migrationContext: IMigrationContext, octokit?: Octokit) {
     super(migrationContext);
     this.migrationContext = migrationContext;
-    this.branchName = migrationContext.migration.spec.id;
 
-    this.octokit = new Octokit();
-    // We'll first try to auth with a token, then with .netrc
-    if (process.env.GITHUB_TOKEN) {
-      this.octokit.authenticate({
-        type: 'oauth',
-        token: process.env.GITHUB_TOKEN,
-      });
+    if (octokit) {
+      this.octokit = octokit;
     } else {
-      const netrcAuth = netrc();
-      // TODO: we could probably fail gracefully if there's no GITHUB_TOKEN
-      // and also no .netrc credentials
-      this.octokit.authenticate({
-        type: 'basic',
-        username: netrcAuth['api.github.com'].login,
-        password: netrcAuth['api.github.com'].password,
-      });
+      this.octokit = new Octokit();
+      // We'll first try to auth with a token, then with .netrc
+      if (process.env.GITHUB_TOKEN) {
+        this.octokit.authenticate({
+          type: 'oauth',
+          token: process.env.GITHUB_TOKEN,
+        });
+      } else {
+        const netrcAuth = netrc();
+        // TODO: we could probably fail gracefully if there's no GITHUB_TOKEN
+        // and also no .netrc credentials
+        this.octokit.authenticate({
+          type: 'basic',
+          username: netrcAuth['api.github.com'].login,
+          password: netrcAuth['api.github.com'].password,
+        });
+      }
     }
   }
 
   public async getCandidateRepos(): Promise<IRepo[]> {
     const searchResults = await paginateSearch(this.octokit, this.octokit.search.code)({
-      q: this.migrationContext.migration.spec.search_query,
+      q: this.migrationContext.migration.spec.adapter.search_query,
     });
     return searchResults.map((r: any) => this.parseRepo(r.repository.full_name)).sort();
   }
@@ -60,7 +68,7 @@ class GithubAdapter extends GitAdapter {
     return `${owner}/${name}`;
   }
 
-  public async prRepo(repo: IRepo, message: string): Promise<void> {
+  public async createPullRequest(repo: IRepo, message: string): Promise<void> {
     const { migration: { spec } } = this.migrationContext;
     const { owner, name } = repo;
     // We need to figure out the "default" branch to create a pull request
@@ -68,17 +76,44 @@ class GithubAdapter extends GitAdapter {
       owner,
       repo: name,
     });
-    await this.octokit.pullRequests.create({
+
+    // Let's check if a PR already exists
+    const { data: pullRequests } = await this.octokit.pullRequests.getAll({
       owner,
       repo: name,
-      head: this.branchName,
-      base: githubRepo.data.default_branch,
-      title: spec.title,
-      body: message,
+      head: `${owner}:${this.branchName}`,
     });
+
+    if (pullRequests && pullRequests.length) {
+      const pullRequest = pullRequests[0];
+      if (pullRequest.state === 'open') {
+        // A pull request exists and is open, let's update it
+        await this.octokit.pullRequests.update({
+          owner,
+          repo: name,
+          number: pullRequests[0].number,
+          title: spec.title,
+          body: message,
+        });
+      } else {
+        // A pull request exists but it was already closed - don't update it
+        // TODO proper status reporting without errors
+        throw new Error('Could not update pull request; it was already closed');
+      }
+    } else {
+      // No PR yet - we have to create it
+      await this.octokit.pullRequests.create({
+        owner,
+        repo: name,
+        head: this.branchName,
+        base: githubRepo.data.default_branch,
+        title: spec.title,
+        body: message,
+      });
+    }
   }
 
-  public async repoPrStatus(repo: IRepo): Promise<string[]> {
+  public async getPullRequestStatus(repo: IRepo): Promise<string[]> {
     const { owner, name } = repo;
     const status: string[] = [];
 
@@ -87,6 +122,7 @@ class GithubAdapter extends GitAdapter {
       owner,
       repo: name,
       head: `${owner}:${this.branchName}`,
+      state: 'all',
     });
 
     if (pullRequests.data && pullRequests.data.length) {

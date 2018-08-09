@@ -1,5 +1,3 @@
-import { ChildProcessResult } from 'child-process-promise';
-import util from 'util';
 import chalk from '../../node_modules/chalk';
 import { IRepo } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
@@ -29,7 +27,6 @@ export default async (
         hooks,
       },
     },
-    adapter,
     logger,
   } = context;
 

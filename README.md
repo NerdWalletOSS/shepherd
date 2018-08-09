@@ -28,8 +28,9 @@ A migration is declaratively specified with a `shepherd.yml` file called a spec.
 ```yml
 id: 2018.07.16-eslintrc-json
 title: Rename all .eslintrc files to .eslintrc.json
-adapter: github
-search_query: org:NerdWallet path:/ filename:.eslintrc
+adapter:
+  type: github
+  search_query: org:NerdWallet path:/ filename:.eslintrc
 hooks:
   should_migrate:
     - ls .eslintrc # Check that this file actually exists in the repo
@@ -43,8 +44,7 @@ Let's go through this line-by-line:
 
 - `id` specifies a unique identifier for this migration. It will be used as a branch name for this migration, and will be used internally by Shepherd to track state about the migration.
 - `title` specifies a human-readable title for the migration that will be used as the commit message.
-- `adapter` specifies what version control adapter should be used for performing operations on repos (clone, branch, commit, push, etc.). Currently Shepherd only has a GitHub adapter, but you could create a Bitbucket or GitLab adapter if you don't use GitHub.
-- `search_query` is specific to the GitHub adapter. It uses GitHub's [code search qualifiers] to identify repositories that are candidates for a migration. If a repository contains a file matching the search, it will be considered a candidate for this migration.
+- `adapter` specifies what version control adapter should be used for performing operations on repos, as well as extra options for that adapter. Currently Shepherd only has a GitHub adapter, but you could create a Bitbucket or GitLab adapter if you don't use GitHub. Note that `search_query` is specific to the GitHub adapter: it uses GitHub's [code search qualifiers](https://help.github.com/articles/searching-code/) to identify repositories that are candidates for a migration. If a repository contains a file matching the search, it will be considered a candidate for this migration.
 
 The options under `hooks` specify the meat of a migration. They tell Shepherd how to determine if a repo should be migrated, how to actually perform the migration, how to generate a pull request message for each repository, and more. Each hook consists of one or more standard executables that Shepherd will execute in sequence.
 

@@ -4,13 +4,6 @@ import yaml from 'js-yaml';
 import { cloneDeep, mapValues } from 'lodash';
 import path from 'path';
 
-const PHASES = [
-  'should_migrate',
-  'post_checkout',
-  'apply',
-  'pr_message',
-];
-
 export interface IMigrationHooks {
   should_migrate?: string[];
   post_checkout?: string[];
@@ -24,8 +17,10 @@ export type MigrationPhase = [keyof IMigrationHooks];
 export interface IMigrationSpec {
   id: string;
   title: string;
-  adapter: string;
-  search_query: string;
+  adapter: {
+    type: string;
+    [key: string]: any;
+  };
   hooks: IMigrationHooks;
 }
 
@@ -63,8 +58,9 @@ export function validateSpec(spec: any) {
   const schema = Joi.object().keys({
     id: Joi.string().required(),
     title: Joi.string().required(),
-    adapter: Joi.string().allow(['github']).required(),
-    search_query: Joi.string().required(),
+    adapter: Joi.object().keys({
+      type: Joi.string().allow(['github']).required(),
+    }).unknown(true).required(),
     hooks: Joi.object().keys({
       should_migrate: hookSchema,
       post_checkout: hookSchema,

@@ -31,7 +31,7 @@ export default async (context: IMigrationContext) => {
 
     const prSpinner = logger.spinner('Creating pull request');
     try {
-      await context.adapter.prRepo(repo, message);
+      await context.adapter.createPullRequest(repo, message);
       prSpinner.succeed('Pull request created');
     } catch (e) {
       logger.error(e);
