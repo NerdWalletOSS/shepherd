@@ -3,7 +3,6 @@ import executeSteps from '../util/execute-steps';
 import forEachRepo from '../util/for-each-repo';
 
 export default async (context: IMigrationContext, options: any): Promise<void> => {
-  console.log(options);
   const { adapter, logger } = context;
 
   await forEachRepo(context, async (repo) => {
