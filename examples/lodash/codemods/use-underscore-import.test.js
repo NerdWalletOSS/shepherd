@@ -17,6 +17,18 @@ describe('use-underscore-import', () => {
     "import _ from 'lodash'; _.get('a')"
   );
   testChanged(
+    "import get1 from 'lodash/get'; get1('a');",
+    "import _ from 'lodash'; _.get('a')"
+  );
+  testChanged(
+    "import set from 'lodash/object/set'; set('a');",
+    "import _ from 'lodash'; _.set('a')"
+  );
+  testChanged(
+    "import set1 from 'lodash/object/set'; set1('a');",
+    "import _ from 'lodash'; _.set('a')"
+  );
+  testChanged(
     "import get from 'lodash/get'; import _ from 'lodash'; get('a'); _.get('a')",
     "import _ from 'lodash'; _.get('a'); _.get('a');"
   );

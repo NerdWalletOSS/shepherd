@@ -40,7 +40,7 @@ module.exports = (fileInfo, api) => {
     } else if (source.value.indexOf('lodash/') === 0) {
       // import get from 'lodash/get'
       const local = specifiers[0].local.name;
-      const imported = source.value.substring(source.value.indexOf('/') + 1);
+      const imported = source.value.substring(source.value.lastIndexOf('/') + 1);
       mappedLodashImports.push({ local, imported });
     }
   });
@@ -57,7 +57,7 @@ module.exports = (fileInfo, api) => {
           path.replace(
             b.memberExpression(
               b.identifier(lodashIdentifier),
-              b.identifier(importDescription.local)
+              b.identifier(importDescription.imported)
             )
           )
         }
