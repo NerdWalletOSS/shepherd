@@ -41,7 +41,7 @@ if (v3deps.length) {
   lodashCodemods.forEach(codemod => runLodashCodemod(codemod));
 }
 
-runCodemod('codemods/use-path-import.js');
+// runCodemod('codemods/use-path-import.js');
 
 // We can now uninstall any `lodash.*` packages; we'll install the latest lodash later
 process.chdir(process.env.SHEPHERD_REPO_DIR);
