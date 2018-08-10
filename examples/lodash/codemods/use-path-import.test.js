@@ -12,4 +12,8 @@ describe('use-path-import', () => {
     "import _ from 'lodash'; _.get('a'); _.isPlainObject('a');",
     "import { get, isPlainObject } from 'lodash'; get('a'); isPlainObject('a');"
   );
+  testChanged(
+    "import _ from 'lodash'; _.map([], _.identity);",
+    "import { identity, map } from 'lodash'; map([], identity);"
+  )
 });

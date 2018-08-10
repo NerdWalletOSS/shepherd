@@ -20,25 +20,7 @@ module.exports = (fileInfo, api) => {
   // We'll remember a list of all methods used so we can construct imports
   const methods = [];
 
-  // Find any method call like _.get(...) and replace it with get(...)
-  ast
-    .find(j.CallExpression, {
-      callee: {
-        type: 'MemberExpression',
-        object: {
-          name: lodashIdentifier,
-        },
-      },
-    })
-    .forEach(path => {
-      const { node } = path;
-      const memberName = node.callee.property.name;
-      if (methods.indexOf(memberName) === -1) methods.push(memberName);
-      path.replace(b.callExpression(b.identifier(memberName), node.arguments));
-    });
-
-  // Some may also be accessing members of the lodash object and passing them around,
-  // such as `arr.map(_.identity). Handle that too.
+  // Find any access like _.get and replace it with get
   ast
     .find(j.MemberExpression, {
       object: {

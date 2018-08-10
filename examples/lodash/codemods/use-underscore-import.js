@@ -45,27 +45,24 @@ module.exports = (fileInfo, api) => {
     }
   });
 
-  // Now let's use these imports to transform to calls on members of `_`
+  // Now let's use these imports to transform to accessing members of `_`
   mappedLodashImports.forEach(importDescription => {
     ast
-      .find(j.CallExpression, {
-        callee: {
-          type: 'Identifier',
-          name: importDescription.local,
-        },
+      .find(j.Identifier, {
+        name: importDescription.local,
       })
       .forEach(path => {
-        path.replace(
-          b.callExpression(
+        if (path.parent.node.type !== 'MemberExpression') {
+          // We'll assume this was a destructured import
+          path.replace(
             b.memberExpression(
               b.identifier(lodashIdentifier),
               b.identifier(importDescription.local)
-            ),
-            path.node.arguments
+            )
           )
-        );
-      });
-  });
+        }
+      })
+  })
 
   const newImport = b.importDeclaration(
     [b.importDefaultSpecifier(b.identifier(lodashIdentifier))],

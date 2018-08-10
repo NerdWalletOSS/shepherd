@@ -20,5 +20,9 @@ describe('use-underscore-import', () => {
     "import get from 'lodash/get'; import _ from 'lodash'; get('a'); _.get('a')",
     "import _ from 'lodash'; _.get('a'); _.get('a');"
   );
+  testChanged(
+    "import { map, identity } from 'lodash'; map([], identity);",
+    "import _ from 'lodash'; _.map([], _.identity);",
+  );
   testUnchanged("import _ from 'lodash'; _.get('a')");
  });
