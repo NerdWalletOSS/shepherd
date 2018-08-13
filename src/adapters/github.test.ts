@@ -29,10 +29,15 @@ describe('GithubAdapter', () => {
       },
     } as any as Octokit);
 
+    const REPO = {
+      owner: 'NerdWallet',
+      name: 'shepherd',
+    };
+
     it('creates a new PR if one does not exist', async () => {
       const octokit = mockPrOctokit({ data: [] });
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
-      await adapter.createPullRequest({ owner: 'NerdWallet', name: 'shepherd' }, 'Test PR message');
+      await adapter.createPullRequest(REPO, 'Test PR message');
       const createMock: jest.Mock = octokit.pullRequests.create as jest.Mock;
       expect(createMock).toBeCalledWith({
         owner: 'NerdWallet',
@@ -44,14 +49,15 @@ describe('GithubAdapter', () => {
       });
     });
 
-    it('updates a PR if one exists', async () => {
+    it('updates an existing open PR', async () => {
       const octokit = mockPrOctokit({
         data: [{
           number: 1234,
+          state: 'open',
         }],
       });
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
-      await adapter.createPullRequest({ owner: 'NerdWallet', name: 'shepherd' }, 'Test PR message, part 2');
+      await adapter.createPullRequest(REPO, 'Test PR message, part 2');
       const updateMock: jest.Mock = octokit.pullRequests.update as jest.Mock;
       expect(updateMock).toBeCalledWith({
         owner: 'NerdWallet',
@@ -60,6 +66,19 @@ describe('GithubAdapter', () => {
         title: 'Test migration',
         body: 'Test PR message, part 2',
       });
+    });
+
+    it('does not update an existing PR that has been closed', async () => {
+      const octokit = mockPrOctokit({
+        data: [{
+          number: 1234,
+          state: 'closed',
+        }],
+      });
+      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
+      expect(adapter.createPullRequest(REPO, 'Test PR message, part 2')).rejects.toThrow();
+      const updateMock: jest.Mock = octokit.pullRequests.update as jest.Mock;
+      expect(updateMock).not.toBeCalled();
     });
   });
 });
