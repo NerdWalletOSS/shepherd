@@ -66,7 +66,7 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
     const selectedRepos = options.repos && options.repos.map(adapter.parseRepo);
     migrationContext.migration.selectedRepos = selectedRepos;
 
-    // The list of repos be null if migration hasn't started yet
+    // The list of repos will be null if migration hasn't started yet
     migrationContext.migration.repos = await loadRepoList(migrationContext);
 
     await handler(migrationContext, options);
@@ -76,16 +76,31 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
   }
 };
 
+const buildCommand = (name: string, description: string) => {
+  return program.command(`${name} <migration>`).description(description);
+};
+
+const addReposOption = (command: program.Command) => {
+  return command.option('--repos <repos>', 'Comma-separated list of repos to operate on', (val) => val.split(','));
+};
+
 const addCommand = (name: string, description: string, repos: boolean, handler: CommandHandler) => {
-  const subprogram = program.command(`${name} <migration>`).description(description);
+  const subprogram = buildCommand(name, description);
   if (repos) {
-    subprogram.option('--repos <repos>', 'Comma-separated list of repos to operate on', (val) => val.split(','));
+    addReposOption(subprogram);
   }
   subprogram.action(handleCommand(handler));
 };
 
 addCommand('checkout', 'Check out any repositories that are candidates for a given migration', true, checkout);
-addCommand('apply', 'Apply a migration to all checked out repositories', true, apply);
+
+const applyCommand = buildCommand('apply', 'Apply a migration to all checked out repositories');
+addReposOption(applyCommand);
+// Commander's API is weird: this will get mapped to the option `resetOnError`, which will be false if this option
+// is specified. We want to default `resetOnError` to true here.
+applyCommand.option('--no-reset-on-error', 'Keep changes in the working tree even if the migration fails', true);
+applyCommand.action(handleCommand(apply));
+
 addCommand('commit', 'Commit all changes for the specified migration', true, commit);
 addCommand('reset', 'Reset all changes for the specified migration', true, reset);
 addCommand('push', 'Push all changes for the specified migration', true, push);
