@@ -54,15 +54,16 @@ describe('GithubAdapter', () => {
       },
     } as any as Octokit);
 
+    const REPO = {
+      owner: 'NerdWallet',
+      name: 'shepherd',
+      defaultBranch: 'master',
+    };
+
     it('creates a new PR if one does not exist', async () => {
       const octokit = mockPrOctokit({ data: [] });
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
-      const repo = {
-        owner: 'NerdWallet',
-        name: 'shepherd',
-        defaultBranch: 'master',
-      };
-      await adapter.createPullRequest(repo, 'Test PR message');
+      await adapter.createPullRequest(REPO, 'Test PR message');
       const createMock: jest.Mock = octokit.pullRequests.create as jest.Mock;
       expect(createMock).toBeCalledWith({
         owner: 'NerdWallet',
@@ -82,12 +83,7 @@ describe('GithubAdapter', () => {
         }],
       });
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
-      const repo = {
-        owner: 'NerdWallet',
-        name: 'shepherd',
-        defaultBranch: 'master',
-      };
-      await adapter.createPullRequest(repo, 'Test PR message, part 2');
+      await adapter.createPullRequest(REPO, 'Test PR message, part 2');
       const updateMock: jest.Mock = octokit.pullRequests.update as jest.Mock;
       expect(updateMock).toBeCalledWith({
         owner: 'NerdWallet',
@@ -106,12 +102,7 @@ describe('GithubAdapter', () => {
         }],
       });
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
-      const repo = {
-        owner: 'NerdWallet',
-        name: 'shepherd',
-        defaultBranch: 'master',
-      };
-      await expect(adapter.createPullRequest(repo, 'Test PR message, part 2')).rejects.not.toEqual(undefined);
+      await expect(adapter.createPullRequest(REPO, 'Test PR message, part 2')).rejects.toThrow();
       const updateMock: jest.Mock = octokit.pullRequests.update as jest.Mock;
       expect(updateMock).not.toBeCalled();
     });
