@@ -76,7 +76,7 @@ describe('GithubAdapter', () => {
         }],
       });
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
-      expect(adapter.createPullRequest(REPO, 'Test PR message, part 2')).rejects.toThrow();
+      await expect(adapter.createPullRequest(REPO, 'Test PR message, part 2')).rejects.toThrow();
       const updateMock: jest.Mock = octokit.pullRequests.update as jest.Mock;
       expect(updateMock).not.toBeCalled();
     });
