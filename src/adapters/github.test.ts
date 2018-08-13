@@ -13,6 +13,31 @@ const mockMigrationContext = () => ({
 });
 
 describe('GithubAdapter', () => {
+  describe('mapRepoAfterCheckout', () => {
+    it('saves the default branch', async () => {
+      const mocktokit = ({
+        repos: {
+          get: jest.fn().mockReturnValue({
+            data: {
+              default_branch: 'develop',
+            },
+          }),
+        },
+      } as any as Octokit);
+
+      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, mocktokit);
+      const repo = {
+        owner: 'NerdWallet',
+        name: 'test',
+      };
+      const mappedRepo = await adapter.mapRepoAfterCheckout(repo);
+      expect(mappedRepo).toEqual({
+        ...repo,
+        defaultBranch: 'develop',
+      });
+    });
+  });
+
   describe('prRepo', () => {
     const mockPrOctokit = (existingPr: any): Octokit => ({
       pullRequests: {
@@ -32,6 +57,7 @@ describe('GithubAdapter', () => {
     const REPO = {
       owner: 'NerdWallet',
       name: 'shepherd',
+      defaultBranch: 'master',
     };
 
     it('creates a new PR if one does not exist', async () => {
@@ -49,7 +75,7 @@ describe('GithubAdapter', () => {
       });
     });
 
-    it('updates an existing open PR', async () => {
+    it('updates a PR if one exists and is open', async () => {
       const octokit = mockPrOctokit({
         data: [{
           number: 1234,
@@ -68,7 +94,7 @@ describe('GithubAdapter', () => {
       });
     });
 
-    it('does not update an existing PR that has been closed', async () => {
+    it('does not update a closed PR', async () => {
       const octokit = mockPrOctokit({
         data: [{
           number: 1234,

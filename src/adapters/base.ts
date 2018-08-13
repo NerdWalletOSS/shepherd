@@ -11,6 +11,8 @@ interface IRepoAdapter {
 
   stringifyRepo(repo: IRepo): string;
 
+  mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo>;
+
   checkoutRepo(repo: IRepo): Promise<void>;
 
   resetRepo(repo: IRepo): Promise<void>;

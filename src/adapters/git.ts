@@ -25,6 +25,8 @@ abstract class GitAdapter implements IRepoAdapter {
 
   public abstract getDataDir(repo: IRepo): string;
 
+  public abstract mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo>;
+
   public async checkoutRepo(repo: IRepo): Promise<void> {
     const repoPath = this.getRepositoryUrl(repo);
     const localPath = this.getRepoDir(repo);
@@ -33,7 +35,9 @@ abstract class GitAdapter implements IRepoAdapter {
       // Repo already exists; just fetch
       await this.git(repo).fetch('origin');
     } else {
-      await simpleGit().clone(repoPath, localPath);
+      const git = simpleGit();
+      git.silent(true);
+      await git.clone(repoPath, localPath);
     }
 
     // We'll immediately create and switch to a new branch

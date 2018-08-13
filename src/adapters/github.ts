@@ -49,7 +49,20 @@ class GithubAdapter extends GitAdapter {
     const searchResults = await paginateSearch(this.octokit, this.octokit.search.code)({
       q: this.migrationContext.migration.spec.adapter.search_query,
     });
-    return searchResults.map((r: any) => this.parseRepo(r.repository.full_name)).sort();
+    const repoNames = searchResults.map((r: any) => r.repository.full_name).sort();
+    return repoNames.map((r: string) => this.parseRepo(r));
+  }
+
+  public async mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo> {
+    const { owner, name } = repo;
+    const { data } = await this.octokit.repos.get({
+      owner,
+      repo: name,
+    });
+    return {
+      ...repo,
+      defaultBranch: data.default_branch,
+    };
   }
 
   public parseRepo(repo: string): IRepo {
@@ -70,12 +83,7 @@ class GithubAdapter extends GitAdapter {
 
   public async createPullRequest(repo: IRepo, message: string): Promise<void> {
     const { migration: { spec } } = this.migrationContext;
-    const { owner, name } = repo;
-    // We need to figure out the "default" branch to create a pull request
-    const githubRepo = await this.octokit.repos.get({
-      owner,
-      repo: name,
-    });
+    const { owner, name, defaultBranch } = repo;
 
     // Let's check if a PR already exists
     const { data: pullRequests } = await this.octokit.pullRequests.getAll({
@@ -106,7 +114,7 @@ class GithubAdapter extends GitAdapter {
         owner,
         repo: name,
         head: this.branchName,
-        base: githubRepo.data.default_branch,
+        base: defaultBranch,
         title: spec.title,
         body: message,
       });
