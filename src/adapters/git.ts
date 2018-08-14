@@ -27,6 +27,8 @@ abstract class GitAdapter implements IRepoAdapter {
 
   public abstract mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo>;
 
+  public abstract canResetBranch(repo: IRepo): Promise<boolean>;
+
   public async checkoutRepo(repo: IRepo): Promise<void> {
     const repoPath = this.getRepositoryUrl(repo);
     const localPath = this.getRepoDir(repo);
@@ -58,14 +60,6 @@ abstract class GitAdapter implements IRepoAdapter {
 
   public async updateRepo(repo: IRepo): Promise<void> {
     await this.git(repo).pull('origin', this.branchName);
-  }
-
-  public async canResetBranch(repo: IRepo): Promise<boolean> {
-    // We'll check if the last commit starts either with `[shepherd]` or
-    // `Shepherd: ` (legacy). If it does, we're good to go. Otherwise,
-    // abort.
-    const commitLog = await this.git(repo).log();
-    return this.isShepherdCommitMessage(commitLog.latest.message);
   }
 
   public async resetBranch(repo: IRepo): Promise<void> {

@@ -81,6 +81,17 @@ class GithubAdapter extends GitAdapter {
     return `${owner}/${name}`;
   }
 
+  public async canResetBranch(repo: IRepo): Promise<boolean> {
+    // We'll get the list of all commits not on master and check if they're
+    // all from Shepherd. If they are, it's safe to reset the branch to
+    // master.
+    const commitLog = await this.git(repo).log({
+      from: `origin/${repo.defaultBranch}`,
+      to: this.branchName,
+    });
+    return commitLog.all.every(({ message }) => this.isShepherdCommitMessage(message));
+  }
+
   public async createPullRequest(repo: IRepo, message: string): Promise<void> {
     const { migration: { spec } } = this.migrationContext;
     const { owner, name, defaultBranch } = repo;

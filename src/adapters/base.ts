@@ -23,6 +23,10 @@ interface IRepoAdapter {
 
   resetBranch(repo: IRepo): Promise<void>;
 
+  preApply(repo: IRepo): Promise<void>;
+
+  postApply(repo: IRepo): Promise<void>;
+
   commitRepo(repo: IRepo): Promise<void>;
 
   pushRepo(repo: IRepo): Promise<void>;
