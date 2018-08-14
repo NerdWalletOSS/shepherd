@@ -1,5 +1,5 @@
 {
-  "name": "@nerdwallet/shepherd2",
+  "name": "@nerdwallet/shepherd",
   "version": "1.0.0",
   "description": "A utility for applying code changes across many repositories",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NerdWallet/shepherd2.git"
+    "url": "git+https://github.com/NerdWalletOSS/shepherd.git"
   },
   "keywords": [
     "codemod",
@@ -21,11 +21,11 @@
   "author": "Nathan Walters",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/NerdWallet/shepherd2/issues"
+    "url": "https://github.com/NerdWalletOSS/shepherd/issues"
   },
-  "homepage": "https://github.com/NerdWallet/shepherd2#readme",
+  "homepage": "https://github.com/NerdWalletOSS/shepherd#readme",
   "bin": {
-    "shepherd2": "./lib/cli.js"
+    "shepherd": "./lib/cli.js"
   },
   "dependencies": {
     "@octokit/rest": "^15.9.4",
