@@ -8,7 +8,7 @@ export default async (context: IMigrationContext, options: any): Promise<void> =
   await forEachRepo(context, async (repo) => {
     const resetSpinner = logger.spinner('Removing uncommitted changes');
     try {
-      await adapter.resetRepo(repo);
+      await adapter.resetChangedFiles(repo);
       resetSpinner.succeed('Successfully reset repo');
     } catch (e) {
       logger.error(e);
@@ -57,7 +57,7 @@ export default async (context: IMigrationContext, options: any): Promise<void> =
     if (options.resetOnError) {
       const spinner = logger.spinner('Resetting repo');
       try {
-        await adapter.resetRepo(repo);
+        await adapter.resetChangedFiles(repo);
         spinner.succeed('Successfully reset repo');
       } catch (e) {
         logger.error(e);

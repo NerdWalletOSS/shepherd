@@ -7,7 +7,7 @@ export default async (context: IMigrationContext) => {
   await forEachRepo(context, async (repo) => {
     const spinner = logger.spinner('Resetting changes');
     try {
-      await adapter.resetRepo(repo);
+      await adapter.resetChangedFiles(repo);
       spinner.succeed('Reset changes');
     } catch (e) {
       logger.error(e);

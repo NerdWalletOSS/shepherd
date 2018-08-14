@@ -91,7 +91,7 @@ abstract class GitAdapter implements IRepoAdapter {
     await this.git(repo).commit(`[shepherd] ${spec.title}`);
   }
 
-  public async resetRepo(repo: IRepo): Promise<void> {
+  public async resetChangedFiles(repo: IRepo): Promise<void> {
     await this.git(repo).reset('hard');
     await this.git(repo).clean('f', ['-d']);
   }

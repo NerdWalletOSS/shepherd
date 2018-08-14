@@ -15,17 +15,13 @@ interface IRepoAdapter {
 
   checkoutRepo(repo: IRepo): Promise<void>;
 
-  resetRepo(repo: IRepo): Promise<void>;
+  resetChangedFiles(repo: IRepo): Promise<void>;
 
   updateRepo(repo: IRepo): Promise<void>;
 
   canResetBranch(repo: IRepo): Promise<boolean>;
 
   resetBranch(repo: IRepo): Promise<void>;
-
-  preApply(repo: IRepo): Promise<void>;
-
-  postApply(repo: IRepo): Promise<void>;
 
   commitRepo(repo: IRepo): Promise<void>;
 
