@@ -7,9 +7,9 @@ const generate = (results: IStepsResults): string => {
 export default generate;
 
 export const generatePrMessageWithFooter = (results: IStepsResults): string => {
-  let message = generate(results);
+  let msg = generate(results);
   // We'll add a friendly footer too
-  message += '\n\n---\n\n';
-  message += '*This change was executed automatically with [Shepherd](https://github.com/NerdWalletOSS/shepherd).* 💚🤖';
-  return message;
+  msg += '\n\n---\n\n';
+  msg += '*This change was executed automatically with [Shepherd](https://github.com/NerdWalletOSS/shepherd).* 💚🤖';
+  return msg;
 };
