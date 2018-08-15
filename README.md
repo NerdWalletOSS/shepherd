@@ -36,6 +36,12 @@ Usage: shepherd [options] [command]
 ...
 ```
 
+## Getting started
+
+We recommend walking through our tutorial to get familiar with how to write a Shepherd migration and what the Shepherd workflow looks like.
+
+[Go to tutorial →](docs/tutorial.md)
+
 ## Writing migrations
 
 A migration is declaratively specified with a `shepherd.yml` file called a spec. Here's an example of a migration spec that renames `.eslintrc` to `.eslintrc.json` in all NerdWallet repositories that have been modified in 2018:
