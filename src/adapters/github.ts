@@ -106,7 +106,7 @@ class GithubAdapter extends GitAdapter {
   }
 
   public async pushRepo(repo: IRepo, force: boolean): Promise<void> {
-    const shouldForce = false;
+    let shouldForce = false;
 
     // First, get any changes from the remote
     // --prune will ensure that any remote branch deletes are reflected here
@@ -116,9 +116,12 @@ class GithubAdapter extends GitAdapter {
       const safetyStatus = await this.checkActionSafety(repo);
       if (safetyStatus === SafetyStatus.PullRequestExisted) {
         throw new Error('Remote branch did not exist, but a pull request does or did; trye with --force?');
-    } else if (safetyStatus === SafetyStatus.NonShepherdCommits) {
-          throw new Error('Found non-Shepherd commits on remote branch; try with --force?');
+      } else if (safetyStatus === SafetyStatus.NonShepherdCommits) {
+        throw new Error('Found non-Shepherd commits on remote branch; try with --force?');
       }
+
+      // If we get to here, it's safe to force-push to this branch
+      shouldForce = true;
     }
 
     await super.pushRepo(repo, force || shouldForce);
