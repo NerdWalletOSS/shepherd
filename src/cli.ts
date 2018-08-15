@@ -103,7 +103,12 @@ applyCommand.action(handleCommand(apply));
 
 addCommand('commit', 'Commit all changes for the specified migration', true, commit);
 addCommand('reset', 'Reset all changes for the specified migration', true, reset);
-addCommand('push', 'Push all changes for the specified migration', true, push);
+
+const pushCommand = buildCommand('push', 'Push all changes for the specified migration');
+addReposOption(pushCommand);
+pushCommand.option('-f, --force', 'Force push, skipping any safety checks');
+pushCommand.action(handleCommand(push));
+
 addCommand('pr-preview', 'View a preview of the PR messages for the specified migration', true, prPreview);
 addCommand('pr', 'Create PRs for the specified migration', true, pr);
 addCommand('pr-status', 'Check the status of all PRs for the specified migration', true, prStatus);

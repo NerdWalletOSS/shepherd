@@ -9,6 +9,12 @@ import { paginateSearch } from '../util/octokit';
 import { IRepo } from './base';
 import GitAdapter from './git';
 
+enum SafetyStatus {
+  Success,
+  PullRequestExisted,
+  NonShepherdCommits,
+}
+
 class GithubAdapter extends GitAdapter {
   private octokit: Octokit;
 
@@ -81,53 +87,41 @@ class GithubAdapter extends GitAdapter {
   }
 
   public async resetRepoBeforeApply(repo: IRepo, force: boolean) {
-    const { owner, name, defaultBranch } = repo;
+    const { defaultBranch } = repo;
     // First, get any changes from the remote
     // --prune will ensure that any remote branch deletes are reflected here
     await this.git(repo).fetch(['origin', '--prune']);
 
     if (!force) {
-      // Get all branches and look for the remote branch
-      // @ts-ignore (typings are broken)
-      const { branches } = await this.git(repo).branch();
-      if (branches[`remotes/origin/${this.branchName}`] === undefined) {
-        // This remote branch does not exist
-        // We need to figure out if that's because a PR was open and
-        // subsequently closed, or if it's because we just haven't pushed
-        // a branch yet
-        const pullRequests = await this.octokit.pullRequests.getAll({
-          owner,
-          repo: name,
-          head: `${owner}:${this.branchName}`,
-          state: 'all',
-        });
-
-        if (pullRequests.data && pullRequests.data.length) {
-          // We'll assume that if a remote branch does not exist but a PR
-          // does/did, we don't want to apply to this branch
-          throw new Error('Remote branch did not exist, but a pull request does or did');
-        }
-      } else {
-        // The remote branch exists!
-        // Let's pull in any remote changes
-        await this.git(repo).pull('origin', this.branchName);
-
-        // We'll get the list of all commits not on master and check if they're
-        // all from Shepherd. If they are, it's safe to reset the branch to
-        // master.
-        const commits = await this.git(repo).log({
-          to: this.branchName,
-        });
-        const allShepherd = commits.all.every(({ message }) => this.isShepherdCommitMessage(message));
-        if (!allShepherd) {
-          // RIP. Die loudly.
-          throw new Error('Found non-Shepherd commits after pulling; try with --force-reset-branch?');
-        }
+      const safetyStatus = await this.checkActionSafety(repo);
+      if (safetyStatus === SafetyStatus.PullRequestExisted) {
+        throw new Error('Remote branch did not exist, but a pull request does or did; try with --force-reset-branch?');
+      } else if (safetyStatus === SafetyStatus.NonShepherdCommits) {
+        throw new Error('Found non-Shepherd commits on remote branch; try with --force-reset-branch?');
       }
     }
 
     // If we got this far, we can go ahead and reset to the default branch
     await this.git(repo).reset(['--hard', `origin/${defaultBranch}`]);
+  }
+
+  public async pushRepo(repo: IRepo, force: boolean): Promise<void> {
+    const shouldForce = false;
+
+    // First, get any changes from the remote
+    // --prune will ensure that any remote branch deletes are reflected here
+    await this.git(repo).fetch(['origin', '--prune']);
+
+    if (!force) {
+      const safetyStatus = await this.checkActionSafety(repo);
+      if (safetyStatus === SafetyStatus.PullRequestExisted) {
+        throw new Error('Remote branch did not exist, but a pull request does or did; trye with --force?');
+    } else if (safetyStatus === SafetyStatus.NonShepherdCommits) {
+          throw new Error('Found non-Shepherd commits on remote branch; try with --force?');
+      }
+    }
+
+    await super.pushRepo(repo, force || shouldForce);
   }
 
   public async createPullRequest(repo: IRepo, message: string): Promise<void> {
@@ -263,6 +257,48 @@ class GithubAdapter extends GitAdapter {
 
   protected getRepositoryUrl(repo: IRepo): string {
     return `git@github.com:${repo.owner}/${repo.name}.git`;
+  }
+
+  private async checkActionSafety(repo: IRepo): Promise<SafetyStatus> {
+    const { owner, name, defaultBranch } = repo;
+
+    // Get all branches and look for the remote branch
+    // @ts-ignore (typings are broken)
+    const { branches } = await this.git(repo).branch();
+    if (branches[`remotes/origin/${this.branchName}`] === undefined) {
+      // This remote branch does not exist
+      // We need to figure out if that's because a PR was open and
+      // subsequently closed, or if it's because we just haven't pushed
+      // a branch yet
+      const pullRequests = await this.octokit.pullRequests.getAll({
+        owner,
+        repo: name,
+        head: `${owner}:${this.branchName}`,
+        state: 'all',
+      });
+
+      if (pullRequests.data && pullRequests.data.length) {
+        // We'll assume that if a remote branch does not exist but a PR
+        // does/did, we don't want to apply to this branch
+        return SafetyStatus.PullRequestExisted;
+      }
+    } else {
+      // The remote branch exists!
+      // We'll get the list of all commits not on master and check if they're
+      // all from Shepherd. If they are, it's safe to reset the branch to
+      // master.
+      const commits = await this.git(repo).log({
+        from: defaultBranch,
+        to: `remotes/origin/${this.branchName}`,
+      });
+      const allShepherd = commits.all.every(({ message }) => this.isShepherdCommitMessage(message));
+      if (!allShepherd) {
+        // RIP.
+        return SafetyStatus.NonShepherdCommits;
+      }
+    }
+
+    return SafetyStatus.Success;
   }
 }
 

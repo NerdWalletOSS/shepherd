@@ -21,7 +21,7 @@ interface IRepoAdapter {
 
   commitRepo(repo: IRepo): Promise<void>;
 
-  pushRepo(repo: IRepo): Promise<void>;
+  pushRepo(repo: IRepo, force: boolean): Promise<void>;
 
   createPullRequest(repo: IRepo, message: string): Promise<void>;
 

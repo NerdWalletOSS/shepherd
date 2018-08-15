@@ -69,8 +69,12 @@ abstract class GitAdapter implements IRepoAdapter {
     await this.git(repo).clean('f', ['-d']);
   }
 
-  public async pushRepo(repo: IRepo): Promise<void> {
-    await this.git(repo).push('origin', 'HEAD', { '-f': null });
+  public async pushRepo(repo: IRepo, force: boolean): Promise<void> {
+    const options = {
+      '--force': force,
+    };
+
+    await this.git(repo).push('origin', 'HEAD', options);
   }
 
   public abstract createPullRequest(repo: IRepo, message: string): Promise<void>;
