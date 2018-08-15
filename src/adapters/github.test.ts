@@ -17,14 +17,14 @@ describe('GithubAdapter', () => {
     it('recognizes two repos as equal', () => {
       const repo1 = { owner: 'NerdWallet', name: 'shepherd' };
       const repo2 = { owner: 'NerdWallet', name: 'shepherd' };
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext);
+      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, {} as Octokit);
       expect(adapter.reposEqual(repo1, repo2)).toBe(true);
     });
 
     it('recognizes two repos as equal if one is missing a default branch', () => {
       const repo1 = { owner: 'NerdWallet', name: 'shepherd', defaultBranch: 'master' };
       const repo2 = { owner: 'NerdWallet', name: 'shepherd' };
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext);
+      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, {} as Octokit);
       expect(adapter.reposEqual(repo1, repo2)).toBe(true);
     });
   });
