@@ -96,14 +96,19 @@ addCommand('checkout', 'Check out any repositories that are candidates for a giv
 
 const applyCommand = buildCommand('apply', 'Apply a migration to all checked out repositories');
 addReposOption(applyCommand);
-// Commander's API is weird: this will get mapped to the option `resetOnError`, which will be false if this option
-// is specified. We want to default `resetOnError` to true here.
-applyCommand.option('--no-reset-on-error', 'Keep changes in the working tree even if the migration fails', true);
+applyCommand.option('--skip-reset-branch', 'Don\'t reset branch before applying', false);
+applyCommand.option('--force-reset-branch', 'Force a reset of the branch before applying', true);
+applyCommand.option('--skip-reset-on-error', 'Keep changes in the working tree even if the migration fails', false);
 applyCommand.action(handleCommand(apply));
 
 addCommand('commit', 'Commit all changes for the specified migration', true, commit);
 addCommand('reset', 'Reset all changes for the specified migration', true, reset);
-addCommand('push', 'Push all changes for the specified migration', true, push);
+
+const pushCommand = buildCommand('push', 'Push all changes for the specified migration');
+addReposOption(pushCommand);
+pushCommand.option('-f, --force', 'Force push, skipping any safety checks');
+pushCommand.action(handleCommand(push));
+
 addCommand('pr-preview', 'View a preview of the PR messages for the specified migration', true, prPreview);
 addCommand('pr', 'Create PRs for the specified migration', true, pr);
 addCommand('pr-status', 'Check the status of all PRs for the specified migration', true, prStatus);
