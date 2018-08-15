@@ -26,6 +26,7 @@ export default async (context: IMigrationContext, options: any): Promise<void> =
       } catch (e) {
         logger.error(e);
         resetBranchSpinner.fail('Failed to reset branch; not applying migration');
+        return;
       }
     }
 
