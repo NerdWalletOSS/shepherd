@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import Octokit from '@octokit/rest';
 import chalk from 'chalk';
-import { isEqual } from 'lodash';
 import netrc from 'netrc';
 import path from 'path';
 
@@ -74,7 +73,7 @@ class GithubAdapter extends GitAdapter {
   }
 
   public reposEqual(repo1: IRepo, repo2: IRepo): boolean {
-    return isEqual(repo1, repo2);
+    return repo1.owner === repo2.owner && repo1.name === repo2.name;
   }
 
   public stringifyRepo({ owner, name }: IRepo): string {
@@ -125,7 +124,6 @@ class GithubAdapter extends GitAdapter {
         }
       }
     }
-
 
     // If we got this far, we can go ahead and reset to the default branch
     await this.git(repo).reset(['--hard', `origin/${defaultBranch}`]);

@@ -37,7 +37,13 @@ export default async (context: IMigrationContext, param1: (RepoHandler | IOption
   // If `selectedRepos` is specified, we should use that instead of the full repo list
   let repos;
   if (selectedRepos && selectedRepos.length) {
-    repos = selectedRepos;
+    // If this repo was already checked out, it may have additional metadata
+    // associated with it that came from the adapter's mapRepoAfterCheckout
+    // Let's rely on the migrations from the list on disk if at all possible
+    repos = selectedRepos.map((r) => {
+      const existingRepo = (migrationRepos || []).find((repo) => adapter.reposEqual(r, repo));
+      return existingRepo || r;
+    });
   } else {
     repos = migrationRepos || [];
   }
