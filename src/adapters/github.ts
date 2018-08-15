@@ -84,7 +84,7 @@ class GithubAdapter extends GitAdapter {
   public async resetRepoBeforeApply(repo: IRepo, force: boolean) {
     const { owner, name, defaultBranch } = repo;
     // First, get any changes from the remote
-    this.git(repo).fetch('origin');
+    await this.git(repo).fetch('origin');
 
     // Get all branches and look for the remote branch
     // @ts-ignore (typings are broken)
@@ -128,7 +128,7 @@ class GithubAdapter extends GitAdapter {
     }
 
     // If we got this far, we can go ahead and reset to the default branch
-    this.git(repo).reset(['--hard', `origin/${defaultBranch}`]);
+    await this.git(repo).reset(['--hard', `origin/${defaultBranch}`]);
   }
 
   public async createPullRequest(repo: IRepo, message: string): Promise<void> {
