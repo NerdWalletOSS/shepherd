@@ -81,15 +81,54 @@ class GithubAdapter extends GitAdapter {
     return `${owner}/${name}`;
   }
 
-  public async canResetBranch(repo: IRepo): Promise<boolean> {
-    // We'll get the list of all commits not on master and check if they're
-    // all from Shepherd. If they are, it's safe to reset the branch to
-    // master.
-    const commitLog = await this.git(repo).log({
-      from: `origin/${repo.defaultBranch}`,
-      to: this.branchName,
-    });
-    return commitLog.all.every(({ message }) => this.isShepherdCommitMessage(message));
+  public async resetRepoBeforeApply(repo: IRepo, force: boolean) {
+    const { owner, name, defaultBranch } = repo;
+    // First, get any changes from the remote
+    this.git(repo).fetch('origin');
+
+    // Get all branches and look for the remote branch
+    // @ts-ignore (typings are broken)
+    const { branches } = await this.git(repo).branch();
+    if (branches[`remotes/origin/${this.branchName}` === undefined]) {
+      // This remote branch does not exist
+      // We need to figure out if that's because a PR was open and
+      // subsequently closed, or if it's because we just haven't pushed
+      // a branch yet
+      const pullRequests = await this.octokit.pullRequests.getAll({
+        owner,
+        repo: name,
+        head: `${owner}:${this.branchName}`,
+        state: 'all',
+      });
+
+      if (pullRequests.data && pullRequests.data.length) {
+        // We'll assume that if a remote branch does not exist but a PR
+        // does/did, we don't want to apply to this branch
+        throw new Error('Remote branch did not exist, but a pull request does or did');
+      }
+    } else {
+      // The remote branch exists!
+      // If a reset is being forced, we don't have to bother pulling in remote changes
+      if (!force) {
+        // Let's pull in any remote changes
+        await this.git(repo).pull('origin', this.branchName);
+
+        // We'll get the list of all commits not on master and check if they're
+        // all from Shepherd. If they are, it's safe to reset the branch to
+        // master.
+        const commits = await this.git(repo).log({
+          to: this.branchName,
+        });
+        const allShepherd = commits.all.every(({ message }) => this.isShepherdCommitMessage(message));
+        if (!allShepherd) {
+          // RIP. Die loudly.
+          throw new Error('Found non-Shepherd commits after pulling; try with --force-reset-branch?');
+        }
+      }
+    }
+
+    // If we got this far, we can go ahead and reset to the default branch
+    this.git(repo).reset(['--hard', `origin/${defaultBranch}`]);
   }
 
   public async createPullRequest(repo: IRepo, message: string): Promise<void> {

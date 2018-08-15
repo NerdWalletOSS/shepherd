@@ -27,7 +27,7 @@ abstract class GitAdapter implements IRepoAdapter {
 
   public abstract mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo>;
 
-  public abstract canResetBranch(repo: IRepo): Promise<boolean>;
+  public abstract resetRepoBeforeApply(repo: IRepo, force: boolean): Promise<void>;
 
   public async checkoutRepo(repo: IRepo): Promise<void> {
     const repoPath = this.getRepositoryUrl(repo);
@@ -56,33 +56,6 @@ abstract class GitAdapter implements IRepoAdapter {
         await this.git(repo).checkout(this.branchName);
       }
     }
-  }
-
-  public async updateRepo(repo: IRepo): Promise<void> {
-    await this.git(repo).pull('origin', this.branchName);
-  }
-
-  public async resetBranch(repo: IRepo): Promise<void> {
-    // Potentially bad assumption: either the most recent commit is not from
-    // Shepherd, or it is, and all previous commits are also from Shepherd.
-    // If the most recent commit is from Shepherd, we'll walk back to the first
-    // non-Shepherd commit in our history and reset to that as a base on which
-    // apply the migration again.
-    const commitLog = await this.git(repo).log();
-    if (!this.isShepherdCommitMessage(commitLog.latest.message)) {
-      // We shouldn't ever end up in this state, but if we do, die loudly
-      throw new Error('Cannot reset branch: most recent commit is not from Shepherd');
-    }
-
-    // Find the first non-Shepherd commit
-    const commit = commitLog.all.find((c) => !this.isShepherdCommitMessage(c.message));
-
-    if (!commit) {
-      throw new Error('Could not find a commit that is not from Shepherd');
-    }
-
-    // Reset to this commit
-    await this.git(repo).reset(['--hard', commit.hash]);
   }
 
   public async commitRepo(repo: IRepo): Promise<void> {

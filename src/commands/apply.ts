@@ -16,35 +16,20 @@ export default async (context: IMigrationContext, options: any): Promise<void> =
       return;
     }
 
-    const updateRepoSpinner = logger.spinner('Updating repo with latest changes from remote');
-    try {
-      await adapter.updateRepo(repo);
-      updateRepoSpinner.succeed('Successfully updated repo');
-    } catch (e) {
-      logger.error(e);
-      updateRepoSpinner.fail('Failed to update repo. Proceed with caution!');
-    }
-
-    const canResetBranchSpinner = logger.spinner('Checking if branch can be reset');
-    try {
-      const canResetBranch = await adapter.canResetBranch(repo);
-      if (!canResetBranch) {
-        canResetBranchSpinner.fail('Cannot reset branch. Proceed with caution!');
+    if (options.skipResetBranch) {
+      logger.info('Not resetting branch');
+    } else {
+      const resetBranchSpinner = logger.spinner('Resetting branch');
+      try {
+        await adapter.resetRepoBeforeApply(repo, options.forceResetBranch);
+        resetBranchSpinner.succeed('Successfully reset branch');
+      } catch (e) {
+        logger.error(e);
+        resetBranchSpinner.fail('Failed to reset branch; not applying migration');
       }
-      canResetBranchSpinner.succeed('Branch is able to be reset');
-    } catch (e) {
-      logger.error(e);
-      canResetBranchSpinner.fail('Cannot reset branch. Proceed with caution!');
     }
 
-    const resetBranchSpinner = logger.spinner('Resetting branch');
-    try {
-      await adapter.resetBranch(repo);
-      resetBranchSpinner.succeed('Successfully reset branch');
-    } catch (e) {
-      logger.error(e);
-      resetBranchSpinner.fail('Failed to reset branch. Proceed with caution!');
-    }
+    return;
 
     logger.infoIcon('Running apply steps');
     const stepsResults = await executeSteps(context, repo, 'apply');
@@ -54,7 +39,9 @@ export default async (context: IMigrationContext, options: any): Promise<void> =
     }
 
     logger.error('> Failed to run all apply steps');
-    if (options.resetOnError) {
+    if (options.skipResetOnError) {
+      logger.info('Not resetting repo');
+    } else {
       const spinner = logger.spinner('Resetting repo');
       try {
         await adapter.resetChangedFiles(repo);
@@ -63,8 +50,6 @@ export default async (context: IMigrationContext, options: any): Promise<void> =
         logger.error(e);
         spinner.fail('Failed to reset repo');
       }
-    } else {
-      logger.info('Not resetting repo');
     }
   });
 };
