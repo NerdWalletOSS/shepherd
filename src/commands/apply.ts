@@ -29,8 +29,6 @@ export default async (context: IMigrationContext, options: any): Promise<void> =
       }
     }
 
-    return;
-
     logger.infoIcon('Running apply steps');
     const stepsResults = await executeSteps(context, repo, 'apply');
     if (stepsResults.succeeded) {
