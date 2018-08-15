@@ -83,7 +83,8 @@ class GithubAdapter extends GitAdapter {
   public async resetRepoBeforeApply(repo: IRepo, force: boolean) {
     const { owner, name, defaultBranch } = repo;
     // First, get any changes from the remote
-    await this.git(repo).fetch('origin');
+    // --prune will ensure that any remote branch deletes are reflected here
+    await this.git(repo).fetch(['origin', '--prune']);
 
     if (!force) {
       // Get all branches and look for the remote branch
