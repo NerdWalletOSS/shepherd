@@ -46,3 +46,39 @@ title: Rename all .eslintrc files to .eslintrc.yml
 ```
 
 The `id` value will be used to as a unique identifier for this migration, as well as the name of the branch that Shepherd creates. The `title` will be used to build a commit message and a title for the pull request that we'll open.
+
+## Hooking our migration up to GitHub
+
+Shepherd isn't tied to any specific version control system; all interactions with repositories and hosted sites like GitHub and Bitbucket happen through a layer of abstraction called an adapter. You can read more about how adapters work [here](./adapters.md) if you're interested.
+
+To tell Shepherd which adapter we want to use, we can add to our `shepherd.yml` file:
+
+```yml
+# shepherd.yml
+adapter:
+  type: github
+```
+
+This tells Shepherd that we should use the GitHub adapter. This will be relevant when finding repositories to operate on, cloning repositories, pushing changes, and opening pull requests.
+
+## Finding repositories to migrate
+
+If we wanted to be naïve, we could check out every repository you own looking for `.eslintrc` files. Thankfully, GitHub has the ability to search repos using [advanced search qualifiers](https://help.github.com/articles/searching-code/). You can write a search query to identify repositories that are candidates for migrations. If a repository contains a file matching the search, it will be checked out as a candidate for a migration.
+
+```yml
+# shepherd.yml
+adapter:
+  type: github
+  search_query: org:NerdWalletOSS path:/ filename:.eslintrc
+```
+
+This search query will be used to identify any repositories in the `NerdWalletOSS` GitHub organization that contain a `.eslintrc` file in the repository root. **Note:** you should change `org:NerdWalletOSS` to your own username if you've cloned our demo repository.
+
+For the purpose of this demo, we'll change the search query to only match the Shepherd demo to avoid modifying any of your own repositories that might actually have a `.eslintrc` file in them.
+
+```yml
+#shepherd.yml
+adapter:
+  type: github
+  search_query: repo:YOURUSERNAME/shepherd-demo path:/ filename:.eslintrc
+```
