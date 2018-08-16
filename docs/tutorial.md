@@ -10,7 +10,7 @@ ESLint has deprecated extensionless `.eslintrc` files - they're now expected to 
 
 Thankfully, you just heard about this tool called Shepherd that can help you automate code changes across infinitely many repositories at once. Let's build a Shepherd migration to do all the hard work for you.
 
-## Setting up a test repository
+## Setting up for the tutorial
 
 Of course, for this tutorial, you don't have access to hundreds of repositories to try Shepherd out on. So, we'll be running on this migration on only one repository. While it may seem silly to do all this work just to rename a single file in a single repository, keep in mind that once you have a migration working for one repository, it will scale efforlessly to as many repositories as your organization has.
 
@@ -35,9 +35,9 @@ Create that file in the directory you just made and open it in your favorite edi
 touch shepherd.yml
 ```
 
-## Preview of coming attractions
+## An aside
 
-An aside: this tutorial goes somewhat slowly to explain a lot of core concepts. If you're like me and need instant gratification and want to see a fully-automated pull request **now**, here's the finished migration spec. You can copy/paste this into the `shepherd.yml` file you just created and then run the following commands to show off the full process.
+This tutorial goes somewhat slowly to explain a lot of core concepts. If you're like me and need instant gratification and want to see a fully-automated pull request **now**, you can scroll all the way to the bottom of this page to see the completed migration spec and the commands needed to apply it. Once that's satiated your need for immediate results, come back here and see how it all works!
 
 ## Outlining our migration spec
 
