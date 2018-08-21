@@ -12,7 +12,7 @@ script:
 - npm run test
 deploy:
   provider: npm
-  email: 
+  email: "npm@nerdwallet.com"
   on:
     tags: true
     branch: master
