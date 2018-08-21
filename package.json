@@ -2,31 +2,49 @@
   "name": "@nerdwallet/shepherd",
   "version": "1.0.0",
   "description": "A utility for applying code changes across many repositories",
-  "scripts": {
-    "build": "tsc",
-    "build:watch": "npm run build -- --watch",
-    "lint": "tslint -p . -c tslint.json 'src/**/*.ts'",
-    "fix-lint": "npm run lint -- --fix",
-    "test": "jest --coverage src/"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NerdWalletOSS/shepherd.git"
-  },
   "keywords": [
     "codemod",
     "codemods",
     "migration"
   ],
-  "author": "Nathan Walters",
-  "license": "Apache-2.0",
+  "homepage": "https://github.com/NerdWalletOSS/shepherd#readme",
   "bugs": {
     "url": "https://github.com/NerdWalletOSS/shepherd/issues"
   },
-  "homepage": "https://github.com/NerdWalletOSS/shepherd#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NerdWalletOSS/shepherd.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Nathan Walters",
   "bin": {
     "shepherd": "./lib/cli.js"
   },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "npm run build -- --watch",
+    "fix-lint": "npm run lint -- --fix",
+    "lint": "tslint -p . -c tslint.json 'src/**/*.ts'",
+    "prepublishOnly": "npm run test && npm run build",
+    "test": "jest --coverage src/"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    }
+  },
+  "files": [
+    "lib"
+  ],
   "dependencies": {
     "@octokit/rest": "^15.9.4",
     "@types/js-yaml": "^3.11.2",
@@ -58,19 +76,5 @@
     "ts-jest": "^23.0.1",
     "tslint": "^5.11.0",
     "typescript": "^3.0.1"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
   }
 }
