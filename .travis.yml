@@ -1,23 +1,27 @@
 language: node_js
 node_js:
-- 6
-- 8
-- 10
+  - 6
+  - 8
+  - 10
 cache:
   directories:
-  - node_modules
+    - node_modules
+
 script:
-- npm run lint
-- npm run build
-- npm run test
-deploy:
-  provider: npm
-  email: "npm@nerdwallet.com"
-  on:
-    tags: true
-    branch: master
-    # Only publish from the Node 10 job in the build matrix
-    node: 10
-  skip_cleanup: true
-  api_key:
-    secure: pVg+rCrDhJhU6wa9NvU1/rR+wI4vpYzqtT21tdFh+WJRbBLNz/ECfRKgIejp5zaSHcIXgsa+pZXwTHpldoYDBBnIQDb5NmEScurUBPwzmuwP0tMODxMnksv7ltTGqvwwdnfOH9gl/dKqXKZn65BL+xLmBaCXsGsQm9BlG1t4NK1kRHawLifu4jaHcuM1dJ1sLGSUqOry72Z7ZW2Io9vAHpUtxGYUN5wzUJtuOrtN2iRlW3py2A2mfzlQHNbWSH3yWywo1znOnmIvw2FeVnjmU3MPuDVi0SDtqm3JNNKX1fwTfAtSVrp8BHdcYa1oxtnBkDUJ7LdGwGCFtfEwrp0UCoJiHE8HbaJbltjoucJ9rXJ0oFzFWy8L7BJoG+4rHumqgYzCDinOfSTpj6OHydXf5Cn4hlnGP27nMH+bMMOfMUZCKDdnFjamk0Yi1XdsdwXqxWf7d+P7V3mvVh35c7PgR47sQ9HmMQQJXTPuoYxu+fRwkau7Q/eumHDCxFQBRWmLdwJf9aiNbUk19cKzO6emb1Xo3h8HOuc/Ib79p5P23LnHTLzFZnBt4xG7xBVap7FFRjfq2xgdTTYonoVZ7m306GQxydsJWXQMN09A/Qz9YhbQ+PiLMiJfjqL2dTGoVU/evhLhyCFD+snAvuJ3Ak6oW2CW+Sj9q0A3wovVE59ceWs=
+  - npm run lint
+  - npm run build
+  - npm run test
+
+jobs:
+  include:
+    - stage: npm release
+      node_js: "10"
+      script: echo "Publishing to npm..."
+      deploy:
+        provider: npm
+        on:
+          tags: true
+          branch: master
+        email: "npm@nerdwallet.com"
+        api_key:
+          secure: pVg+rCrDhJhU6wa9NvU1/rR+wI4vpYzqtT21tdFh+WJRbBLNz/ECfRKgIejp5zaSHcIXgsa+pZXwTHpldoYDBBnIQDb5NmEScurUBPwzmuwP0tMODxMnksv7ltTGqvwwdnfOH9gl/dKqXKZn65BL+xLmBaCXsGsQm9BlG1t4NK1kRHawLifu4jaHcuM1dJ1sLGSUqOry72Z7ZW2Io9vAHpUtxGYUN5wzUJtuOrtN2iRlW3py2A2mfzlQHNbWSH3yWywo1znOnmIvw2FeVnjmU3MPuDVi0SDtqm3JNNKX1fwTfAtSVrp8BHdcYa1oxtnBkDUJ7LdGwGCFtfEwrp0UCoJiHE8HbaJbltjoucJ9rXJ0oFzFWy8L7BJoG+4rHumqgYzCDinOfSTpj6OHydXf5Cn4hlnGP27nMH+bMMOfMUZCKDdnFjamk0Yi1XdsdwXqxWf7d+P7V3mvVh35c7PgR47sQ9HmMQQJXTPuoYxu+fRwkau7Q/eumHDCxFQBRWmLdwJf9aiNbUk19cKzO6emb1Xo3h8HOuc/Ib79p5P23LnHTLzFZnBt4xG7xBVap7FFRjfq2xgdTTYonoVZ7m306GQxydsJWXQMN09A/Qz9YhbQ+PiLMiJfjqL2dTGoVU/evhLhyCFD+snAvuJ3Ak6oW2CW+Sj9q0A3wovVE59ceWs=
