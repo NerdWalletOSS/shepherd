@@ -14,17 +14,13 @@ Thankfully, you just heard about this tool called Shepherd that can help you aut
 
 Of course, for this tutorial, you don't have access to hundreds of repositories to try Shepherd out on. So, we'll be running on this migration on only one repository. While it may seem silly to do all this work just to rename a single file in a single repository, keep in mind that once you have a migration working for one repository, it will scale efforlessly to as many repositories as your organization has.
 
-We've set up a simple repository that you can fork for the purpose of this demo.
+We've set up a simple repository that you can fork for the purpose of this demo: [shepherd-demo](https://github.com/NerdWalletOSS/shepherd-demo). You should fork this repository first, but there's no need to clone it to your machine! Shepherd will take care of that for you. Note that there's no actual project in the repository, as that's not relevant to this tutorial.
 
-[forking instructions here]
-
-There's no actual project in the repository, as that's not relevant to this tutorial.
-
-Create a directory to hold files for this migration somewhere on your machine. We'll be using the directory `~/shepherd-demo`.
+Create a directory to hold files for this migration somewhere on your machine. We'll be using the directory `~/shepherd-migration`.
 
 ```sh
-mkdir ~/shepherd-demo
-cd ~/shepherd-demo
+mkdir ~/shepherd-migration
+cd ~/shepherd-migration
 ```
 
 Shepherd migrations are declaratively specified in a file named `shepherd.yml`. We call this file a spec.
@@ -176,7 +172,7 @@ That's it! Not too bad, right?
 Run the following command to apply the migration to all checked out repositories:
 
 ```sh
-shepherd apply ~/shepherd-demo
+shepherd apply ~/shepherd-migration
 ```
 
 ## Committing the changes from the migration
@@ -184,7 +180,7 @@ shepherd apply ~/shepherd-demo
 Run the following command to commit all the changes to their respective repositories:
 
 ```sh
-shepherd commit ~/shepherd-demo
+shepherd commit ~/shepherd-migration
 ```
 
 This will commit the changes with a message derived from the migration spec title:
@@ -198,7 +194,7 @@ This will commit the changes with a message derived from the migration spec titl
 Run the following command to push all the remote branches up to GitHub:
 
 ```sh
-shepherd push ~/shepehrd-demo
+shepherd push ~/shepherd-migration
 ```
 
 You should now see your branch in the repository if you visit GitHub.
@@ -217,14 +213,14 @@ hooks:
 You can now open a pull request for your repos:
 
 ```sh
-shepherd pr ~/shepherd-demo
+shepherd pr ~/shepherd-migration
 ```
 
 If you visit your repository, you should see that Shepherd opened a pull request for you!
 
 ## From start to finish
 
-Congrats! You just applied an automated Shepherd migration to a repo! While this may seem trivial for just a single repo, it scales efforlessly to as many repos as you need. You can also perform significantly more complex tasks than just renaming a file. If you can automate you changes with any tool in any language, you can apply it across all your repos with Shepherd.
+Congrats! You just applied an automated Shepherd migration to a repo! While this may seem trivial for just a single repo, it scales efforlessly to as many repos as you need. You can also perform significantly more complex tasks than just renaming a file. If you can automate your changes with any tool in any language, you can apply it across all your repos with Shepherd.
 
 Here's our finished migration spec:
 
@@ -247,9 +243,9 @@ hooks:
 And here are all the commands we used to apply this migration:
 
 ```sh
-shepherd checkout ~/shepherd-demo
-shepherd apply ~/shepherd-demo
-shepherd commit ~/shepherd-demo
-shepherd push ~/shepherd-demo
-shepherd pr ~/shepherd-demo
+shepherd checkout ~/shepherd-migration
+shepherd apply ~/shepherd-migration
+shepherd commit ~/shepherd-migration
+shepherd push ~/shepherd-migration
+shepherd pr ~/shepherd-migration
 ```
