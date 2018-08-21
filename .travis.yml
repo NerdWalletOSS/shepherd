@@ -15,7 +15,7 @@ script:
 jobs:
   include:
     - stage: npm release
-      # Only run this job on master
+      # Only run this job for tagged commits
       if: tag IS present
       node_js: "10"
       script: echo "Publishing to npm..."
