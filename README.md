@@ -1,5 +1,9 @@
 # Shepherd
 
+![Travis status](https://img.shields.io/travis/NerdWalletOSS/shepherd/master.svg?style=flat-square)
+![npm version](https://img.shields.io/npm/v/@nerdwallet/shepherd.svg?style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/NerdWalletOSS/shepherd.svg?style=flat-square)
+
 Shepherd is a utility for applying code changes across many repositories.
 
 * **Powerful**: You can write migration scripts using your favorite Unix commands, tools like [`jscodeshift`](https://github.com/facebook/jscodeshift), or scripts in your preferred programming language.
