@@ -2,9 +2,9 @@
 
 Shepherd is a utility for applying code changes across many repositories.
 
-* `Powerful`: You can write migration scripts using your favorite Unix commands, tools like [`jscodeshift`](https://github.com/facebook/jscodeshift), or scripts in your preferred programming language.
-* `Easy`: With just a few commands, you can checkout dozens of repositories, apply changes, commit those changes, and open pull requests with detailed messages.
-* `Flexible`: Ships with support for Git/GitHub, but can easily be extended to work with other version control products like Bitbucket, GitLab, or SVN.
+* **Powerful**: You can write migration scripts using your favorite Unix commands, tools like [`jscodeshift`](https://github.com/facebook/jscodeshift), or scripts in your preferred programming language.
+* **Easy**: With just a few commands, you can checkout dozens of repositories, apply changes, commit those changes, and open pull requests with detailed messages.
+* **Flexible**: Ships with support for Git/GitHub, but can easily be extended to work with other version control products like Bitbucket, GitLab, or SVN.
 
 **Note**: This software should be considered a beta product: it's subject to change without notice as we explore new ideas and best practices.
 
