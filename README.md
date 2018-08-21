@@ -8,18 +8,9 @@ Shepherd is a utility for applying code changes across many repositories.
 
 **Note**: This software should be considered a beta product: it's subject to change without notice as we explore new ideas and best practices.
 
-## Motivation for using Shepherd
+## Getting started
 
-Moving away from monorepos and monolithic applications has generally been a good thing for developers because it allows them to move quickly and independently from each other. However, it's easy to run into problems, especially if your code relies on shared libraries. Specifically, making a change to shared code and then trying to roll that shared code out to all consumers of that code becomes difficult:
-
-* The person updating that library must communicate the change to consumers of the library
-* The consumer must understand the change and how they have to update their own code
-* The consumer must make the necessary changes in their own code
-* The consumer must test, merge, and deploy those changes
-
-Shepherd aims to help shift responsibility for the first three steps to the person actually making the change to the library. Since they have the best understanding of their change, they can write a code migration to automate that change and then user Shepherd to automate the process of applying that change to all relevant repos. Then the owners of the affected repos (who have the best understanding of their own code) can review and merge the changes. This process is especially efficient for teams who rely on continuous integration: automated tests can help repository owners have confidence that the code changes are working as expected.
-
-## Installation
+Install the Shepherd CLI:
 
 ```sh
 npm install -g @nerdwallet/shepherd
@@ -36,11 +27,20 @@ Usage: shepherd [options] [command]
 ...
 ```
 
-## Getting started
-
-We recommend walking through our tutorial to get familiar with how to write a Shepherd migration and what the Shepherd workflow looks like.
+Take a look at the [tutorial](docs/tutorial.md) for a detailed walkthrough of what Shepherd does and how it works, or read on for a higher-level and more brief look!
 
 [Go to tutorial →](docs/tutorial.md)
+
+## Motivation for using Shepherd
+
+Moving away from monorepos and monolithic applications has generally been a good thing for developers because it allows them to move quickly and independently from each other. However, it's easy to run into problems, especially if your code relies on shared libraries. Specifically, making a change to shared code and then trying to roll that shared code out to all consumers of that code becomes difficult:
+
+* The person updating that library must communicate the change to consumers of the library
+* The consumer must understand the change and how they have to update their own code
+* The consumer must make the necessary changes in their own code
+* The consumer must test, merge, and deploy those changes
+
+Shepherd aims to help shift responsibility for the first three steps to the person actually making the change to the library. Since they have the best understanding of their change, they can write a code migration to automate that change and then user Shepherd to automate the process of applying that change to all relevant repos. Then the owners of the affected repos (who have the best understanding of their own code) can review and merge the changes. This process is especially efficient for teams who rely on continuous integration: automated tests can help repository owners have confidence that the code changes are working as expected.
 
 ## Writing migrations
 

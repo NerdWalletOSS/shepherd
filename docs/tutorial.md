@@ -2,7 +2,7 @@
 
 In this tutorial, we're going to build a simple Shepherd migration spec and apply it to a demo repo.
 
-> Note: this tutorial is designed for people who like to learn by doing. If that's not how you prefer to learn, you can check out the complete docs.
+> Note: this tutorial is designed for people who like to learn by doing. If that's not how you prefer to learn, you can check out the docs on the [Readme](../README.md).
 
 ## Setting the scene
 
