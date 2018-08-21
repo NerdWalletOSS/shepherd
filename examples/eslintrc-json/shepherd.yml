@@ -1,9 +1,0 @@
-id: 2018.07.16-eslintrc-json
-title: Rename all .eslintrc files to .eslintrc.json
-adapter:
-  type: github
-  search_query: org:NerdWallet path:/ filename:.eslintrc
-hooks:
-  should_migrate: ls .eslintrc # Check that this file actually exists in the repo
-  apply: mv .eslintrc .eslintrc.json
-  pr_message: $SHEPHERD_MIGRATION_DIR/pr.sh
