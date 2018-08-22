@@ -10,8 +10,6 @@ Shepherd is a utility for applying code changes across many repositories.
 * **Easy**: With just a few commands, you can checkout dozens of repositories, apply changes, commit those changes, and open pull requests with detailed messages.
 * **Flexible**: Ships with support for Git/GitHub, but can easily be extended to work with other version control products like Bitbucket, GitLab, or SVN.
 
-**Note**: This software should be considered a beta product: it's subject to change without notice as we explore new ideas and best practices.
-
 ## Getting started
 
 Install the Shepherd CLI:
@@ -86,9 +84,9 @@ Each of these commands will be executed with the workign directory set to the ta
 * `SHEPHERD_DATA_DIR` is the absolute path to a special directory that can be used to persist state between steps. This would be useful if, for instance, a `jscodeshift` codemod in your `apply` hook generates a list of files that need human attention and you want to use that list in your `pr_message` hook.
 * `SHEPHERD_MIGRATION_DIR` is the absolute path to the directory containing your migration's `shepherd.yml` file. This is useful if you want to include a script with your migration spec and need to reference that command in a hook. For instance, if I have a script `pr.sh` that will generate a PR message: my `pr_message` hook might look something like this:
 
-```yml
-pr_message: $SHEPHERD_MIGRATION_DIR/pr.sh
-```
+  ```yml
+  pr_message: $SHEPHERD_MIGRATION_DIR/pr.sh
+  ```
 
 Commands follow standard Unix conventions: an exit code of 0 indicates a command succeeded, a non-zero exit code indicates failure.
 
@@ -111,16 +109,20 @@ There are a number of commands that must be run to execute a migration:
 * `pr-preview`: Prints the commit message that would be used for each repository without actually creating a PR; uses the `pr_message` hook.
 * `pr`: Creates a PR for each repo with the message generated from the `pr_message` hook.
 
-Currently, the only supported option is `--repos`, which allows you to specifiy a comma-separated list of repos that should be operated on. An example usage of this option:
+By default, `checkout` will use the adapter to figure out which repositories to check out, and the remaining commands will operate on all checked-out repos. To only checkout a specific repo or to operate on only a subset of the checked-out repos, you can use the `--repos` flag, which specifies a comma-separated list of repos:
 
 ```sh
-shepherd checkout ~/path/to/migration --repos facebook/react,google/protobuf
+shepherd checkout path/to/migration --repos facebook/react,google/protobuf
 ```
 
-Run `shepherd --help` to see available commands and descriptions for each one.
+Run `shepherd --help` to see all available commands and descriptions for each one.
 
 ### Developing
 
 Run `npm install` to install dependencies, and then `npm install -g` to make the `shepherd` executable available on your `PATH`.
 
-Shepherd is written in TypeScript, which requires compilation to JavaScript. When developing Shepherd, it's recommended to run `npm run build:watch` in a separate terminal. This will constantly recompile the source code as you edit it.
+Shepherd is written in TypeScript, which requires compilation to JavaScript. When developing Shepherd, it's recommended to run `npm run build:watch` in a separate terminal. This will incrementally compile the source code as you edit it.
+
+Shepherd currently has minimal test coverage, but we're aiming to improve that with each new PR. Tests are written with Jest and should be named in a `*.test.ts` alongside the file under test. To run the test suite, run `npm run test`.
+
+We use [TSLint](https://github.com/palantir/tslint) to ensure a consistent coding style and to help prevent certain classes of problems. Run `npm run lint` to run the linter, and `npm run fix-lint` to automatically fix applicable problems.
