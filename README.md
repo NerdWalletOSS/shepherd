@@ -10,6 +10,8 @@ Shepherd is a utility for applying code changes across many repositories.
 * **Easy**: With just a few commands, you can checkout dozens of repositories, apply changes, commit those changes, and open pull requests with detailed messages.
 * **Flexible**: Ships with support for Git/GitHub, but can easily be extended to work with other version control products like Bitbucket, GitLab, or SVN.
 
+For more high level context, this [blog post](https://www.nerdwallet.com/blog/engineering/shepherd-automating-code-changes/) covers the basics.
+
 ## Getting started
 
 Install the Shepherd CLI:
