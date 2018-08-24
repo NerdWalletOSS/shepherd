@@ -75,12 +75,12 @@ The options under `hooks` specify the meat of a migration. They tell Shepherd ho
 
 * `should_migrate` is a sequence of commands to execute to determine if a repo actually requires a migration. If any of them exit with a non-zero value, that signifies to Shepherd that the repo should not be migrated. For instance, the second step in the above `should_migrate` hook would fail if the repo was last modified in 2017, since `grep` would exit with a non-zero value.
 * `post_checkout` is a sequence of commands to be executed once a repo has been checked out and passed any `should_migrate` checks. This is a convenient place to do anything that will only need to be done once per repo, such as installing any dependencies.
-* `apply` is a sequence of commands that will actually execute the migration. This example is very simple: we're just using `mv` to rename a file. However, this hook could contain arbitrarily many, potentially complex commands, depending on the requirements of your particualr migration.
+* `apply` is a sequence of commands that will actually execute the migration. This example is very simple: we're just using `mv` to rename a file. However, this hook could contain arbitrarily many, potentially complex commands, depending on the requirements of your particular migration.
 * `pr_message` is a sequence of commands that will be used to generate a pull request message for a repository. In the simplest case, this can just be a static message, but you could also programmatically generate a message that calls out particular things that might need human attention. Anything written to `stdout` will be used for the message. If multiple commands are specified, the output from each one will be concatenated together.
 
 `should_migrate` and `post_checkout` are optional; `apply` and `pr_message` are required.
 
-Each of these commands will be executed with the workign directory set to the target repository. Shepherd exposes some context to each command via specific environment variables:
+Each of these commands will be executed with the working directory set to the target repository. Shepherd exposes some context to each command via specific environment variables:
 
 * `SHEPHERD_REPO_DIR` is the absolute path to the repository being operated on. This will be the working directory when commands are executed.
 * `SHEPHERD_DATA_DIR` is the absolute path to a special directory that can be used to persist state between steps. This would be useful if, for instance, a `jscodeshift` codemod in your `apply` hook generates a list of files that need human attention and you want to use that list in your `pr_message` hook.
