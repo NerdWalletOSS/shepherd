@@ -8,4 +8,4 @@ When new features, bug fixes, and so on are added to Shepherd, there should be a
 
 ## v1.0.0
 
-* Initial public releast to npm :tada:
+* Initial public release to npm :tada:
