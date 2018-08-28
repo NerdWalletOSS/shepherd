@@ -4,6 +4,8 @@ When new features, bug fixes, and so on are added to Shepherd, there should be a
 
 ## [Upcoming]
 
+* Fix commit check logic when checking for non-Shepherd commits
+
 ## v1.0.0
 
 * Initial public releast to npm :tada:
