@@ -263,7 +263,7 @@ class GithubAdapter extends GitAdapter {
   }
 
   private async checkActionSafety(repo: IRepo): Promise<SafetyStatus> {
-    const { owner, name, defaultBranch } = repo;
+    const { owner, name } = repo;
 
     // Get all branches and look for the remote branch
     // @ts-ignore (typings are broken)
@@ -290,10 +290,8 @@ class GithubAdapter extends GitAdapter {
       // We'll get the list of all commits not on master and check if they're
       // all from Shepherd. If they are, it's safe to reset the branch to
       // master.
-      const commits = await this.git(repo).log({
-        from: defaultBranch,
-        to: `remotes/origin/${this.branchName}`,
-      });
+      const upstreamBranch = `remotes/origin/${this.branchName}`;
+      const commits = await this.git(repo).log([`HEAD..${upstreamBranch}`]);
       const allShepherd = commits.all.every(({ message }) => this.isShepherdCommitMessage(message));
       if (!allShepherd) {
         // RIP.
