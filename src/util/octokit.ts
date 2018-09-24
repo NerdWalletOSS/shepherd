@@ -18,9 +18,17 @@ export const paginate = (
   while (octokit.hasNextPage(response)) {
     // Avoid GitHub's "abuse detection mechanisms"
     await wait(2000);
-
-    response = await octokit.getNextPage(response); // eslint-disable-line no-await-in-loop
-    data = data.concat(extractItems(response.data));
+    try {
+      response = await octokit.getNextPage(response); // eslint-disable-line no-await-in-loop
+      data = data.concat(extractItems(response.data));
+    } catch (e) {
+      if (e.headers && e.headers['retry-after']) {
+        const retryAfter = e.headers['retry-after'];
+        console.info(`\nHit rate limit; waiting ${retryAfter} seconds and retrying.`);
+        await wait(retryAfter * 1000);
+        continue;
+      }
+    }
   }
   return data;
 };
