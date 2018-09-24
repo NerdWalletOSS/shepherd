@@ -27,6 +27,8 @@ export const paginate = (
         console.info(`\nHit rate limit; waiting ${retryAfter} seconds and retrying.`);
         await wait(retryAfter * 1000);
         continue;
+      } else {
+        throw e;
       }
     }
   }
