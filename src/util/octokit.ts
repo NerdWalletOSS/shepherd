@@ -1,8 +1,8 @@
 import Octokit from '@octokit/rest';
-import { ILogger as logger } from '../logger';
 
 type DataExtractor = (d: any) => any[];
 type Method = (opts: any) => Promise<any>;
+type RetryMethod = (num: number) => any;
 
 const wait = (timeout: number) => new Promise((resolve) => setTimeout(resolve, timeout));
 
@@ -10,6 +10,7 @@ export const paginate = (
   octokit: Octokit,
   method: Method,
   extractItems: DataExtractor = (d: any) => d,
+  onRetry: RetryMethod,
 ) => async (options: any): Promise<any[]> => {
   let response: any = await method({
     ...options,
@@ -28,7 +29,7 @@ export const paginate = (
         if (Number.isNaN(retryAfter)) {
           throw e;
         }
-        logger.info(`\nHit rate limit; waiting ${retryAfter} seconds and retrying.`);
+        onRetry(retryAfter);
         await wait(retryAfter * 1000);
         continue;
       } else {
@@ -42,4 +43,5 @@ export const paginate = (
 // Search responses have a slightly different structure than normal ones, so we
 // need to extract the items from a different key
 const extractSearch = (data: any) => data.items;
-export const paginateSearch = (octokit: Octokit, method: Method) => paginate(octokit, method, extractSearch);
+export const paginateSearch = (octokit: Octokit, method: Method, onRetry: Method) =>
+    paginate(octokit, method, extractSearch, onRetry);

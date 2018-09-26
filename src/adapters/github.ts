@@ -6,7 +6,7 @@ import path from 'path';
 
 import { IMigrationContext } from '../migration-context';
 import { paginateSearch } from '../util/octokit';
-import { IRepo } from './base';
+import {IRepo, RetryMethod} from './base';
 import GitAdapter from './git';
 
 enum SafetyStatus {
@@ -50,8 +50,8 @@ class GithubAdapter extends GitAdapter {
     }
   }
 
-  public async getCandidateRepos(): Promise<IRepo[]> {
-    const searchResults = await paginateSearch(this.octokit, this.octokit.search.code)({
+  public async getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]> {
+    const searchResults = await paginateSearch(this.octokit, this.octokit.search.code, onRetry)({
       q: this.migrationContext.migration.spec.adapter.search_query,
     });
     const repoNames = searchResults.map((r: any) => r.repository.full_name).sort();
