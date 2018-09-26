@@ -19,7 +19,7 @@ export default async (context: IMigrationContext) => {
   } = context;
 
   function onRetry(numSeconds: number) {
-      logger.info(`\nHit rate limit; waiting ${numSeconds} seconds and retrying.`);
+    logger.info(`Hit rate limit; waiting ${numSeconds} seconds and retrying.`);
   }
 
   let repos;

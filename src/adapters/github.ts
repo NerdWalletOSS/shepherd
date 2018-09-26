@@ -1,12 +1,13 @@
 /* eslint-disable class-methods-use-this */
 import Octokit from '@octokit/rest';
 import chalk from 'chalk';
+import _ from 'lodash';
 import netrc from 'netrc';
 import path from 'path';
 
 import { IMigrationContext } from '../migration-context';
 import { paginateSearch } from '../util/octokit';
-import {IRepo, RetryMethod} from './base';
+import { IRepo, RetryMethod } from './base';
 import GitAdapter from './git';
 
 enum SafetyStatus {
@@ -55,7 +56,7 @@ class GithubAdapter extends GitAdapter {
       q: this.migrationContext.migration.spec.adapter.search_query,
     });
     const repoNames = searchResults.map((r: any) => r.repository.full_name).sort();
-    return repoNames.map((r: string) => this.parseRepo(r));
+    return _.uniq(repoNames).map((r: string) => this.parseRepo(r));
   }
 
   public async mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo> {

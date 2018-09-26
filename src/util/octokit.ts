@@ -1,8 +1,8 @@
 import Octokit from '@octokit/rest';
+import { RetryMethod } from '../adapters/base';
 
 type DataExtractor = (d: any) => any[];
 type Method = (opts: any) => Promise<any>;
-type RetryMethod = (num: number) => any;
 
 const wait = (timeout: number) => new Promise((resolve) => setTimeout(resolve, timeout));
 
