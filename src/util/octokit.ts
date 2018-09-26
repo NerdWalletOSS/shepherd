@@ -1,4 +1,5 @@
 import Octokit from '@octokit/rest';
+import { ILogger as logger } from '../logger';
 
 type DataExtractor = (d: any) => any[];
 type Method = (opts: any) => Promise<any>;
@@ -17,14 +18,17 @@ export const paginate = (
   let data = extractItems(response.data);
   while (octokit.hasNextPage(response)) {
     // Avoid GitHub's "abuse detection mechanisms"
-    await wait(2000);
+    await wait(500);
     try {
       response = await octokit.getNextPage(response); // eslint-disable-line no-await-in-loop
       data = data.concat(extractItems(response.data));
     } catch (e) {
       if (e.headers && e.headers['retry-after']) {
-        const retryAfter = e.headers['retry-after'];
-        console.info(`\nHit rate limit; waiting ${retryAfter} seconds and retrying.`);
+        const retryAfter = Number(e.headers['retry-after']);
+        if (Number.isNaN(retryAfter)) {
+          throw e;
+        }
+        logger.info(`\nHit rate limit; waiting ${retryAfter} seconds and retrying.`);
         await wait(retryAfter * 1000);
         continue;
       } else {
