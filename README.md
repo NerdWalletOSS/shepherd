@@ -1,6 +1,6 @@
 # Shepherd
 
-<img width=320 align=right src="https://user-images.githubusercontent.com/332258/46430732-c7bf5c80-c6fe-11e8-9cc8-2abc4e68dce2.jpg">
+<img alt="Illustration of a sheep" width=320 align=right src="https://user-images.githubusercontent.com/332258/46430732-c7bf5c80-c6fe-11e8-9cc8-2abc4e68dce2.jpg">
 
 ![Travis status](https://img.shields.io/travis/NerdWalletOSS/shepherd/master.svg?style=flat-square)
 ![npm version](https://img.shields.io/npm/v/@nerdwallet/shepherd.svg?style=flat-square)
