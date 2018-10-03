@@ -2,8 +2,10 @@ export interface IRepo {
   [key: string]: any;
 }
 
+export type RetryMethod = (opts: number) => any;
+
 interface IRepoAdapter {
-  getCandidateRepos(): Promise<IRepo[]>;
+  getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]>;
 
   parseRepo(repo: string): IRepo;
 

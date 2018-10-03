@@ -1,12 +1,13 @@
 /* eslint-disable class-methods-use-this */
 import Octokit from '@octokit/rest';
 import chalk from 'chalk';
+import _ from 'lodash';
 import netrc from 'netrc';
 import path from 'path';
 
 import { IMigrationContext } from '../migration-context';
 import { paginateSearch } from '../util/octokit';
-import { IRepo } from './base';
+import { IRepo, RetryMethod } from './base';
 import GitAdapter from './git';
 
 enum SafetyStatus {
@@ -50,12 +51,12 @@ class GithubAdapter extends GitAdapter {
     }
   }
 
-  public async getCandidateRepos(): Promise<IRepo[]> {
-    const searchResults = await paginateSearch(this.octokit, this.octokit.search.code)({
+  public async getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]> {
+    const searchResults = await paginateSearch(this.octokit, this.octokit.search.code, onRetry)({
       q: this.migrationContext.migration.spec.adapter.search_query,
     });
     const repoNames = searchResults.map((r: any) => r.repository.full_name).sort();
-    return repoNames.map((r: string) => this.parseRepo(r));
+    return _.uniq(repoNames).map((r: string) => this.parseRepo(r));
   }
 
   public async mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo> {
@@ -190,6 +191,7 @@ class GithubAdapter extends GitAdapter {
       status.push(`PR #${pullRequest.number} [${pullRequest.html_url}]`);
       if (pullRequest.merged_at) {
         status.push(`PR was merged at ${pullRequest.merged_at}`);
+      // @ts-ignore: mergeable_state is not included in @octokit/rest type definition
       } else if (pullRequest.mergeable && pullRequest.mergeable_state === 'clean') {
         status.push(chalk.green('PR is mergeable!'));
       } else {

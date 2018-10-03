@@ -85,7 +85,7 @@ adapter:
   search_query: repo:YOURUSERNAME/shepherd-demo path:/ filename:.eslintrc
 ```
 
-## Filtering repostories
+## Filtering repositories
 
 GitHub's search is still relatively limited. For instance, it doesn't let you determine which version of a dependency a repository uses. To perform additional checks, Shepherd lets you define commands that Shepherd will run to determine if a checked-out repository should be migrated.
 
