@@ -18,13 +18,17 @@ export default async (context: IMigrationContext) => {
     logger,
   } = context;
 
+  function onRetry(numSeconds: number) {
+    logger.info(`Hit rate limit; waiting ${numSeconds} seconds and retrying.`);
+  }
+
   let repos;
   if (selectedRepos) {
     logger.info(`Using ${selectedRepos.length} selected repos`);
     repos = selectedRepos;
   } else {
     const spinner = logger.spinner('Loading candidate repos');
-    repos = await adapter.getCandidateRepos();
+    repos = await adapter.getCandidateRepos(onRetry);
     spinner.succeed(`Loaded ${repos.length} repos`);
   }
 
