@@ -114,7 +114,7 @@ addCommand('pr', 'Create PRs for the specified migration', true, pr);
 addCommand('pr-status', 'Check the status of all PRs for the specified migration', true, prStatus);
 
 // These commands don't take --repos arguments
-addCommand('list', 'List all cehcked out repositories for the given migartion', false, list);
+addCommand('list', 'List all checked out repositories for the given migration', false, list);
 
 program.on('command:*', () => {
   logger.error(`Error: no such command "${program.args[0]}"`);
