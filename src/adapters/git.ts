@@ -39,7 +39,7 @@ abstract class GitAdapter implements IRepoAdapter {
     } else {
       const git = simpleGit();
       git.silent(true);
-      await git.clone(repoPath, localPath);
+      await git.clone(repoPath, localPath, ['--depth', '1']);
     }
 
     // We'll immediately create and switch to a new branch
