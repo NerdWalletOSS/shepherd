@@ -5,6 +5,7 @@ When new features, bug fixes, and so on are added to Shepherd, there should be a
 ## [Upcoming]
 
 * Use shallow git clones
+* Always log stderr of hooks
 
 ## v1.0.2
 
