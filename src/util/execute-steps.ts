@@ -42,8 +42,8 @@ export default async (
       const { promise, childProcess } = execInRepo(context, repo, step);
       if (showOutput) {
         childProcess.stdout.on('data', (out) => logger.info(out.toString().trim()));
-        childProcess.stderr.on('data', (out) => logger.info(out.toString().trim()));
       }
+      childProcess.stderr.on('data', (out) => logger.info(out.toString().trim()));
       const childProcessResult = await promise;
       logger.info(chalk.green(`Step "${step}" exited with 0`));
       results.stepResults.push({
