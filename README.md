@@ -106,7 +106,7 @@ shepherd <command> <migration> [options]
 
 There are a number of commands that must be run to execute a migration:
 
-* `checkout`: Determines which repositories are candidates for migration and clones or updates the repositories on your machine. Uses `should_migrate` to decide if a repository should be kept after it's checked out.
+* `checkout`: Determines which repositories are candidates for migration and clones or updates the repositories on your machine. Clones are "shallow", containing no git history. Uses `should_migrate` to decide if a repository should be kept after it's checked out.
 * `apply`: Performs the migration using the `apply` hook discussed above.
 * `commit`: Makes a commit with any changes that were made during the `apply` step, including adding newly-created files. The migration's `title` will be prepended with `[shepherd]` and used as the commit message.
 * `push`: Pushes all commits to their respective repositories.
