@@ -46,7 +46,7 @@
     "lib"
   ],
   "dependencies": {
-    "@octokit/rest": "^15.9.4",
+    "@octokit/rest": "^15.18.1",
     "@types/js-yaml": "^3.11.2",
     "chalk": "^2.4.1",
     "child-process-promise": "^2.2.1",
