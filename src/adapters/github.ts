@@ -133,7 +133,7 @@ class GithubAdapter extends GitAdapter {
     const { owner, name, defaultBranch } = repo;
 
     // Let's check if a PR already exists
-    const { data: pullRequests } = await this.octokit.pullRequests.getAll({
+    const { data: pullRequests } = await this.octokit.pullRequests.list({
       owner,
       repo: name,
       head: `${owner}:${this.branchName}`,
@@ -173,7 +173,7 @@ class GithubAdapter extends GitAdapter {
     const status: string[] = [];
 
     // First, check for a pull request
-    const pullRequests = await this.octokit.pullRequests.getAll({
+    const pullRequests = await this.octokit.pullRequests.list({
       owner,
       repo: name,
       head: `${owner}:${this.branchName}`,
@@ -275,7 +275,7 @@ class GithubAdapter extends GitAdapter {
       // We need to figure out if that's because a PR was open and
       // subsequently closed, or if it's because we just haven't pushed
       // a branch yet
-      const pullRequests = await this.octokit.pullRequests.getAll({
+      const pullRequests = await this.octokit.pullRequests.list({
         owner,
         repo: name,
         head: `${owner}:${this.branchName}`,

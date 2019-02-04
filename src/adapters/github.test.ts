@@ -57,7 +57,7 @@ describe('GithubAdapter', () => {
   describe('prRepo', () => {
     const mockPrOctokit = (existingPr: any): Octokit => ({
       pullRequests: {
-        getAll: jest.fn().mockReturnValue(existingPr),
+        list: jest.fn().mockReturnValue(existingPr),
         create: jest.fn(),
         update: jest.fn(),
       },
