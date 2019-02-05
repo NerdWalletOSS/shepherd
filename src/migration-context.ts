@@ -11,6 +11,8 @@ export interface IMigrationInfo {
   migrationDirectory: string;
   workingDirectory: string;
   repos: IRepo[] | null;
+  origin: string;
+  target: string;
   selectedRepos?: IRepo[];
 }
 

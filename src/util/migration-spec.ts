@@ -17,6 +17,8 @@ export type MigrationPhase = [keyof IMigrationHooks];
 export interface IMigrationSpec {
   id: string;
   title: string;
+  origin: string;
+  target: string;
   adapter: {
     type: string;
     [key: string]: any;
@@ -58,6 +60,8 @@ export function validateSpec(spec: any) {
   const schema = Joi.object().keys({
     id: Joi.string().required(),
     title: Joi.string().required(),
+    origin: Joi.string(),
+    target: Joi.string(),
     adapter: Joi.object().keys({
       type: Joi.string().allow(['github']).required(),
     }).unknown(true).required(),

@@ -3,7 +3,7 @@ import fs from 'fs-extra-promise';
 import simpleGit, { SimpleGit } from 'simple-git/promise';
 
 import { IMigrationContext } from '../migration-context';
-import IRepoAdapter, {IRepo, RetryMethod} from './base';
+import IRepoAdapter, { IRepo, RetryMethod } from './base';
 
 abstract class GitAdapter implements IRepoAdapter {
   protected migrationContext: IMigrationContext;
@@ -39,7 +39,13 @@ abstract class GitAdapter implements IRepoAdapter {
     } else {
       const git = simpleGit();
       git.silent(true);
-      await git.clone(repoPath, localPath, ['--depth', '1']);
+
+      const gitArgs = ['--depth', '1'];
+      if (this.migrationContext.migration.origin) {
+        gitArgs.push('-b', this.migrationContext.migration.origin, '--single-branch');
+      }
+
+      await git.clone(repoPath, localPath, gitArgs);
     }
 
     // We'll immediately create and switch to a new branch
