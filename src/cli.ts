@@ -39,6 +39,7 @@ type CommandHandler = (context: IMigrationContext, options: any) => Promise<void
 interface ICliOptions {
   repos?: string[];
   originBranch?: string;
+  targetBranch?: string;
 }
 
 const handleCommand = (handler: CommandHandler) => async (migration: string, options: ICliOptions) => {
@@ -68,7 +69,8 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
     migrationContext.migration.selectedRepos = selectedRepos;
 
     const originBranch = options.originBranch;
-    migrationContext.migration.branch = originBranch;
+    const targetBranch = options.targetBranch;
+    migrationContext.migration.branch = originBranch || targetBranch;
 
     // The list of repos will be null if migration hasn't started yet
     migrationContext.migration.repos = await loadRepoList(migrationContext);
@@ -118,8 +120,12 @@ addReposOption(pushCommand);
 pushCommand.option('-f, --force', 'Force push, skipping any safety checks');
 pushCommand.action(handleCommand(push));
 
+const prCommand = buildCommand('pr', 'Create PRs for the specified migration');
+addReposOption(prCommand);
+prCommand.option('--target-branch <branch-name>', 'Specify base branch you want the changes pulled into');
+prCommand.action(handleCommand(pr));
+
 addCommand('pr-preview', 'View a preview of the PR messages for the specified migration', true, prPreview);
-addCommand('pr', 'Create PRs for the specified migration', true, pr);
 addCommand('pr-status', 'Check the status of all PRs for the specified migration', true, prStatus);
 
 // These commands don't take --repos arguments

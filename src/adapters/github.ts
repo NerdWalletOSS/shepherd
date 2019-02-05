@@ -128,9 +128,10 @@ class GithubAdapter extends GitAdapter {
     await super.pushRepo(repo, force || shouldForce);
   }
 
-  public async createPullRequest(repo: IRepo, message: string): Promise<void> {
+  public async createPullRequest(repo: IRepo, message: string, targetBranch?: string): Promise<void> {
     const { migration: { spec } } = this.migrationContext;
     const { owner, name, defaultBranch } = repo;
+    const baseBranch = targetBranch || defaultBranch;
 
     // Let's check if a PR already exists
     const { data: pullRequests } = await this.octokit.pullRequests.list({
@@ -161,7 +162,7 @@ class GithubAdapter extends GitAdapter {
         owner,
         repo: name,
         head: this.branchName,
-        base: defaultBranch,
+        base: baseBranch,
         title: spec.title,
         body: message,
       });

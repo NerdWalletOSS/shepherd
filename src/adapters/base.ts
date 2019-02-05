@@ -25,7 +25,7 @@ interface IRepoAdapter {
 
   pushRepo(repo: IRepo, force: boolean): Promise<void>;
 
-  createPullRequest(repo: IRepo, message: string): Promise<void>;
+  createPullRequest(repo: IRepo, message: string, targetBranch?: string): Promise<void>;
 
   getPullRequestStatus(repo: IRepo): Promise<string[]>;
 

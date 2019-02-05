@@ -29,9 +29,10 @@ export default async (context: IMigrationContext) => {
     }
     spinner.succeed('Generated PR message');
 
-    const prSpinner = logger.spinner('Creating pull request');
+    const branchDisplay = context.migration.branch || 'default branch';
+    const prSpinner = logger.spinner(`Creating pull request to ${branchDisplay}`);
     try {
-      await context.adapter.createPullRequest(repo, message);
+      await context.adapter.createPullRequest(repo, message, context.migration.branch);
       prSpinner.succeed('Pull request created');
     } catch (e) {
       logger.error(e);
