@@ -51,6 +51,8 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
     const migrationContext = {
       migration: {
         migrationDirectory: path.resolve(migration),
+        origin: spec.origin,
+        target: spec.target,
         spec,
         workingDirectory: migrationWorkingDirectory,
       },
