@@ -28,16 +28,17 @@ const shepherdDir = path.join(homedir(), '.shepherd');
 const prefs = new Preferences('com.nerdwallet.shepherd', {
   workingDirectory: shepherdDir,
 }, {
-  encrypt: false,
-  file: path.join(shepherdDir, 'prefs.yaml'),
-  format: 'yaml',
-});
+    encrypt: false,
+    file: path.join(shepherdDir, 'prefs.yaml'),
+    format: 'yaml',
+  });
 const logger = new ConsoleLogger();
 
 type CommandHandler = (context: IMigrationContext, options: any) => Promise<void>;
 
 interface ICliOptions {
   repos?: string[];
+  originBranch?: string;
 }
 
 const handleCommand = (handler: CommandHandler) => async (migration: string, options: ICliOptions) => {
@@ -66,6 +67,9 @@ const handleCommand = (handler: CommandHandler) => async (migration: string, opt
     const selectedRepos = options.repos && options.repos.map(adapter.parseRepo);
     migrationContext.migration.selectedRepos = selectedRepos;
 
+    const originBranch = options.originBranch;
+    migrationContext.migration.branch = originBranch;
+
     // The list of repos will be null if migration hasn't started yet
     migrationContext.migration.repos = await loadRepoList(migrationContext);
 
@@ -92,7 +96,12 @@ const addCommand = (name: string, description: string, repos: boolean, handler: 
   subprogram.action(handleCommand(handler));
 };
 
-addCommand('checkout', 'Check out any repositories that are candidates for a given migration', true, checkout);
+const checkoutCommand = buildCommand('checkout',
+  'Check out any repositories that are candidates for a given migration');
+addReposOption(checkoutCommand);
+checkoutCommand.option('--origin-branch <branch-name>',
+  'Starts out repo from specified origin branch rather than default one');
+checkoutCommand.action(handleCommand(checkout));
 
 const applyCommand = buildCommand('apply', 'Apply a migration to all checked out repositories');
 addReposOption(applyCommand);

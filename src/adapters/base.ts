@@ -15,7 +15,7 @@ interface IRepoAdapter {
 
   mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo>;
 
-  checkoutRepo(repo: IRepo): Promise<void>;
+  checkoutRepo(repo: IRepo, originBranch?: string): Promise<void>;
 
   resetChangedFiles(repo: IRepo): Promise<void>;
 

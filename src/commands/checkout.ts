@@ -42,7 +42,7 @@ export default async (context: IMigrationContext) => {
   await forEachRepo(context, options, async (repo) => {
     const spinner = logger.spinner('Checking out repo');
     try {
-      await adapter.checkoutRepo(repo);
+      await adapter.checkoutRepo(repo, context.migration.branch);
       spinner.succeed('Checked out repo');
     } catch (e) {
       logger.error(e);
