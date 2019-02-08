@@ -116,7 +116,7 @@ class GithubAdapter extends GitAdapter {
     if (!force) {
       const safetyStatus = await this.checkActionSafety(repo);
       if (safetyStatus === SafetyStatus.PullRequestExisted) {
-        throw new Error('Remote branch did not exist, but a pull request does or did; trye with --force?');
+        throw new Error('Remote branch did not exist, but a pull request does or did; try with --force?');
       } else if (safetyStatus === SafetyStatus.NonShepherdCommits) {
         throw new Error('Found non-Shepherd commits on remote branch; try with --force?');
       }
