@@ -42,7 +42,7 @@ abstract class GitAdapter implements IRepoAdapter {
 
       const gitArgs = ['--depth', '1'];
       if (this.migrationContext.migration.origin) {
-        gitArgs.push('-b', this.migrationContext.migration.origin, '--single-branch');
+        gitArgs.push('-b', this.migrationContext.migration.origin);
       }
 
       await git.clone(repoPath, localPath, gitArgs);
