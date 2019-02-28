@@ -85,7 +85,7 @@ adapter:
   search_query: repo:YOURUSERNAME/shepherd-demo path:/ filename:.eslintrc
 ```
 
-**Note:** you can provide an `org` instead of `search_query`. This will return a list of every visible repo in a github organization.
+**Note:** you can provide an `org` instead of `search_query`. Github code search can be unreliable.  Using `org` will return a list of every visible repo in a github organization, allowing you to match more confidently.
 
 ```yml
 #shepherd.yml
