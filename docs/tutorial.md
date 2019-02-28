@@ -85,6 +85,16 @@ adapter:
   search_query: repo:YOURUSERNAME/shepherd-demo path:/ filename:.eslintrc
 ```
 
+**Note:** you can provide an `org` instead of `search_query`. This will return a list of every visible repo in a github organization.
+
+```yml
+#shepherd.yml
+adapter:
+  type: github
+  org: YOURORGANIZATION
+```
+
+
 ## Filtering repositories
 
 GitHub's search is still relatively limited. For instance, it doesn't let you determine which version of a dependency a repository uses. To perform additional checks, Shepherd lets you define commands that Shepherd will run to determine if a checked-out repository should be migrated.
