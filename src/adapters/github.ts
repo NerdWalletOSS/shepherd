@@ -6,7 +6,7 @@ import netrc from 'netrc';
 import path from 'path';
 
 import { IMigrationContext } from '../migration-context';
-import { paginateSearch } from '../util/octokit';
+import { paginate, paginateSearch } from '../util/octokit';
 import { IRepo, RetryMethod } from './base';
 import GitAdapter from './git';
 
@@ -52,10 +52,26 @@ class GithubAdapter extends GitAdapter {
   }
 
   public async getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]> {
-    const searchResults = await paginateSearch(this.octokit, this.octokit.search.code, onRetry)({
-      q: this.migrationContext.migration.spec.adapter.search_query,
-    });
-    const repoNames = searchResults.map((r: any) => r.repository.full_name).sort();
+    const { org, search_query } = this.migrationContext.migration.spec.adapter;
+    let repoNames = [];
+
+    // list all of an orgs repos
+    if (org) {
+      if (search_query) {
+        throw new Error('Cannot use both "org" and "search_query" in GitHub adapter. Pick one.');
+      }
+      const repos = await paginate(this.octokit, this.octokit.repos.listForOrg, undefined, onRetry)({
+        org,
+      });
+      repoNames = repos.map((r: any) => r.full_name).sort();
+    } else {
+      // github code search query.  results are less reliable
+      const searchResults = await paginateSearch(this.octokit, this.octokit.search.code, onRetry)({
+        q: search_query,
+      });
+      repoNames = searchResults.map((r: any) => r.repository.full_name).sort();
+    }
+
     return _.uniq(repoNames).map((r: string) => this.parseRepo(r));
   }
 
