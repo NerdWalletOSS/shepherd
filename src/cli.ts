@@ -94,7 +94,10 @@ const addCommand = (name: string, description: string, repos: boolean, handler: 
 };
 
 addCommand('checkout', 'Check out any repositories that are candidates for a given migration', true, checkout);
-addCommand('query', 'Queries GitHub for the search results but does not perform a checkout', false, query);
+
+const queryCommand = buildCommand('query', 'Queries GitHub for the search results but does not perform a checkout');
+queryCommand.option('--package <string>', 'String to search for in package.json');
+queryCommand.action(handleCommand(query));
 
 const applyCommand = buildCommand('apply', 'Apply a migration to all checked out repositories');
 addReposOption(applyCommand);
