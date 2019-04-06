@@ -63,19 +63,13 @@ class GithubAdapter extends GitAdapter {
       const repos = await paginate(this.octokit, this.octokit.repos.listForOrg, undefined, onRetry)({
         org,
       });
-      console.log(repos);
       repoNames = repos.map((r: any) => r.full_name).sort();
     } else {
       // github code search query.  results are less reliable
-
       const searchResults = await paginateSearch(this.octokit, this.octokit.search.code, onRetry)({
         q: search_query,
       });
-      // console.log(searchResults.);
-      repoNames = searchResults.map((r: any) => {
-        // console.log(r.repository.owner);
-        return r.repository.full_name;
-      }).sort();
+      repoNames = searchResults.map((r: any) => r.repository.full_name).sort();
     }
 
     return _.uniq(repoNames).map((r: string) => this.parseRepo(r));
