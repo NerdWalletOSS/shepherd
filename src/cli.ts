@@ -16,6 +16,7 @@ import apply from './commands/apply';
 import checkout from './commands/checkout';
 import commit from './commands/commit';
 import list from './commands/list';
+import query from './commands/query';
 import pr from './commands/pr';
 import prPreview from './commands/pr-preview';
 import prStatus from './commands/pr-status';
@@ -93,6 +94,7 @@ const addCommand = (name: string, description: string, repos: boolean, handler: 
 };
 
 addCommand('checkout', 'Check out any repositories that are candidates for a given migration', true, checkout);
+addCommand('query', 'Queries GitHub for the search results but does not perform a checkout', false, query);
 
 const applyCommand = buildCommand('apply', 'Apply a migration to all checked out repositories');
 addReposOption(applyCommand);
