@@ -27,12 +27,19 @@ export default async (context: IMigrationContext) => {
     logger.info(`Using ${selectedRepos.length} selected repos`);
     repos = selectedRepos;
   } else {
-    const spinner = logger.spinner('Loading candidate repos');
+    // Get component that's being searched for...
+    const query = context.migration.spec.adapter.search_query;
+    const component = query.match(/react-([a-z]-*)*\w/g);
+
+    const spinner = logger.spinner(`🔍 Finding repos with ${component}...`);
     repos = await adapter.getCandidateRepos(onRetry);
     spinner.succeed(`Loaded ${repos.length} repos`);
   }
 
   context.migration.repos = repos;
+  console.log(context.migration.repos);
+  console.log('Done!');
+  return;
 
   const checkedOutRepos: IRepo[] = [];
   const discardedRepos: IRepo[] = [];
@@ -40,13 +47,14 @@ export default async (context: IMigrationContext) => {
   const options = { warnMissingDirectory: false };
 
   await forEachRepo(context, options, async (repo) => {
-    const spinner = logger.spinner('Checking out repo');
+    // const spinner = logger.spinner('WOW Checking out repo');
+    console.log('For each...')
     try {
-      await adapter.checkoutRepo(repo);
-      spinner.succeed('Checked out repo');
+      // await adapter.checkoutRepo(repo);
+      // spinner.succeed('Checked out repo');
     } catch (e) {
       logger.error(e);
-      spinner.fail('Failed to check out repo; skipping');
+      // spinner.fail('Failed to check out repo; skipping');
       return;
     }
 

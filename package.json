@@ -21,7 +21,7 @@
     "shepherd": "./lib/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "echo 'Building...' && tsc",
     "build:watch": "npm run build -- --watch",
     "fix-lint": "npm run lint -- --fix",
     "lint": "tslint -p . -c tslint.json 'src/**/*.ts'",
