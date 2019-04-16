@@ -39,38 +39,78 @@ type CommandHandler = (context: IMigrationContext, options: any) => Promise<void
 
 interface ICliOptions {
   repos?: string[];
+  package?: string;
+}
+
+const handleAgnosticCommand = (handler: CommandHandler) => async (migration: string, options: ICliOptions) => {
+    // Obviate need to be within a migration directory if just querying
+    // directly. Short circuit code path and directly invoke the command
+    try {
+      const spec = {
+        id: 'query:package-direct',
+        title: 'Short circuit query...',
+        adapter: {
+          type: 'github',
+          search_query: `org:NerdWallet ${options.package} in:file filename:package.json path:/`
+        },
+        hooks: {
+          should_migrate: [''],
+          apply: [''],
+          pr_message: [''],
+        },
+      };
+
+      const migrationContext = {
+        migration: {
+          spec,
+        },
+        shepherd: {
+          workingDirectory: prefs.workingDirectory,
+        },
+        logger,
+      } as any;
+
+      const adapter = adapterForName('github', migrationContext);
+      migrationContext.adapter = adapter;
+
+      await handler(migrationContext, options);
+
+    } catch (e) {
+      logger.error(e);
+      process.exit(1);
+    }
 }
 
 const handleCommand = (handler: CommandHandler) => async (migration: string, options: ICliOptions) => {
   try {
-    const spec = loadSpec(migration);
-    const migrationWorkingDirectory = path.join(prefs.workingDirectory, spec.id);
-    await fs.ensureDir(migrationWorkingDirectory);
+      const spec = loadSpec(migration);
+      const migrationWorkingDirectory = path.join(prefs.workingDirectory, spec.id);
+      await fs.ensureDir(migrationWorkingDirectory);
 
-    // We can't use type-checking on this context just yet since we have to dynamically
-    // assign some properties
-    const migrationContext = {
-      migration: {
-        migrationDirectory: path.resolve(migration),
-        spec,
-        workingDirectory: migrationWorkingDirectory,
-      },
-      shepherd: {
-        workingDirectory: prefs.workingDirectory,
-      },
-      logger,
-    } as any;
+      // We can't use type-checking on this context just yet since we have to dynamically
+      // assign some properties
+      const migrationContext = {
+        migration: {
+          migrationDirectory: path.resolve(migration),
+          spec,
+          workingDirectory: migrationWorkingDirectory,
+        },
+        shepherd: {
+          workingDirectory: prefs.workingDirectory,
+        },
+        logger,
+      } as any;
 
-    const adapter = adapterForName(spec.adapter.type, migrationContext);
-    migrationContext.adapter = adapter;
+      const adapter = adapterForName(spec.adapter.type, migrationContext);
+      migrationContext.adapter = adapter;
 
-    const selectedRepos = options.repos && options.repos.map(adapter.parseRepo);
-    migrationContext.migration.selectedRepos = selectedRepos;
+      const selectedRepos = options.repos && options.repos.map(adapter.parseRepo);
+      migrationContext.migration.selectedRepos = selectedRepos;
 
-    // The list of repos will be null if migration hasn't started yet
-    migrationContext.migration.repos = await loadRepoList(migrationContext);
+      // The list of repos will be null if migration hasn't started yet
+      migrationContext.migration.repos = await loadRepoList(migrationContext);
 
-    await handler(migrationContext, options);
+      await handler(migrationContext, options);
   } catch (e) {
     logger.error(e);
     process.exit(1);
@@ -96,8 +136,8 @@ const addCommand = (name: string, description: string, repos: boolean, handler: 
 addCommand('checkout', 'Check out any repositories that are candidates for a given migration', true, checkout);
 
 const queryCommand = buildCommand('query', 'Queries GitHub for the search results but does not perform a checkout');
-queryCommand.option('--package <string>', 'String to search for in package.json');
-queryCommand.action(handleCommand(query));
+queryCommand.option('--package <string>', 'String to search for in package.json. If not provided, defaults to query in shepherd.yml');
+queryCommand.action(handleAgnosticCommand(query));
 
 const applyCommand = buildCommand('apply', 'Apply a migration to all checked out repositories');
 addReposOption(applyCommand);

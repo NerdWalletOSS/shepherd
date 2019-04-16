@@ -60,6 +60,7 @@ class GithubAdapter extends GitAdapter {
       if (search_query) {
         throw new Error('Cannot use both "org" and "search_query" in GitHub adapter. Pick one.');
       }
+      console.log('\nhere!')
       const repos = await paginate(this.octokit, this.octokit.repos.listForOrg, undefined, onRetry)({
         org,
       });
