@@ -48,7 +48,7 @@ const handleAgnosticCommand = (handler: CommandHandler) => async (migration: str
     try {
       const spec = {
         id: 'query:package-direct',
-        title: 'Short circuit query...',
+        title: `Short circuit query. Apart of migration: ${migration}`,
         adapter: {
           type: 'github',
           search_query: `org:NerdWallet ${options.package} in:file filename:package.json path:/`
