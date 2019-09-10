@@ -4,6 +4,8 @@ When new features, bug fixes, and so on are added to Shepherd, there should be a
 
 ## [Upcoming]
 
+* Fix an import of a dependency that uses `../../node_modules`
+
 ## v1.1.0
 
 * Use shallow git clones

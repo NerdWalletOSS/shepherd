@@ -1,4 +1,4 @@
-import chalk from '../../node_modules/chalk';
+import chalk from 'chalk';
 import { IRepo } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
 import execInRepo from '../util/exec-in-repo';
