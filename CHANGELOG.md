@@ -2,10 +2,14 @@
 
 When new features, bug fixes, and so on are added to Shepherd, there should be a corresponding entry made in the changelog under the *[Upcoming]* header.
 
-## [Upcoming]
+## v1.3.0
 
 * Throw a clearer error when there are no Github credentials found
 * Fix an import of a dependency that uses `../../node_modules`
+
+## v1.2.0
+
+* GitHub adapter: add ability to checkout all of an organizations repos
 
 ## v1.1.0
 
