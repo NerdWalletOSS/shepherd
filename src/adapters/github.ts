@@ -40,6 +40,10 @@ class GithubAdapter extends GitAdapter {
         });
       } else {
         const netrcAuth = netrc();
+        if (!netrcAuth['api.github.com']) {
+          throw new Error('No Github credentials found; set either GITHUB_TOKEN or' +
+            ' set user/password for api.github.com in ~/.netrc');
+        }
         // TODO: we could probably fail gracefully if there's no GITHUB_TOKEN
         // and also no .netrc credentials
         this.octokit.authenticate({

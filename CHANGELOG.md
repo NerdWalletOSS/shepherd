@@ -4,6 +4,7 @@ When new features, bug fixes, and so on are added to Shepherd, there should be a
 
 ## [Upcoming]
 
+* Throw a clearer error when there are no Github credentials found
 * Fix an import of a dependency that uses `../../node_modules`
 
 ## v1.1.0
