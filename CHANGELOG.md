@@ -2,6 +2,9 @@
 
 When new features, bug fixes, and so on are added to Shepherd, there should be a corresponding entry made in the changelog under the *[Upcoming]* header.
 
+## [Upcoming]
+* Add `SHEPHERD_MERGE_BRANCH` environment variable for all steps run after `checkout`.
+
 ## v1.3.0
 
 * Throw a clearer error when there are no Github credentials found

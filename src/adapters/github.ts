@@ -280,6 +280,10 @@ class GithubAdapter extends GitAdapter {
     return path.join(this.migrationContext.migration.workingDirectory, 'data', repo.owner, repo.name);
   }
 
+  public getBaseBranch(repo: IRepo): string {
+    return repo.defaultBranch;
+  }
+
   protected getRepositoryUrl(repo: IRepo): string {
     return `git@github.com:${repo.owner}/${repo.name}.git`;
   }
