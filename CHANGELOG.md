@@ -2,6 +2,10 @@
 
 When new features, bug fixes, and so on are added to Shepherd, there should be a corresponding entry made in the changelog under the *[Upcoming]* header.
 
+## [Upcoming]
+
+* Add magenta highlighting to merged PRs
+
 ## v1.3.0
 
 * Throw a clearer error when there are no Github credentials found
