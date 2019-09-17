@@ -4,6 +4,7 @@ When new features, bug fixes, and so on are added to Shepherd, there should be a
 
 ## [Upcoming]
 * Add `SHEPHERD_MERGE_BRANCH` environment variable for all steps run after `checkout`.
+* Add magenta highlighting to merged PRs
 
 ## v1.3.0
 

@@ -210,7 +210,7 @@ class GithubAdapter extends GitAdapter {
 
       status.push(`PR #${pullRequest.number} [${pullRequest.html_url}]`);
       if (pullRequest.merged_at) {
-        status.push(`PR was merged at ${pullRequest.merged_at}`);
+        status.push(chalk.magenta(`PR was merged at ${pullRequest.merged_at}`));
       // @ts-ignore: mergeable_state is not included in @octokit/rest type definition
       } else if (pullRequest.mergeable && pullRequest.mergeable_state === 'clean') {
         status.push(chalk.green('PR is mergeable!'));
