@@ -20,7 +20,7 @@ export default (context: IMigrationContext, repo: IRepo, command: string): IExec
       SHEPHERD_REPO_DIR: repoDir,
       SHEPHERD_DATA_DIR: dataDir,
       SHEPHERD_MIGRATION_DIR: migrationDir,
-      SHEPHERD_MERGE_BRANCH: baseBranch,
+      SHEPHERD_BASE_BRANCH: baseBranch,
     },
     shell: true,
     capture: [ 'stdout', 'stderr' ],
