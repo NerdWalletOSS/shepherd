@@ -11,6 +11,7 @@ interface IExecRepoResult {
 export default (context: IMigrationContext, repo: IRepo, command: string): IExecRepoResult => {
   const repoDir = context.adapter.getRepoDir(repo);
   const dataDir = context.adapter.getDataDir(repo);
+  const baseBranch = context.adapter.getBaseBranch(repo);
   const migrationDir = context.migration.migrationDirectory;
   const execOptions = {
     cwd: repoDir,
@@ -19,6 +20,7 @@ export default (context: IMigrationContext, repo: IRepo, command: string): IExec
       SHEPHERD_REPO_DIR: repoDir,
       SHEPHERD_DATA_DIR: dataDir,
       SHEPHERD_MIGRATION_DIR: migrationDir,
+      SHEPHERD_BASE_BRANCH: baseBranch,
     },
     shell: true,
     capture: [ 'stdout', 'stderr' ],

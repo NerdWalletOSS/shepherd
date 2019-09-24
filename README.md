@@ -86,6 +86,7 @@ Each of these commands will be executed with the working directory set to the ta
 
 * `SHEPHERD_REPO_DIR` is the absolute path to the repository being operated on. This will be the working directory when commands are executed.
 * `SHEPHERD_DATA_DIR` is the absolute path to a special directory that can be used to persist state between steps. This would be useful if, for instance, a `jscodeshift` codemod in your `apply` hook generates a list of files that need human attention and you want to use that list in your `pr_message` hook.
+* `SHEPHERD_BASE_BRANCH` is the name of the branch Shepherd will set up a pull-request against. This will often, _but not always_, be master. Only available for `apply` and later steps.
 * `SHEPHERD_MIGRATION_DIR` is the absolute path to the directory containing your migration's `shepherd.yml` file. This is useful if you want to include a script with your migration spec and need to reference that command in a hook. For instance, if I have a script `pr.sh` that will generate a PR message: my `pr_message` hook might look something like this:
 
   ```yml

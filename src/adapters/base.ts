@@ -32,6 +32,8 @@ interface IRepoAdapter {
   getRepoDir(repo: IRepo): string;
 
   getDataDir(repo: IRepo): string;
+
+  getBaseBranch(repo: IRepo): string;
 }
 
 export default IRepoAdapter;

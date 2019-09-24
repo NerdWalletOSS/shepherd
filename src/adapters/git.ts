@@ -81,6 +81,8 @@ abstract class GitAdapter implements IRepoAdapter {
 
   public abstract getPullRequestStatus(repo: IRepo): Promise<string[]>;
 
+  public abstract getBaseBranch(repo: IRepo): string;
+
   protected abstract getRepositoryUrl(repo: IRepo): string;
 
   protected git(repo: IRepo): SimpleGit {
