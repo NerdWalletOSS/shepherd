@@ -17,7 +17,6 @@ export default async (
   const dataDir = context.adapter.getDataDir(repo);
   const baseBranch = context.adapter.getBaseBranch(repo);
   const migrationDir = context.migration.migrationDirectory;
-
   const adapterEnvironmentVars = await context.adapter.getEnvironmentVariables(repo);
 
   const execOptions = {
