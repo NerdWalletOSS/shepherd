@@ -7,7 +7,7 @@ import path from 'path';
 
 import { IMigrationContext } from '../migration-context';
 import { paginate, paginateSearch } from '../util/octokit';
-import { IRepo, RetryMethod } from './base';
+import { IEnvironmentVariables, IRepo, RetryMethod } from './base';
 import GitAdapter from './git';
 
 enum SafetyStatus {
@@ -282,6 +282,16 @@ class GithubAdapter extends GitAdapter {
 
   public getBaseBranch(repo: IRepo): string {
     return repo.defaultBranch;
+  }
+
+  public async getEnvironmentVariables(repo: IRepo): Promise<IEnvironmentVariables> {
+    const superEnvVars = await super.getEnvironmentVariables(repo);
+
+    return {
+      ...superEnvVars,
+      SHEPHERD_GITHUB_REPO_OWNER: repo.owner,
+      SHEPHERD_GITHUB_REPO_NAME: repo.name,
+    };
   }
 
   protected getRepositoryUrl(repo: IRepo): string {

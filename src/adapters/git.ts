@@ -3,7 +3,7 @@ import fs from 'fs-extra-promise';
 import simpleGit, { SimpleGit } from 'simple-git/promise';
 
 import { IMigrationContext } from '../migration-context';
-import IRepoAdapter, {IRepo, RetryMethod} from './base';
+import IRepoAdapter, {IEnvironmentVariables, IRepo, RetryMethod} from './base';
 
 abstract class GitAdapter implements IRepoAdapter {
   protected migrationContext: IMigrationContext;
@@ -82,6 +82,14 @@ abstract class GitAdapter implements IRepoAdapter {
   public abstract getPullRequestStatus(repo: IRepo): Promise<string[]>;
 
   public abstract getBaseBranch(repo: IRepo): string;
+
+  public async getEnvironmentVariables(repo: IRepo): Promise<IEnvironmentVariables> {
+    const revision = await this.git(repo).revparse(['HEAD']);
+
+    return {
+      SHEPHERD_GIT_REVISION: revision,
+    };
+  }
 
   protected abstract getRepositoryUrl(repo: IRepo): string;
 

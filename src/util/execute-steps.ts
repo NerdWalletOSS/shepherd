@@ -39,7 +39,7 @@ export default async (
   for (const step of steps) {
     logger.info(`\$ ${step}`);
     try {
-      const { promise, childProcess } = execInRepo(context, repo, step);
+      const { promise, childProcess } = await execInRepo(context, repo, step);
       if (showOutput) {
         childProcess.stdout.on('data', (out) => logger.info(out.toString().trim()));
       }
