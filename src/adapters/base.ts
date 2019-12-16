@@ -2,6 +2,10 @@ export interface IRepo {
   [key: string]: any;
 }
 
+export interface IEnvironmentVariables {
+  [key: string]: string;
+}
+
 export type RetryMethod = (opts: number) => any;
 
 interface IRepoAdapter {
@@ -34,6 +38,8 @@ interface IRepoAdapter {
   getDataDir(repo: IRepo): string;
 
   getBaseBranch(repo: IRepo): string;
+
+  getEnvironmentVariables(repo: IRepo): Promise<IEnvironmentVariables>;
 }
 
 export default IRepoAdapter;
