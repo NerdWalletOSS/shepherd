@@ -82,7 +82,7 @@ The options under `hooks` specify the meat of a migration. They tell Shepherd ho
 
 `should_migrate` and `post_checkout` are optional; `apply` and `pr_message` are required.
 
-Each of these commands will be executed with the working directory set to the target repository. Shepherd exposes some context to each command via specific environment variables:
+Each of these commands will be executed with the working directory set to the target repository. Shepherd exposes some context to each command via specific environment variables. Some additional enviornment variables are exposed when using the `git` or `github` adapters.
 
 * `SHEPHERD_REPO_DIR` is the absolute path to the repository being operated on. This will be the working directory when commands are executed.
 * `SHEPHERD_DATA_DIR` is the absolute path to a special directory that can be used to persist state between steps. This would be useful if, for instance, a `jscodeshift` codemod in your `apply` hook generates a list of files that need human attention and you want to use that list in your `pr_message` hook.
@@ -92,6 +92,9 @@ Each of these commands will be executed with the working directory set to the ta
   ```yml
   pr_message: $SHEPHERD_MIGRATION_DIR/pr.sh
   ```
+* `SHEPHERD_GIT_REVISION` (`git` and `github` adapters) is the current revision of the repository being operated on.
+* `SHEPHERD_GITHUB_REPO_OWNER` (`github` adapter) is the owner of the repository being operated on. For example, if operating on the repository `https://github.com/NerdWalletOSS/shepherd`, this would be `NerdWalletOSS`.
+* `SHEPHERD_GITHUB_REPO_NAME` (`github` adapter) is the name of the repository being operated on. For example, if operating on the repository `https://github.com/NerdWalletOSS/shepherd`, this would be `shepherd`.
 
 Commands follow standard Unix conventions: an exit code of 0 indicates a command succeeded, a non-zero exit code indicates failure.
 
