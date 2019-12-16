@@ -3,10 +3,8 @@
 When new features, bug fixes, and so on are added to Shepherd, there should be a corresponding entry made in the changelog under the *[Upcoming]* header.
 
 ## [Upcoming]
-*
 
 ## v1.4.0
-
 * Add adapter specific environment variables for all steps run after `checkout`.
 * Add `SHEPHERD_BASE_BRANCH` environment variable for all steps run after `checkout`.
 * Add magenta highlighting to merged PRs
