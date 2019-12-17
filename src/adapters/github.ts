@@ -7,7 +7,7 @@ import path from 'path';
 
 import { IMigrationContext } from '../migration-context';
 import { paginate, paginateSearch } from '../util/octokit';
-import { IEnvironmentVariables, IRepo, RetryMethod } from './base';
+import { FilterCandidateMethod, IEnvironmentVariables, IRepo, RetryMethod, ISearchCandidate } from './base';
 import GitAdapter from './git';
 
 enum SafetyStatus {
@@ -55,7 +55,7 @@ class GithubAdapter extends GitAdapter {
     }
   }
 
-  public async getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]> {
+  public async getCandidateRepos(onRetry: RetryMethod, filterCandidate: FilterCandidateMethod): Promise<IRepo[]> {
     const { org, search_query } = this.migrationContext.migration.spec.adapter;
     let repoNames = [];
 
@@ -73,7 +73,10 @@ class GithubAdapter extends GitAdapter {
       const searchResults = await paginateSearch(this.octokit, this.octokit.search.code, onRetry)({
         q: search_query,
       });
-      repoNames = searchResults.map((r: any) => r.repository.full_name).sort();
+      const filterCandidateArray = await Promise.all(searchResults.map((r: any) => filterCandidate(r)));
+      repoNames = searchResults.filter((_r: any, index: number) => {
+        return filterCandidateArray[index];
+      }).map((r: any) => r.repository.full_name).sort();
     }
 
     return _.uniq(repoNames).map((r: string) => this.parseRepo(r));
@@ -282,6 +285,14 @@ class GithubAdapter extends GitAdapter {
 
   public getBaseBranch(repo: IRepo): string {
     return repo.defaultBranch;
+  }
+
+  public async getFilterCandidateEnvironmentVariable(candidate: ISearchCandidate): Promise<IEnvironmentVariables> {
+    return {
+      SHEPHERD_MATCH_PATH: candidate.path,
+      SHEPHERD_GITHUB_REPO_OWNER: candidate.repository.name,
+      SHEPHERD_GITHUB_REPO_NAME: candidate.repository.owner.login,
+    };
   }
 
   public async getEnvironmentVariables(repo: IRepo): Promise<IEnvironmentVariables> {

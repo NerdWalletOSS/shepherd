@@ -1,7 +1,8 @@
 import chalk from 'chalk';
-import { IRepo } from '../adapters/base';
+import { IRepo, IEnvironmentVariables } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
 import execInRepo from '../util/exec-in-repo';
+import execInCwd from './exec-in-cwd';
 
 interface IStepResult {
   step: string;
@@ -17,9 +18,10 @@ export interface IStepsResults {
 
 export default async (
   context: IMigrationContext,
-  repo: IRepo,
+  repo: null | IRepo,
   phase: string,
   showOutput: boolean = true,
+  additionalEnvironmentVariables: IEnvironmentVariables = {},
 ): Promise<IStepsResults> => {
   const {
     migration: {
@@ -39,7 +41,17 @@ export default async (
   for (const step of steps) {
     logger.info(`\$ ${step}`);
     try {
-      const { promise, childProcess } = await execInRepo(context, repo, step);
+      let promise;
+      let childProcess;
+      if (repo == null) {
+        const result = await execInCwd(context, step, additionalEnvironmentVariables);
+        promise = result.promise;
+        childProcess = result.childProcess;
+      } else {
+        const result = await execInRepo(context, repo, step);
+        promise = result.promise;
+        childProcess = result.childProcess;
+      }
       if (showOutput) {
         childProcess.stdout.on('data', (out) => logger.info(out.toString().trim()));
       }

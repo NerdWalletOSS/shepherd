@@ -5,6 +5,7 @@ import { cloneDeep, mapValues } from 'lodash';
 import path from 'path';
 
 export interface IMigrationHooks {
+  should_checkout?: string[];
   should_migrate?: string[];
   post_checkout?: string[];
   apply?: string[];
@@ -62,6 +63,7 @@ export function validateSpec(spec: any) {
       type: Joi.string().allow(['github']).required(),
     }).unknown(true).required(),
     hooks: Joi.object().keys({
+      should_checkout: hookSchema,
       should_migrate: hookSchema,
       post_checkout: hookSchema,
       apply: hookSchema,

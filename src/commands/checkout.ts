@@ -1,6 +1,6 @@
 import fs from 'fs-extra-promise';
 
-import IRepoAdapter, { IRepo } from '../adapters/base';
+import IRepoAdapter, { IRepo, ISearchCandidate } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
 import executeSteps from '../util/execute-steps';
 import forEachRepo from '../util/for-each-repo';
@@ -28,7 +28,12 @@ export default async (context: IMigrationContext) => {
     repos = selectedRepos;
   } else {
     const spinner = logger.spinner('Loading candidate repos');
-    repos = await adapter.getCandidateRepos(onRetry);
+    repos = await adapter.getCandidateRepos(onRetry, async (candidate: ISearchCandidate) => {
+      const envVars = await adapter.getFilterCandidateEnvironmentVariable(candidate);
+      logger.info('> Running should_checkout steps');
+      const stepsResults = await executeSteps(context, null, 'should_checkout', true, envVars);
+      return stepsResults.succeeded;
+    });
     spinner.succeed(`Loaded ${repos.length} repos`);
   }
 

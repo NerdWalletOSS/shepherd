@@ -3,7 +3,7 @@ import fs from 'fs-extra-promise';
 import simpleGit, { SimpleGit } from 'simple-git/promise';
 
 import { IMigrationContext } from '../migration-context';
-import IRepoAdapter, {IEnvironmentVariables, IRepo, RetryMethod} from './base';
+import IRepoAdapter, {FilterCandidateMethod, IEnvironmentVariables, IRepo, RetryMethod, ISearchCandidate} from './base';
 
 abstract class GitAdapter implements IRepoAdapter {
   protected migrationContext: IMigrationContext;
@@ -13,7 +13,7 @@ abstract class GitAdapter implements IRepoAdapter {
     this.branchName = migrationContext.migration.spec.id;
   }
 
-  public abstract getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]>;
+  public abstract getCandidateRepos(onRetry: RetryMethod, filterCandidate: FilterCandidateMethod): Promise<IRepo[]>;
 
   public abstract parseRepo(repo: string): IRepo;
 
@@ -82,6 +82,8 @@ abstract class GitAdapter implements IRepoAdapter {
   public abstract getPullRequestStatus(repo: IRepo): Promise<string[]>;
 
   public abstract getBaseBranch(repo: IRepo): string;
+
+  public abstract getFilterCandidateEnvironmentVariable(candidate: ISearchCandidate): Promise<IEnvironmentVariables>;
 
   public async getEnvironmentVariables(repo: IRepo): Promise<IEnvironmentVariables> {
     const revision = await this.git(repo).revparse(['HEAD']);

@@ -6,10 +6,16 @@ export interface IEnvironmentVariables {
   [key: string]: string;
 }
 
+export interface ISearchCandidate {
+  [key: string]: any;
+}
+
 export type RetryMethod = (opts: number) => any;
 
+export type FilterCandidateMethod = (candidate: ISearchCandidate) => Promise<boolean>;
+
 interface IRepoAdapter {
-  getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]>;
+  getCandidateRepos(onRetry: RetryMethod, filterCandidate: FilterCandidateMethod): Promise<IRepo[]>;
 
   parseRepo(repo: string): IRepo;
 
@@ -38,6 +44,8 @@ interface IRepoAdapter {
   getDataDir(repo: IRepo): string;
 
   getBaseBranch(repo: IRepo): string;
+
+  getFilterCandidateEnvironmentVariable(candidate: ISearchCandidate): Promise<IEnvironmentVariables>;
 
   getEnvironmentVariables(repo: IRepo): Promise<IEnvironmentVariables>;
 }
