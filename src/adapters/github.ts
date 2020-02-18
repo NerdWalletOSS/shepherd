@@ -2,7 +2,6 @@
 import Octokit from '@octokit/rest';
 import chalk from 'chalk';
 import _ from 'lodash';
-import netrc from 'netrc';
 import path from 'path';
 
 import { IMigrationContext } from '../migration-context';
@@ -31,27 +30,12 @@ class GithubAdapter extends GitAdapter {
     if (octokit) {
       this.octokit = octokit;
     } else {
-      this.octokit = new Octokit();
-      // We'll first try to auth with a token, then with .netrc
-      if (process.env.GITHUB_TOKEN) {
-        this.octokit.authenticate({
-          type: 'oauth',
-          token: process.env.GITHUB_TOKEN,
-        });
-      } else {
-        const netrcAuth = netrc();
-        if (!netrcAuth['api.github.com']) {
-          throw new Error('No Github credentials found; set either GITHUB_TOKEN or' +
-            ' set user/password for api.github.com in ~/.netrc');
-        }
-        // TODO: we could probably fail gracefully if there's no GITHUB_TOKEN
-        // and also no .netrc credentials
-        this.octokit.authenticate({
-          type: 'basic',
-          username: netrcAuth['api.github.com'].login,
-          password: netrcAuth['api.github.com'].password,
-        });
+      if (!process.env.GITHUB_TOKEN) {
+        throw new Error('No Github credentials found; set GITHUB_TOKEN environment variable');
       }
+      this.octokit = new Octokit({
+        auth: process.env.GITHUB_TOKEN,
+      });
     }
   }
 
