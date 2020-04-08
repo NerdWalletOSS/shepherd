@@ -5,6 +5,13 @@ When new features, bug fixes, and so on are added to Shepherd, there should be a
 ## [Upcoming]
 *
 
+## v1.4.2
+* Updated dependencies
+* Dropped support for Node 8
+
+## v1.4.1
+* Updated dependencies
+
 ## v1.4.0
 
 * Add adapter specific environment variables for all steps run after `checkout`.
