@@ -84,20 +84,20 @@ describe('validateSpec', () => {
 
   it('accepts a valid spec', () => {
     const spec = cloneDeep(baseSpec);
-    expect(validateSpec(spec).error).toBe(null);
+    expect(validateSpec(spec).error).toBe(undefined);
   });
 
   ['id', 'title', 'adapter'].forEach((prop) => {
     it(`rejects a spec with a missing ${prop}`, () => {
       const spec = cloneDeep(baseSpec) as any;
       delete spec[prop];
-      expect(validateSpec(spec).error).not.toBe(null);
+      expect(validateSpec(spec).error).not.toBe(undefined);
     });
   });
 
   it('rejects a spec with a missing adapter type', () => {
     const spec = cloneDeep(baseSpec);
     delete spec.adapter.type;
-    expect(validateSpec(spec).error).not.toBe(null);
+    expect(validateSpec(spec).error).not.toBe(undefined);
   });
 });

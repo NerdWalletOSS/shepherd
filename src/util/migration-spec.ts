@@ -1,5 +1,5 @@
 import fs from 'fs';
-import Joi from 'joi';
+import Joi from '@hapi/joi';
 import yaml from 'js-yaml';
 import { cloneDeep, mapValues } from 'lodash';
 import path from 'path';
@@ -55,18 +55,19 @@ export function normalizeSpec(originalSpec: any): IMigrationSpec {
 
 export function validateSpec(spec: any) {
   const hookSchema = Joi.array().items(Joi.string());
-  const schema = Joi.object().keys({
+  const schema = Joi.object({
     id: Joi.string().required(),
     title: Joi.string().required(),
-    adapter: Joi.object().keys({
-      type: Joi.string().allow(['github']).required(),
+    adapter: Joi.object({
+      type: Joi.string().valid('github').required(),
     }).unknown(true).required(),
-    hooks: Joi.object().keys({
+    hooks: Joi.object({
       should_migrate: hookSchema,
       post_checkout: hookSchema,
       apply: hookSchema,
       pr_message: hookSchema,
     }),
   });
-  return Joi.validate(spec, schema);
+
+  return schema.validate(spec);
 }
