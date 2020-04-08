@@ -7,7 +7,7 @@ When new features, bug fixes, and so on are added to Shepherd, there should be a
 
 ## v1.4.2
 * Updated dependencies
-* Dropped support for Node 8
+* Dropped support for Node 6
 
 ## v1.4.1
 * Updated dependencies
