@@ -1,3 +1,15 @@
+# [1.5.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.4.2...v1.5.0) (2020-04-09)
+
+
+### Bug Fixes
+
+* missing packages. ([#115](https://github.com/NerdWalletOSS/shepherd/issues/115)) ([7ace184](https://github.com/NerdWalletOSS/shepherd/commit/7ace184dfa116ebcb9dce2d99b50a60bbd659f30))
+
+
+### Features
+
+* add semantic release. ([#114](https://github.com/NerdWalletOSS/shepherd/issues/114)) ([4d41c4f](https://github.com/NerdWalletOSS/shepherd/commit/4d41c4f6625125a258fca2e1aa3bfa4c9df543f4))
+
 # Changelog
 
 When new features, bug fixes, and so on are added to Shepherd, there should be a corresponding entry made in the changelog under the *[Upcoming]* header.
