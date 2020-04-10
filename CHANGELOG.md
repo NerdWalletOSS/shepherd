@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.5.0...v1.6.0) (2020-04-10)
+
+
+### Features
+
+* add dependabot config file. ([#121](https://github.com/NerdWalletOSS/shepherd/issues/121)) ([c201490](https://github.com/NerdWalletOSS/shepherd/commit/c201490ca293967517bd8f7d99eccb8c3bd11027))
+
 # [1.5.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.4.2...v1.5.0) (2020-04-09)
 
 
