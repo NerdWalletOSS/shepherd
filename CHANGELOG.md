@@ -1,3 +1,5 @@
+## [1.7.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.7.0...v1.7.1) (2020-04-10)
+
 # [1.7.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.6.1...v1.7.0) (2020-04-10)
 
 
