@@ -10,7 +10,7 @@ plugin options and overides used see:
 - @semantic-release/github: https://github.com/semantic-release/github
 */
 
-function compileReleaseRules(listOfTypes, release) {
+function compileReleaseRules(listOfTypes, release='patch') {
     return listOfTypes.map((type) => ({
         type,
         release
@@ -33,7 +33,7 @@ const releaseConfig = {
             {
                 releaseRules: [
                     ...compileReleaseRules(typesForPatch),
-                    ...compileReleaseRules(typesForMinor)
+                    ...compileReleaseRules(typesForMinor, 'minor')
                 ],
                 parserOpts
             }
