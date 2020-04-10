@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { existsAsync } from 'fs-extra-promise';
+import fs from 'fs-extra';
 import { IRepo } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
 
@@ -56,7 +56,7 @@ export default async (context: IMigrationContext, param1: (RepoHandler | IOption
 
     // Quick sanity check in case we're working from user-selected repos
     const repoDir = adapter.getRepoDir(repo);
-    if (warnMissingDirectory && !await existsAsync(repoDir)) {
+    if (warnMissingDirectory && !await fs.pathExists(repoDir)) {
       logger.error(`Directory ${repoDir} does not exist`);
     }
 

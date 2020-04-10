@@ -1,0 +1,12 @@
+id: 2020.04.08-test-migration
+title: |
+  feat: test migration
+adapter:
+  type: github
+  search_query: repo:NerdWalletOSS/shepherd path:/
+hooks:
+  should_migrate:
+    - test ! -d .aptible
+  apply: $SHEPHERD_MIGRATION_DIR/main.sh
+  pr_message: |
+    echo "Add Sentry deployment tracking for repos without .aptible directories"

@@ -9,6 +9,9 @@ script:
   - npm run build
   - npm run test
 
+env:
+  - SHEPHERD_DOT_DIRECTORY="./fixtures/artifacts/.shepherd"
+
 jobs:
   include:
     - stage: npm release

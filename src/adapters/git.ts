@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import fs from 'fs-extra-promise';
+import fs from 'fs-extra';
 import simpleGit, { SimpleGit } from 'simple-git/promise';
 
 import { IMigrationContext } from '../migration-context';
@@ -33,7 +33,7 @@ abstract class GitAdapter implements IRepoAdapter {
     const repoPath = this.getRepositoryUrl(repo);
     const localPath = this.getRepoDir(repo);
 
-    if (await fs.existsAsync(localPath) && await this.git(repo).checkIsRepo()) {
+    if (await fs.pathExists(localPath) && await this.git(repo).checkIsRepo()) {
       // Repo already exists; just fetch
       await this.git(repo).fetch('origin');
     } else {
