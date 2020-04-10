@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.6.1...v1.7.0) (2020-04-10)
+
+
+### Features
+
+* semantic-release config ([#135](https://github.com/NerdWalletOSS/shepherd/issues/135)) ([634a293](https://github.com/NerdWalletOSS/shepherd/commit/634a29371fbf22b2a9302916156eb39d59ebbd42))
+
 ## [1.6.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.6.0...v1.6.1) (2020-04-10)
 
 
