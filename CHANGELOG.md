@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.6.0...v1.6.1) (2020-04-10)
+
+
+### Bug Fixes
+
+* spacing. ([#123](https://github.com/NerdWalletOSS/shepherd/issues/123)) ([7a7ab11](https://github.com/NerdWalletOSS/shepherd/commit/7a7ab113b249f4f0fcf3b8f853829d699a306236))
+
 # [1.6.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.5.0...v1.6.0) (2020-04-10)
 
 
