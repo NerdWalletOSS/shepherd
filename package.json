@@ -58,7 +58,7 @@
     "log-symbols": "^3.0.0",
     "netrc": "^0.1.4",
     "ora": "^4.0.3",
-    "preferences": "^1.0.2",
+    "preferences": "^2.0.2",
     "simple-git": "^1.132.0"
   },
   "devDependencies": {
