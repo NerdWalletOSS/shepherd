@@ -105,7 +105,7 @@ describe('persisted-data', () => {
   });
 
   it('removes and adds repos at the same time', async () => {
-    
+
     const workingDirectory = path.join(__dirname, '../../fixtures/artifacts/.shepherd/removes-adds-repos/');
     const checkedOutRepos = [{
       name: 'test2',
