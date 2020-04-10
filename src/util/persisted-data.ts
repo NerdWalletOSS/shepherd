@@ -1,4 +1,4 @@
-import fs from 'fs-extra-promise';
+import fs from 'fs-extra';
 import yaml from 'js-yaml';
 import { differenceWith, unionWith } from 'lodash';
 import path from 'path';
@@ -15,10 +15,10 @@ const jsonStringify = (data: any) => JSON.stringify(data, undefined, 2);
  */
 const migrateToJsonIfNeeded = async (migrationContext: IMigrationContext) => {
   const legacyFile = getLegacyRepoListFile(migrationContext);
-  if (await fs.existsAsync(legacyFile)) {
-    const data = yaml.safeLoad(await fs.readFileAsync(legacyFile, 'utf8'));
-    await fs.writeFileAsync(getRepoListFile(migrationContext), jsonStringify(data));
-    await fs.unlinkAsync(legacyFile);
+  if (await fs.pathExists(legacyFile)) {
+    const data = yaml.safeLoad(await fs.readFile(legacyFile, 'utf8'));
+    await fs.outputFile(getRepoListFile(migrationContext), jsonStringify(data));
+    await fs.remove(legacyFile);
   }
 };
 
@@ -33,10 +33,10 @@ const getLegacyRepoListFile = (migrationContext: IMigrationContext) => {
 const loadRepoList = async (migrationContext: IMigrationContext): Promise<IRepo[] | null> => {
   await migrateToJsonIfNeeded(migrationContext);
   const repoListFile = getRepoListFile(migrationContext);
-  if (!await fs.existsAsync(repoListFile)) {
+  if (!await fs.pathExists(repoListFile)) {
     return null;
   }
-  return JSON.parse(await fs.readFileAsync(repoListFile, 'utf8'));
+  return JSON.parse(await fs.readFile(repoListFile, 'utf8'));
 };
 
 const updateRepoList = async (
@@ -51,14 +51,14 @@ const updateRepoList = async (
   const existingRepos = await loadRepoList(migrationContext);
   if (!existingRepos) {
     // No repos stored yet, we can update this list directly
-    await fs.writeFileAsync(getRepoListFile(migrationContext), JSON.stringify(checkedOutRepos));
+    await fs.outputFile(getRepoListFile(migrationContext), JSON.stringify(checkedOutRepos));
     return checkedOutRepos;
   }
 
   const { reposEqual } = migrationContext.adapter;
   const repos = unionWith(differenceWith(existingRepos, discardedRepos, reposEqual), checkedOutRepos, reposEqual);
 
-  await fs.writeFileAsync(getRepoListFile(migrationContext), JSON.stringify(repos));
+  await fs.outputFile(getRepoListFile(migrationContext), JSON.stringify(repos));
   return repos;
 };
 

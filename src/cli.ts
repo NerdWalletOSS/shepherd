@@ -24,7 +24,9 @@ import reset from './commands/reset';
 
 import ConsoleLogger from './logger';
 
-const shepherdDir = path.join(homedir(), '.shepherd');
+const { SHEPHERD_DOT_DIRECTORY } = process.env;
+
+const shepherdDir = SHEPHERD_DOT_DIRECTORY || path.join(homedir(), '.shepherd');
 const prefs = new Preferences('com.nerdwallet.shepherd', {
   workingDirectory: shepherdDir,
 }, {

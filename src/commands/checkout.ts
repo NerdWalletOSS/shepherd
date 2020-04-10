@@ -1,4 +1,4 @@
-import fs from 'fs-extra-promise';
+import fs from 'fs-extra';
 
 import IRepoAdapter, { IRepo } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
@@ -7,8 +7,8 @@ import forEachRepo from '../util/for-each-repo';
 import { updateRepoList } from '../util/persisted-data';
 
 const removeRepoDirectories = async (adapter: IRepoAdapter, repo: IRepo) => {
-  await fs.removeAsync(adapter.getRepoDir(repo));
-  await fs.removeAsync(adapter.getDataDir(repo));
+  await fs.remove(adapter.getRepoDir(repo));
+  await fs.remove(adapter.getDataDir(repo));
 };
 
 export default async (context: IMigrationContext) => {
@@ -51,7 +51,7 @@ export default async (context: IMigrationContext) => {
     }
 
     // We need to create the data directory before running should_migrate
-    await fs.mkdirsAsync(adapter.getDataDir(repo));
+    await fs.mkdirs(adapter.getDataDir(repo));
 
     logger.info('> Running should_migrate steps');
     const stepsResults = await executeSteps(context, repo, 'should_migrate');
