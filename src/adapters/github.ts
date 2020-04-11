@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
-import Octokit from '@octokit/rest';
+import { Octokit }from '@octokit/rest';
+import type { EndpointOptions } from '@octokit/types'
 import chalk from 'chalk';
 import _ from 'lodash';
 import netrc from 'netrc';
@@ -34,7 +35,7 @@ class GithubAdapter extends GitAdapter {
       this.octokit = new Octokit();
       // We'll first try to auth with a token, then with .netrc
       if (process.env.GITHUB_TOKEN) {
-        this.octokit.authenticate({
+        this.octokit.auth({
           type: 'oauth',
           token: process.env.GITHUB_TOKEN,
         });
@@ -309,18 +310,22 @@ class GithubAdapter extends GitAdapter {
       // We need to figure out if that's because a PR was open and
       // subsequently closed, or if it's because we just haven't pushed
       // a branch yet
-      const pullRequests = await this.octokit.pullRequests.list({
+      const options = this.octokit.pulls.list.endpoint.merge({
         owner,
         repo: name,
         head: `${owner}:${this.branchName}`,
         state: 'all',
-      });
+      }) as EndpointOptions;
 
-      if (pullRequests.data && pullRequests.data.length) {
-        // We'll assume that if a remote branch does not exist but a PR
-        // does/did, we don't want to apply to this branch
-        return SafetyStatus.PullRequestExisted;
-      }
+      const pullRequests = await this.octokit.paginate(options);
+
+      console.log(pullRequests);
+
+      // if (pullRequests.data && pullRequests.data.length) {
+      //   // We'll assume that if a remote branch does not exist but a PR
+      //   // does/did, we don't want to apply to this branch
+      //   return SafetyStatus.PullRequestExisted;
+      // }
     } else {
       // The remote branch exists!
       // We'll get the list of all commits not on master and check if they're

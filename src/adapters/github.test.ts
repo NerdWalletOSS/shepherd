@@ -1,4 +1,4 @@
-import Octokit from '@octokit/rest';
+import type { Octokit } from '@octokit/rest';
 
 import { IMigrationContext } from '../migration-context';
 import GithubAdapter from './github';
