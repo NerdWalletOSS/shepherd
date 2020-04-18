@@ -1,3 +1,10 @@
+## [1.7.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.7.1...v1.7.2) (2020-04-18)
+
+
+### Bug Fixes
+
+* github security alerts. ([#146](https://github.com/NerdWalletOSS/shepherd/issues/146)) ([457018f](https://github.com/NerdWalletOSS/shepherd/commit/457018f12bd7bc97c8b648299a0aabda72bf5669))
+
 ## [1.7.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.7.0...v1.7.1) (2020-04-10)
 
 # [1.7.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.6.1...v1.7.0) (2020-04-10)
