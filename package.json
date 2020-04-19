@@ -47,7 +47,7 @@
   ],
   "dependencies": {
     "@hapi/joi": "^17.1.1",
-    "@octokit/rest": "^15.18.1",
+    "@octokit/rest": "^17.4.0",
     "@types/js-yaml": "^3.12.3",
     "chalk": "^4.0.0",
     "child-process-promise": "^2.2.1",
