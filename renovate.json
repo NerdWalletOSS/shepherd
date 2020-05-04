@@ -1,5 +1,43 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    "docker:enableMajor",
+    "default:automergeDigest"
+  ],
+  "postUpdateOptions": [
+    "npmDedupe"
+  ],
+  "rangeStrategy": "update-lockfile",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
+  "engines": {
+    "enabled": false,
+    "npm": {
+      "enabled": false
+    },
+    "node": {
+      "enabled": false
+    }
+  },
+  "branchPrefix": "renovate_",
+  "semanticCommits": true,
+  "semanticCommitScope": "deps",
+  "labels": ["dependencies"],
+  "timezone": "America/New_York",
+  "schedule": ["before 4am", "after 11pm"],
+  "stabilityDays": 1,
+  "vulnerabilityAlerts": {
+    "labels": ["security"]
+  },
+  "masterIssue": true,
+  "masterIssueAutoclose": true,
+  "node": {
+    "supportPolicy": ["lts_latest"],
+    "semanticCommitScope": "docker",
+    "automerge": true
+  },
+  "packageRules": [
   ]
 }

@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.7.2...v1.8.0) (2020-05-04)
+
+
+### Features
+
+* add renovate & remove dependabot. ([#171](https://github.com/NerdWalletOSS/shepherd/issues/171)) ([34adafb](https://github.com/NerdWalletOSS/shepherd/commit/34adafb74409f8395f574073b4a7538aaad2679b))
+
 ## [1.7.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.7.1...v1.7.2) (2020-04-18)
 
 
