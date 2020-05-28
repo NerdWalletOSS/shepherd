@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.0...v1.8.1) (2020-05-28)
+
+
+### Bug Fixes
+
+* use case-insensitive compare for repo names ([#192](https://github.com/NerdWalletOSS/shepherd/issues/192)) ([a9ada15](https://github.com/NerdWalletOSS/shepherd/commit/a9ada15c71509ecb087f52b2de2f1db66de86c33))
+
 # [1.8.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.7.2...v1.8.0) (2020-05-04)
 
 
