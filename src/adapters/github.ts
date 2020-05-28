@@ -100,7 +100,13 @@ class GithubAdapter extends GitAdapter {
   }
 
   public reposEqual(repo1: IRepo, repo2: IRepo): boolean {
-    return repo1.owner === repo2.owner && repo1.name === repo2.name;
+    // GitHub ignores case when differentiating organizations and repos, so we
+    // can safely use a case-insensitive compare to make things slightly easier
+    // for users who might be using a case-insensitive name on the command line.
+    return (
+      repo1.owner.toLowerCase() === repo2.owner.toLowerCase() &&
+      repo1.name.toLowerCase() === repo2.name.toLowerCase()
+    );
   }
 
   public stringifyRepo({ owner, name }: IRepo): string {
