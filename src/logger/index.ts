@@ -112,7 +112,7 @@ export default class ConsoleLogger implements ILogger {
 
   private log = (level: string, message: string) => {
     let color = (msg: string) => msg;
-    let output = process.stdout;
+    const output = process.stdout;
     let errOutput;
 
     switch (level) {
