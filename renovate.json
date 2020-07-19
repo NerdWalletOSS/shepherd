@@ -34,8 +34,8 @@
   "masterIssue": true,
   "masterIssueAutoclose": true,
   "node": {
-    "supportPolicy": ["lts_latest"],
-    "semanticCommitScope": "docker",
+    "supportPolicy": ["lts"],
+    "semanticCommitScope": "travis",
     "automerge": true
   },
   "packageRules": [
