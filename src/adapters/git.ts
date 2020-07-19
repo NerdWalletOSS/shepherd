@@ -65,7 +65,7 @@ abstract class GitAdapter implements IRepoAdapter {
   }
 
   public async resetChangedFiles(repo: IRepo): Promise<void> {
-    await this.git(repo).reset('hard');
+    await this.git(repo).reset(['--hard']);
     await this.git(repo).clean('f', ['-d']);
   }
 
