@@ -1,3 +1,10 @@
+## [1.8.5](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.4...v1.8.5) (2020-07-19)
+
+
+### Bug Fixes
+
+* supportPolicy. ([c4d469c](https://github.com/NerdWalletOSS/shepherd/commit/c4d469ccb8b0a337e6ac0d73ba594d9581912758))
+
 ## [1.8.4](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.3...v1.8.4) (2020-07-19)
 
 
