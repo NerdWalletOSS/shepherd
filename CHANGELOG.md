@@ -1,3 +1,10 @@
+## [1.8.3](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.2...v1.8.3) (2020-07-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lodash to v4.17.19 ([#198](https://github.com/NerdWalletOSS/shepherd/issues/198)) ([f17ab8c](https://github.com/NerdWalletOSS/shepherd/commit/f17ab8c1c0faad0c587856a3249e272df2ee8838))
+
 ## [1.8.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.1...v1.8.2) (2020-07-19)
 
 
