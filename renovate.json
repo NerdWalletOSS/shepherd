@@ -34,7 +34,7 @@
   "masterIssue": true,
   "masterIssueAutoclose": true,
   "node": {
-    "supportPolicy": ["lts", 14],
+    "supportPolicy": [10,12,14],
     "semanticCommitScope": "travis",
     "automerge": true
   },
