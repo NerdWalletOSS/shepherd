@@ -1,3 +1,10 @@
+## [1.8.4](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.3...v1.8.4) (2020-07-19)
+
+
+### Bug Fixes
+
+* tslint errors. ([e6e0270](https://github.com/NerdWalletOSS/shepherd/commit/e6e027048e5e478862341ad9a9deda19b2684d1c))
+
 ## [1.8.3](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.2...v1.8.3) (2020-07-19)
 
 
