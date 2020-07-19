@@ -1,3 +1,10 @@
+## [1.8.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.1...v1.8.2) (2020-07-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ora to v4.0.5 ([#200](https://github.com/NerdWalletOSS/shepherd/issues/200)) ([3aa79a7](https://github.com/NerdWalletOSS/shepherd/commit/3aa79a79ad4433e2053b265c58467c905eb0b5bd))
+
 ## [1.8.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.0...v1.8.1) (2020-05-28)
 
 
