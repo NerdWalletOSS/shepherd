@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.5...v1.9.0) (2020-07-20)
+
+
+### Features
+
+* add version command. ([f822b4b](https://github.com/NerdWalletOSS/shepherd/commit/f822b4b1bff1a7bac2e9a3fff9b7443af9cc4213))
+
 ## [1.8.5](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.4...v1.8.5) (2020-07-19)
 
 
