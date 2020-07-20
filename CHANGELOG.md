@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.1...v1.9.2) (2020-07-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v6 ([#211](https://github.com/NerdWalletOSS/shepherd/issues/211)) ([b38bcb4](https://github.com/NerdWalletOSS/shepherd/commit/b38bcb471d3cfee82a455f20fc7f4fae65a15bbb))
+
 ## [1.9.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.0...v1.9.1) (2020-07-20)
 
 # [1.9.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.5...v1.9.0) (2020-07-20)
