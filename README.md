@@ -116,6 +116,7 @@ There are a number of commands that must be run to execute a migration:
 * `push`: Pushes all commits to their respective repositories.
 * `pr-preview`: Prints the commit message that would be used for each repository without actually creating a PR; uses the `pr_message` hook.
 * `pr`: Creates a PR for each repo with the message generated from the `pr_message` hook.
+* `version`: Prints Shepherd version
 
 By default, `checkout` will use the adapter to figure out which repositories to check out, and the remaining commands will operate on all checked-out repos. To only checkout a specific repo or to operate on only a subset of the checked-out repos, you can use the `--repos` flag, which specifies a comma-separated list of repos:
 
