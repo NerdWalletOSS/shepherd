@@ -1,3 +1,10 @@
+## [1.9.3](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.2...v1.9.3) (2020-07-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency simple-git to v2.14.0 ([#216](https://github.com/NerdWalletOSS/shepherd/issues/216)) ([989987a](https://github.com/NerdWalletOSS/shepherd/commit/989987a5e2fc0627c1f3018aedf34fc7936c535b))
+
 ## [1.9.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.1...v1.9.2) (2020-07-20)
 
 
