@@ -1,3 +1,10 @@
+## [1.9.4](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.3...v1.9.4) (2020-08-13)
+
+
+### Bug Fixes
+
+* suffix [shepherd] to not break semantic commit ([#228](https://github.com/NerdWalletOSS/shepherd/issues/228)) ([85f5cca](https://github.com/NerdWalletOSS/shepherd/commit/85f5cca789cb19612c79290d37baf2c074829b04))
+
 ## [1.9.3](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.2...v1.9.3) (2020-07-22)
 
 
