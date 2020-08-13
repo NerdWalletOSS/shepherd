@@ -61,7 +61,7 @@ abstract class GitAdapter implements IRepoAdapter {
   public async commitRepo(repo: IRepo): Promise<void> {
     const { migration: { spec } } = this.migrationContext;
     await this.git(repo).add('.');
-    await this.git(repo).commit(`[shepherd] ${spec.title}`);
+    await this.git(repo).commit(`${spec.title} [shepherd]`);
   }
 
   public async resetChangedFiles(repo: IRepo): Promise<void> {
@@ -100,7 +100,7 @@ abstract class GitAdapter implements IRepoAdapter {
   }
 
   protected isShepherdCommitMessage(message: string): boolean {
-    return message.indexOf('Shepherd: ') === 0 || message.indexOf('[shepherd]') === 0;
+    return message.indexOf('Shepherd: ') === 0 || message.indexOf('[shepherd]') !== -1;
   }
 }
 export default GitAdapter;
