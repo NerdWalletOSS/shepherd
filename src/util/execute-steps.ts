@@ -19,7 +19,7 @@ export default async (
   context: IMigrationContext,
   repo: IRepo,
   phase: string,
-  showOutput: boolean = true,
+  showOutput = true,
 ): Promise<IStepsResults> => {
   const {
     migration: {
