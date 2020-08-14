@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.4...v1.10.0) (2020-08-14)
+
+
+### Features
+
+* migrate from tslint to eslint. ([#214](https://github.com/NerdWalletOSS/shepherd/issues/214)) ([866eeae](https://github.com/NerdWalletOSS/shepherd/commit/866eeaea29a7dc985d8b6e2c442327d091b7814b))
+
 ## [1.9.4](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.3...v1.9.4) (2020-08-13)
 
 
