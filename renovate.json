@@ -39,5 +39,16 @@
     "automerge": true
   },
   "packageRules": [
+    {
+      "description": "Auto update dev dependencies",
+      "depTypeList": ["devDependencies"],
+      "automerge": true
+    },
+    {
+      "description": "Auto update non-major types dev dependencies",
+      "packagePatterns": ["^@types/"],
+      "updateTypes": ["minor", "patch"],
+      "stabilityDays": 0
+    }
   ]
 }
