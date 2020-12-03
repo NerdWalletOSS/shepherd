@@ -67,7 +67,8 @@ class GithubAdapter extends GitAdapter {
       const repos = await paginate(this.octokit, this.octokit.repos.listForOrg, undefined, onRetry)({
         org,
       });
-      repoNames = repos.map((r: any) => r.full_name).sort();
+      const unarchivedRepos = repos.filter((r: any) => !r.archived);
+      repoNames = unarchivedRepos.map((r: any) => r.full_name).sort();
     } else {
       // github code search query.  results are less reliable
       const searchResults = await paginateSearch(this.octokit, this.octokit.search.code, onRetry)({
