@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.10.1...v1.11.0) (2020-12-03)
+
+
+### Features
+
+* exclude archived repos when fetching repos by org ([#323](https://github.com/NerdWalletOSS/shepherd/issues/323)) ([dea1159](https://github.com/NerdWalletOSS/shepherd/commit/dea1159bc7f2abcc179b173959abe01f149685ac))
+
 ## [1.10.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.10.0...v1.10.1) (2020-08-31)
 
 
