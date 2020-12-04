@@ -11,7 +11,7 @@ const removeRepoDirectories = async (adapter: IRepoAdapter, repo: IRepo) => {
   await fs.remove(adapter.getDataDir(repo));
 };
 
-export default async (context: IMigrationContext) => {
+export default async (context: IMigrationContext, options: any) => {
   const {
     migration: { selectedRepos },
     adapter,
@@ -28,7 +28,7 @@ export default async (context: IMigrationContext) => {
     repos = selectedRepos;
   } else {
     const spinner = logger.spinner('Loading candidate repos');
-    repos = await adapter.getCandidateRepos(onRetry);
+    repos = await adapter.getCandidateRepos(onRetry, options.failOnIncompleteSearch);
     spinner.succeed(`Loaded ${repos.length} repos`);
   }
 
@@ -37,9 +37,9 @@ export default async (context: IMigrationContext) => {
   const checkedOutRepos: IRepo[] = [];
   const discardedRepos: IRepo[] = [];
 
-  const options = { warnMissingDirectory: false };
+  const opts = { warnMissingDirectory: false };
 
-  await forEachRepo(context, options, async (repo) => {
+  await forEachRepo(context, opts, async (repo) => {
     const spinner = logger.spinner('Checking out repo');
     try {
       await adapter.checkoutRepo(repo);

@@ -13,7 +13,7 @@ abstract class GitAdapter implements IRepoAdapter {
     this.branchName = migrationContext.migration.spec.id;
   }
 
-  public abstract getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]>;
+  public abstract getCandidateRepos(onRetry: RetryMethod, failOnIncompleteSearch: boolean): Promise<IRepo[]>;
 
   public abstract parseRepo(repo: string): IRepo;
 

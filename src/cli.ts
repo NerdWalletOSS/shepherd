@@ -95,7 +95,10 @@ const addCommand = (name: string, description: string, repos: boolean, handler: 
   subprogram.action(handleCommand(handler));
 };
 
-addCommand('checkout', 'Check out any repositories that are candidates for a given migration', true, checkout);
+const checkoutCommand = buildCommand('checkout', 'Check out any repositories that are candidates for a given migration');
+addReposOption(checkoutCommand);
+checkoutCommand.option('--fail-on-incomplete-search', 'Fail if incomplete search results returned from GitHub api', false);
+checkoutCommand.action(handleCommand(checkout));
 
 const applyCommand = buildCommand('apply', 'Apply a migration to all checked out repositories');
 addReposOption(applyCommand);

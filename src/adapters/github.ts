@@ -55,7 +55,7 @@ class GithubAdapter extends GitAdapter {
     }
   }
 
-  public async getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]> {
+  public async getCandidateRepos(onRetry: RetryMethod, failOnIncompleteSearch: boolean): Promise<IRepo[]> {
     const { org, search_query } = this.migrationContext.migration.spec.adapter;
     let repoNames = [];
 
@@ -64,14 +64,14 @@ class GithubAdapter extends GitAdapter {
       if (search_query) {
         throw new Error('Cannot use both "org" and "search_query" in GitHub adapter. Pick one.');
       }
-      const repos = await paginate(this.octokit, this.octokit.repos.listForOrg, undefined, onRetry)({
+      const repos = await paginate(this.octokit, this.octokit.repos.listForOrg, undefined, onRetry, false)({
         org,
       });
       const unarchivedRepos = repos.filter((r: any) => !r.archived);
       repoNames = unarchivedRepos.map((r: any) => r.full_name).sort();
     } else {
       // github code search query.  results are less reliable
-      const searchResults = await paginateSearch(this.octokit, this.octokit.search.code, onRetry)({
+      const searchResults = await paginateSearch(this.octokit, this.octokit.search.code, onRetry, failOnIncompleteSearch)({
         q: search_query,
       });
       repoNames = searchResults.map((r: any) => r.repository.full_name).sort();
