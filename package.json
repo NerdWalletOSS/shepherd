@@ -46,6 +46,7 @@
     "lib"
   ],
   "dependencies": {
+    "@hapi/hoek": "^9.1.1",
     "@hapi/joi": "^17.1.1",
     "@octokit/rest": "^15.18.1",
     "@types/js-yaml": "^3.12.5",
