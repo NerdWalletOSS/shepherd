@@ -62,7 +62,7 @@ class GithubAdapter extends GitAdapter {
     let repoNames = [];
 
     if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
-      throw new Error(`"search_type" must be one of the following: ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(', ')}`);
+      throw new Error(`"search_type" must be one of the following: ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
     }
 
     // list all of an orgs repos
