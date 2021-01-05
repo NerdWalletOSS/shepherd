@@ -4,12 +4,13 @@ import chalk from 'chalk';
 import _ from 'lodash';
 import netrc from 'netrc';
 import path from 'path';
-import { reach } from '@hapi/hoek';
 
 import { IMigrationContext } from '../migration-context';
 import { paginate, paginateSearch } from '../util/octokit';
 import { IEnvironmentVariables, IRepo, RetryMethod } from './base';
 import GitAdapter from './git';
+
+const VALID_SEARCH_TYPES = ['code', 'repositories'] as const;
 
 enum SafetyStatus {
   Success,
@@ -19,7 +20,6 @@ enum SafetyStatus {
 
 class GithubAdapter extends GitAdapter {
   private octokit: Octokit;
-  private static validSearchTypes = new Set(['code', 'repositories']);
 
   /**
    * Constructs a new GitHub adapter. The second parameter allows for
@@ -61,8 +61,8 @@ class GithubAdapter extends GitAdapter {
     const { org, search_type, search_query } = this.migrationContext.migration.spec.adapter;
     let repoNames = [];
 
-    if (search_type && !GithubAdapter.validSearchTypes.has(search_type)) {
-      throw new Error(`"search_type" must be one of the following: ${Array.from(GithubAdapter.validSearchTypes).map(e => `'${e}'`).join(', ')}`);
+    if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
+      throw new Error(`"search_type" must be one of the following: ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(', ')}`);
     }
 
     // list all of an orgs repos
@@ -86,16 +86,15 @@ class GithubAdapter extends GitAdapter {
           break;
         case 'code':
         default:
-          searchMethod = this.octokit.search.code
+          searchMethod = this.octokit.search.code // github code search query. results are less reliable
           fullNamePath = 'repository.full_name'
       }
 
-      // github code search query.  results are less reliable
       const searchResults = await paginateSearch(this.octokit, searchMethod, onRetry)({
         q: search_query,
       });
 
-      repoNames = searchResults.map((r: any) => reach(r, fullNamePath) ).sort();
+      repoNames = searchResults.map((r: any) => _.get(r, fullNamePath) ).sort();
     }
 
     return _.uniq(repoNames).map((r: string) => this.parseRepo(r));
