@@ -40,7 +40,8 @@ describe('GithubAdapter', () => {
           }),
         },
         search: {
-          code: () => {}
+          code: () => {},
+          repos: () => {}
         }
       } as any as Octokit);
 
@@ -51,26 +52,82 @@ describe('GithubAdapter', () => {
       };
 
       const adapter = new GithubAdapter(migrationCtx, mocktokit);
-      // const repo = {
-      //   owner: 'NerdWallet',
-      //   name: 'test',
-      // };
 
       try {
-        adapter.getCandidateRepos(() => {});
+        await adapter.getCandidateRepos(() => {});
       } catch (e) {
-        process.exit(0);
-        expect(e).toBe(1);
+        expect(e.message).toContain(`"search_type" must be one of the following:`);
       }
     });
 
-    it(`performs repository search if 'respositories' is specified for search_type`, async () => {
+    it(`performs repository search and returns expected result if 'respositories' is specified for search_type`, async () => {
+      const mocktokit = ({
+        repos: {
+          get: jest.fn().mockReturnValue({
+            data: {
+              default_branch: 'develop',
+            },
+          }),
+        },
+        search: {
+          repos: jest.fn().mockReturnValue({
+            data: {
+              items: [{
+                full_name: 'orgname/test-repo'
+              }]
+            }
+          })
+        },
+        hasNextPage: () => undefined
+      } as any);
+
+      const migrationCtx: any = mockMigrationContext();
+      migrationCtx.migration.spec.adapter = {
+        type: 'github',
+        search_type: 'repositories'
+      };
+
+      const adapter = new GithubAdapter(migrationCtx, mocktokit as Octokit);
+
+      const result = await adapter.getCandidateRepos(() => {});
+      expect(mocktokit.search.repos.mock.calls.length).toBe(1);
+      expect(result).toStrictEqual([ { owner: 'orgname', name: 'test-repo' } ]);
     });
 
-    it(`performs code search if 'code' is specified for search_type or search_type not provided`, async () => {
-    });
+    it(`performs code search and returns expected result if search_type is 'code' or not provided`, async () => {
+      const mocktokit = ({
+        repos: {
+          get: jest.fn().mockReturnValue({
+            data: {
+              default_branch: 'develop',
+            },
+          }),
+        },
+        search: {
+          code: jest.fn().mockReturnValue({
+            data: {
+              items: [{
+                repository: {
+                  full_name: 'orgname/test-repo'
+                }
+              }]
+            }
+          })
+        },
+        hasNextPage: () => undefined
+      } as any);
 
-    it(`extracts repositories correctly whether 'code' or 'repositories' search_type is specified`, async () => {
+      const migrationCtx: any = mockMigrationContext();
+      migrationCtx.migration.spec.adapter = {
+        type: 'github',
+        search_type: 'code'
+      };
+
+      const adapter = new GithubAdapter(migrationCtx, mocktokit as Octokit);
+
+      const result = await adapter.getCandidateRepos(() => {});
+      expect(mocktokit.search.code.mock.calls.length).toBe(1);
+      expect(result).toStrictEqual([ { owner: 'orgname', name: 'test-repo' } ]);      
     });
   });
 
