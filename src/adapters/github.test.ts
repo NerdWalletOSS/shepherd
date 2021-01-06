@@ -48,7 +48,7 @@ describe('GithubAdapter', () => {
       const migrationCtx: any = mockMigrationContext();
       migrationCtx.migration.spec.adapter = {
         type: 'github',
-        search_type: 'asdf'
+        search_type: 'invalid_search_type'
       };
 
       const adapter = new GithubAdapter(migrationCtx, mocktokit);
@@ -73,7 +73,7 @@ describe('GithubAdapter', () => {
           repos: jest.fn().mockReturnValue({
             data: {
               items: [{
-                full_name: 'orgname/test-repo'
+                full_name: 'repoownername/test-repo'
               }]
             }
           })
@@ -91,7 +91,7 @@ describe('GithubAdapter', () => {
 
       const result = await adapter.getCandidateRepos(() => {});
       expect(mocktokit.search.repos.mock.calls.length).toBe(1);
-      expect(result).toStrictEqual([ { owner: 'orgname', name: 'test-repo' } ]);
+      expect(result).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
     });
 
     it(`performs code search and returns expected result if search_type is 'code' or is not provided`, async () => {
@@ -108,7 +108,7 @@ describe('GithubAdapter', () => {
             data: {
               items: [{
                 repository: {
-                  full_name: 'orgname/test-repo'
+                  full_name: 'repoownername/test-repo'
                 }
               }]
             }
@@ -138,8 +138,8 @@ describe('GithubAdapter', () => {
 
       const results = await Promise.all(getCandidateRepos);
       expect(mocktokit.search.code.mock.calls.length).toBe(2);
-      expect(results[0]).toStrictEqual([ { owner: 'orgname', name: 'test-repo' } ]);      
-      expect(results[1]).toStrictEqual([ { owner: 'orgname', name: 'test-repo' } ]);      
+      expect(results[0]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);      
+      expect(results[1]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);      
     });
   });
 
