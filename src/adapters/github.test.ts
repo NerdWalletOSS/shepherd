@@ -94,7 +94,7 @@ describe('GithubAdapter', () => {
       expect(result).toStrictEqual([ { owner: 'orgname', name: 'test-repo' } ]);
     });
 
-    it(`performs code search and returns expected result if search_type is 'code' or not provided`, async () => {
+    it(`performs code search and returns expected result if search_type is 'code' or is not provided`, async () => {
       const mocktokit = ({
         repos: {
           get: jest.fn().mockReturnValue({
@@ -123,11 +123,23 @@ describe('GithubAdapter', () => {
         search_type: 'code'
       };
 
-      const adapter = new GithubAdapter(migrationCtx, mocktokit as Octokit);
+      const migrationCtxWithoutSearchType: any = mockMigrationContext();
+      migrationCtxWithoutSearchType.migration.spec.adapter = {
+        type: 'github'
+      };
 
-      const result = await adapter.getCandidateRepos(() => {});
-      expect(mocktokit.search.code.mock.calls.length).toBe(1);
-      expect(result).toStrictEqual([ { owner: 'orgname', name: 'test-repo' } ]);      
+      const adapterWithSearchType = new GithubAdapter(migrationCtx, mocktokit as Octokit);
+      const adapterWithoutSearchType = new GithubAdapter(migrationCtxWithoutSearchType, mocktokit as Octokit);
+
+      const getCandidateRepos = [
+        adapterWithSearchType.getCandidateRepos(() => {}),
+        adapterWithoutSearchType.getCandidateRepos(() => {})
+      ];
+
+      const results = await Promise.all(getCandidateRepos);
+      expect(mocktokit.search.code.mock.calls.length).toBe(2);
+      expect(results[0]).toStrictEqual([ { owner: 'orgname', name: 'test-repo' } ]);      
+      expect(results[1]).toStrictEqual([ { owner: 'orgname', name: 'test-repo' } ]);      
     });
   });
 
