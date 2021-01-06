@@ -47,7 +47,7 @@ describe('GithubAdapter', () => {
       const migrationCtx: any = mockMigrationContext();
       migrationCtx.migration.spec.adapter = {
         type: 'github',
-        search_type: undefined
+        search_type: 'asdf'
       };
 
       const adapter = new GithubAdapter(migrationCtx, mocktokit);
@@ -55,7 +55,13 @@ describe('GithubAdapter', () => {
       //   owner: 'NerdWallet',
       //   name: 'test',
       // };
-      adapter.getCandidateRepos(() => {});
+
+      try {
+        adapter.getCandidateRepos(() => {});
+      } catch (e) {
+        process.exit(0);
+        expect(e).toBe(1);
+      }
     });
 
     it(`performs repository search if 'respositories' is specified for search_type`, async () => {
