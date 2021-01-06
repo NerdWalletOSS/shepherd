@@ -7,7 +7,7 @@ const mockMigrationContext = () => ({
   migration: {
     spec: {
       id: 'test-migration',
-      title: 'Test migration',
+      title: 'Test migration'
     },
   },
 });
@@ -26,6 +26,45 @@ describe('GithubAdapter', () => {
       const repo2 = { owner: 'NerdWallet', name: 'shepherd' };
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, {} as Octokit);
       expect(adapter.reposEqual(repo1, repo2)).toBe(true);
+    });
+  });
+
+  describe('getCandidateRepos', () => {
+    it('validates search_type option if provided', async () => {
+      const mocktokit = ({
+        repos: {
+          get: jest.fn().mockReturnValue({
+            data: {
+              default_branch: 'develop',
+            },
+          }),
+        },
+        search: {
+          code: () => {}
+        }
+      } as any as Octokit);
+
+      const migrationCtx: any = mockMigrationContext();
+      migrationCtx.migration.spec.adapter = {
+        type: 'github',
+        search_type: undefined
+      };
+
+      const adapter = new GithubAdapter(migrationCtx, mocktokit);
+      // const repo = {
+      //   owner: 'NerdWallet',
+      //   name: 'test',
+      // };
+      adapter.getCandidateRepos(() => {});
+    });
+
+    it(`performs repository search if 'respositories' is specified for search_type`, async () => {
+    });
+
+    it(`performs code search if 'code' is specified for search_type or search_type not provided`, async () => {
+    });
+
+    it(`extracts repositories correctly whether 'code' or 'repositories' search_type is specified`, async () => {
     });
   });
 
