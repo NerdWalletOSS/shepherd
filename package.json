@@ -59,7 +59,7 @@
     "netrc": "^0.1.4",
     "ora": "^4.0.4",
     "preferences": "^2.0.2",
-    "simple-git": "v2.13.2"
+    "simple-git": "^2.13.2"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^5.0.1",
