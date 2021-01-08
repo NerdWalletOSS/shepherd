@@ -9,7 +9,7 @@ export interface IEnvironmentVariables {
 export type RetryMethod = (opts: number) => any;
 
 interface IRepoAdapter {
-  getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]>;
+  getCandidateRepos(onRetry: RetryMethod, failOnIncompleteSearch: boolean): Promise<IRepo[]>;
 
   parseRepo(repo: string): IRepo;
 
