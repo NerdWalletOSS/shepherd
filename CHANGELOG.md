@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.11.0...v1.12.0) (2021-01-08)
+
+
+### Features
+
+* enable searching for repositories with Github adapter ([#353](https://github.com/NerdWalletOSS/shepherd/issues/353)) ([fd47f96](https://github.com/NerdWalletOSS/shepherd/commit/fd47f962df2531aca05eea3d9ce2d0617d93d53c))
+
 # [1.11.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.10.1...v1.11.0) (2020-12-03)
 
 
