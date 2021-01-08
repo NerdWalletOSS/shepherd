@@ -57,6 +57,7 @@ id: 2018.07.16-eslintrc-json
 title: Rename all .eslintrc files to .eslintrc.json
 adapter:
   type: github
+  search_type: code
   search_query: org:NerdWallet path:/ filename:.eslintrc
 hooks:
   should_migrate:
@@ -72,6 +73,7 @@ Let's go through this line-by-line:
 * `id` specifies a unique identifier for this migration. It will be used as a branch name for this migration, and will be used internally by Shepherd to track state about the migration.
 * `title` specifies a human-readable title for the migration that will be used as the commit message.
 * `adapter` specifies what version control adapter should be used for performing operations on repos, as well as extra options for that adapter. Currently Shepherd only has a GitHub adapter, but you could create a Bitbucket or GitLab adapter if you don't use GitHub. Note that `search_query` is specific to the GitHub adapter: it uses GitHub's [code search qualifiers](https://help.github.com/articles/searching-code/) to identify repositories that are candidates for a migration. If a repository contains a file matching the search, it will be considered a candidate for this migration.  As an alternative to `search_query`, GitHub adapter can be configured with `org: YOURGITHUBORGANIZATION`.  When using `org`, every repo in the organization that is visible will be considered as a candidate for this migration.
+  * `search_type` (optional): specifies search type - either 'code' or 'repositories'. If repositories is specified, it does a [Github repository search](https://docs.github.com/en/free-pro-team@latest/github/searching-for-information-on-github/searching-for-repositories). Defaults to code search if not specified.
 
 The options under `hooks` specify the meat of a migration. They tell Shepherd how to determine if a repo should be migrated, how to actually perform the migration, how to generate a pull request message for each repository, and more. Each hook consists of one or more standard executables that Shepherd will execute in sequence.
 

@@ -10,6 +10,8 @@ import { paginate, paginateSearch } from '../util/octokit';
 import { IEnvironmentVariables, IRepo, RetryMethod } from './base';
 import GitAdapter from './git';
 
+const VALID_SEARCH_TYPES = ['code', 'repositories'] as const;
+
 enum SafetyStatus {
   Success,
   PullRequestExisted,
@@ -56,8 +58,12 @@ class GithubAdapter extends GitAdapter {
   }
 
   public async getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]> {
-    const { org, search_query } = this.migrationContext.migration.spec.adapter;
+    const { org, search_type, search_query } = this.migrationContext.migration.spec.adapter;
     let repoNames = [];
+
+    if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
+      throw new Error(`"search_type" must be one of the following: ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
+    }
 
     // list all of an orgs repos
     if (org) {
@@ -70,11 +76,25 @@ class GithubAdapter extends GitAdapter {
       const unarchivedRepos = repos.filter((r: any) => !r.archived);
       repoNames = unarchivedRepos.map((r: any) => r.full_name).sort();
     } else {
-      // github code search query.  results are less reliable
-      const searchResults = await paginateSearch(this.octokit, this.octokit.search.code, onRetry)({
+      let searchMethod;
+      let fullNamePath = '';
+
+      switch (search_type) {
+        case 'repositories':
+          searchMethod = this.octokit.search.repos
+          fullNamePath = 'full_name'
+          break;
+        case 'code':
+        default:
+          searchMethod = this.octokit.search.code // github code search query. results are less reliable
+          fullNamePath = 'repository.full_name'
+      }
+
+      const searchResults = await paginateSearch(this.octokit, searchMethod, onRetry)({
         q: search_query,
       });
-      repoNames = searchResults.map((r: any) => r.repository.full_name).sort();
+
+      repoNames = searchResults.map((r: any) => _.get(r, fullNamePath) ).sort();
     }
 
     return _.uniq(repoNames).map((r: string) => this.parseRepo(r));
