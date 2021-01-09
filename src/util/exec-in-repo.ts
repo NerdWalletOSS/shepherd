@@ -32,7 +32,7 @@ export default async (
     shell: true,
     capture: [ 'stdout', 'stderr' ],
   };
-  const promise = spawn(command, [], execOptions) as ChildProcessPromise;
+  const promise = spawn(command, [], execOptions);
   return {
     promise,
     childProcess: promise.childProcess,

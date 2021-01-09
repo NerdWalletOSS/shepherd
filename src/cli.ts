@@ -21,6 +21,7 @@ import prPreview from './commands/pr-preview';
 import prStatus from './commands/pr-status';
 import push from './commands/push';
 import reset from './commands/reset';
+import version from './commands/version';
 
 import ConsoleLogger from './logger';
 
@@ -117,6 +118,10 @@ addCommand('pr-status', 'Check the status of all PRs for the specified migration
 
 // These commands don't take --repos arguments
 addCommand('list', 'List all checked out repositories for the given migration', false, list);
+
+program.command('version').description('Print Shepherd version').action(async () => {
+  logger.info(await version());
+});
 
 program.on('command:*', () => {
   logger.error(`Error: no such command "${program.args[0]}"`);

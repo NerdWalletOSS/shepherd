@@ -96,7 +96,7 @@ describe('validateSpec', () => {
   });
 
   it('rejects a spec with a missing adapter type', () => {
-    const spec = cloneDeep(baseSpec);
+    const spec: any = cloneDeep(baseSpec);
     delete spec.adapter.type;
     expect(validateSpec(spec).error).not.toBe(undefined);
   });

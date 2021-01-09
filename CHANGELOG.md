@@ -1,3 +1,110 @@
+# [1.12.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.11.0...v1.12.0) (2021-01-08)
+
+
+### Features
+
+* enable searching for repositories with Github adapter ([#353](https://github.com/NerdWalletOSS/shepherd/issues/353)) ([fd47f96](https://github.com/NerdWalletOSS/shepherd/commit/fd47f962df2531aca05eea3d9ce2d0617d93d53c))
+
+# [1.11.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.10.1...v1.11.0) (2020-12-03)
+
+
+### Features
+
+* exclude archived repos when fetching repos by org ([#323](https://github.com/NerdWalletOSS/shepherd/issues/323)) ([dea1159](https://github.com/NerdWalletOSS/shepherd/commit/dea1159bc7f2abcc179b173959abe01f149685ac))
+
+## [1.10.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.10.0...v1.10.1) (2020-08-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v6.1.0 ([#240](https://github.com/NerdWalletOSS/shepherd/issues/240)) ([98cc133](https://github.com/NerdWalletOSS/shepherd/commit/98cc133c38da894877140646c2502e3f67d4feaa))
+
+# [1.10.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.4...v1.10.0) (2020-08-14)
+
+
+### Features
+
+* migrate from tslint to eslint. ([#214](https://github.com/NerdWalletOSS/shepherd/issues/214)) ([866eeae](https://github.com/NerdWalletOSS/shepherd/commit/866eeaea29a7dc985d8b6e2c442327d091b7814b))
+
+## [1.9.4](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.3...v1.9.4) (2020-08-13)
+
+
+### Bug Fixes
+
+* suffix [shepherd] to not break semantic commit ([#228](https://github.com/NerdWalletOSS/shepherd/issues/228)) ([85f5cca](https://github.com/NerdWalletOSS/shepherd/commit/85f5cca789cb19612c79290d37baf2c074829b04))
+
+## [1.9.3](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.2...v1.9.3) (2020-07-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency simple-git to v2.14.0 ([#216](https://github.com/NerdWalletOSS/shepherd/issues/216)) ([989987a](https://github.com/NerdWalletOSS/shepherd/commit/989987a5e2fc0627c1f3018aedf34fc7936c535b))
+
+## [1.9.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.1...v1.9.2) (2020-07-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v6 ([#211](https://github.com/NerdWalletOSS/shepherd/issues/211)) ([b38bcb4](https://github.com/NerdWalletOSS/shepherd/commit/b38bcb471d3cfee82a455f20fc7f4fae65a15bbb))
+
+## [1.9.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.9.0...v1.9.1) (2020-07-20)
+
+# [1.9.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.5...v1.9.0) (2020-07-20)
+
+
+### Features
+
+* add version command. ([f822b4b](https://github.com/NerdWalletOSS/shepherd/commit/f822b4b1bff1a7bac2e9a3fff9b7443af9cc4213))
+
+## [1.8.5](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.4...v1.8.5) (2020-07-19)
+
+
+### Bug Fixes
+
+* supportPolicy. ([c4d469c](https://github.com/NerdWalletOSS/shepherd/commit/c4d469ccb8b0a337e6ac0d73ba594d9581912758))
+
+## [1.8.4](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.3...v1.8.4) (2020-07-19)
+
+
+### Bug Fixes
+
+* tslint errors. ([e6e0270](https://github.com/NerdWalletOSS/shepherd/commit/e6e027048e5e478862341ad9a9deda19b2684d1c))
+
+## [1.8.3](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.2...v1.8.3) (2020-07-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lodash to v4.17.19 ([#198](https://github.com/NerdWalletOSS/shepherd/issues/198)) ([f17ab8c](https://github.com/NerdWalletOSS/shepherd/commit/f17ab8c1c0faad0c587856a3249e272df2ee8838))
+
+## [1.8.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.1...v1.8.2) (2020-07-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ora to v4.0.5 ([#200](https://github.com/NerdWalletOSS/shepherd/issues/200)) ([3aa79a7](https://github.com/NerdWalletOSS/shepherd/commit/3aa79a79ad4433e2053b265c58467c905eb0b5bd))
+
+## [1.8.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.8.0...v1.8.1) (2020-05-28)
+
+
+### Bug Fixes
+
+* use case-insensitive compare for repo names ([#192](https://github.com/NerdWalletOSS/shepherd/issues/192)) ([a9ada15](https://github.com/NerdWalletOSS/shepherd/commit/a9ada15c71509ecb087f52b2de2f1db66de86c33))
+
+# [1.8.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.7.2...v1.8.0) (2020-05-04)
+
+
+### Features
+
+* add renovate & remove dependabot. ([#171](https://github.com/NerdWalletOSS/shepherd/issues/171)) ([34adafb](https://github.com/NerdWalletOSS/shepherd/commit/34adafb74409f8395f574073b4a7538aaad2679b))
+
+## [1.7.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.7.1...v1.7.2) (2020-04-18)
+
+
+### Bug Fixes
+
+* github security alerts. ([#146](https://github.com/NerdWalletOSS/shepherd/issues/146)) ([457018f](https://github.com/NerdWalletOSS/shepherd/commit/457018f12bd7bc97c8b648299a0aabda72bf5669))
+
 ## [1.7.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.7.0...v1.7.1) (2020-04-10)
 
 # [1.7.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.6.1...v1.7.0) (2020-04-10)

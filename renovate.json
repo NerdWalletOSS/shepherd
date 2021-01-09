@@ -1,0 +1,54 @@
+{
+  "extends": [
+    "config:base",
+    "docker:enableMajor",
+    "default:automergeDigest"
+  ],
+  "postUpdateOptions": [
+    "npmDedupe"
+  ],
+  "rangeStrategy": "update-lockfile",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
+  "engines": {
+    "enabled": false,
+    "npm": {
+      "enabled": false
+    },
+    "node": {
+      "enabled": false
+    }
+  },
+  "branchPrefix": "renovate_",
+  "semanticCommits": true,
+  "semanticCommitScope": "deps",
+  "labels": ["dependencies"],
+  "timezone": "America/New_York",
+  "schedule": ["before 4am", "after 11pm"],
+  "stabilityDays": 1,
+  "vulnerabilityAlerts": {
+    "labels": ["security"]
+  },
+  "masterIssue": true,
+  "masterIssueAutoclose": true,
+  "node": {
+    "supportPolicy": [10,12,14],
+    "semanticCommitScope": "travis",
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "description": "Auto update dev dependencies",
+      "depTypeList": ["devDependencies"],
+      "automerge": true
+    },
+    {
+      "description": "Auto update non-major types dev dependencies",
+      "packagePatterns": ["^@types/"],
+      "updateTypes": ["minor", "patch"],
+      "stabilityDays": 0
+    }
+  ]
+}

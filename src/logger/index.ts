@@ -112,7 +112,8 @@ export default class ConsoleLogger implements ILogger {
 
   private log = (level: string, message: string) => {
     let color = (msg: string) => msg;
-    let output = process.stdout;
+    const output = process.stdout;
+    let errOutput;
 
     switch (level) {
       case 'debug':
@@ -123,11 +124,11 @@ export default class ConsoleLogger implements ILogger {
         break;
       case 'error':
         color = chalk.red;
-        output = process.stderr;
+        errOutput = process.stderr;
         break;
       case 'fatal':
         color = chalk.bold.red;
-        output = process.stderr;
+        errOutput = process.stderr;
         break;
     }
 
@@ -136,7 +137,8 @@ export default class ConsoleLogger implements ILogger {
       this.oraInstance.stop();
     }
 
-    output.write(color(format(message) + '\n'));
+    output?.write(color(format(message) + '\n'));
+    errOutput?.write(color(format(message) + '\n'));
 
     if (this.spinnerActive) {
       // Resume the spinner!

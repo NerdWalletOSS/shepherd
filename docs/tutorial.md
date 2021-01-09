@@ -94,6 +94,15 @@ adapter:
   org: YOURORGANIZATION
 ```
 
+**Note:** while for purposes of this tutorial, searching codebases for a file is exactly what we want, other use cases may call for different types of searching, which Github supports. In addition to searching code, shepherd also allows you to do a search of repository metadata. For example, if your repo had an associated 'eslint-repo' topic:
+
+```yml
+#shepherd.yml
+adapter:
+  type: github
+  search_type: repository
+  search_query: topic:eslint-repo
+```
 
 ## Filtering repositories
 

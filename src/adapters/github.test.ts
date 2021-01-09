@@ -7,10 +7,12 @@ const mockMigrationContext = () => ({
   migration: {
     spec: {
       id: 'test-migration',
-      title: 'Test migration',
+      title: 'Test migration'
     },
   },
 });
+
+const noOpOnRetry = () => { /* do-nothing onRetry fn for mocks */ }
 
 describe('GithubAdapter', () => {
   describe('reposEqual', () => {
@@ -26,6 +28,117 @@ describe('GithubAdapter', () => {
       const repo2 = { owner: 'NerdWallet', name: 'shepherd' };
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, {} as Octokit);
       expect(adapter.reposEqual(repo1, repo2)).toBe(true);
+    });
+  });
+
+  describe('getCandidateRepos', () => {
+    it('validates search_type option if provided', async () => {
+      const mocktokit = ({
+        repos: {
+          get: jest.fn().mockReturnValue({
+            data: {
+              default_branch: 'develop',
+            },
+          }),
+        },
+        search: {}
+      } as any as Octokit);
+
+      const migrationCtx: any = mockMigrationContext();
+      migrationCtx.migration.spec.adapter = {
+        type: 'github',
+        search_type: 'invalid_search_type'
+      };
+
+      const adapter = new GithubAdapter(migrationCtx, mocktokit);
+
+      try {
+        await adapter.getCandidateRepos(noOpOnRetry);
+      } catch (e) {
+        expect(e.message).toContain(`"search_type" must be one of the following:`);
+      }
+    });
+
+    it(`performs repository search and returns expected result if 'respositories' is specified for search_type`, async () => {
+      const mocktokit = ({
+        repos: {
+          get: jest.fn().mockReturnValue({
+            data: {
+              default_branch: 'develop',
+            },
+          }),
+        },
+        search: {
+          repos: jest.fn().mockReturnValue({
+            data: {
+              items: [{
+                full_name: 'repoownername/test-repo'
+              }]
+            }
+          })
+        },
+        hasNextPage: () => undefined
+      } as any);
+
+      const migrationCtx: any = mockMigrationContext();
+      migrationCtx.migration.spec.adapter = {
+        type: 'github',
+        search_type: 'repositories'
+      };
+
+      const adapter = new GithubAdapter(migrationCtx, mocktokit as Octokit);
+
+      const result = await adapter.getCandidateRepos(noOpOnRetry);
+      expect(mocktokit.search.repos.mock.calls.length).toBe(1);
+      expect(result).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
+    });
+
+    it(`performs code search and returns expected result if search_type is 'code' or is not provided`, async () => {
+      const mocktokit = ({
+        repos: {
+          get: jest.fn().mockReturnValue({
+            data: {
+              default_branch: 'develop',
+            },
+          }),
+        },
+        search: {
+          code: jest.fn().mockReturnValue({
+            data: {
+              items: [{
+                repository: {
+                  full_name: 'repoownername/test-repo'
+                }
+              }]
+            }
+          })
+        },
+        hasNextPage: () => undefined
+      } as any);
+
+      const migrationCtx: any = mockMigrationContext();
+      migrationCtx.migration.spec.adapter = {
+        type: 'github',
+        search_type: 'code'
+      };
+
+      const migrationCtxWithoutSearchType: any = mockMigrationContext();
+      migrationCtxWithoutSearchType.migration.spec.adapter = {
+        type: 'github'
+      };
+
+      const adapterWithSearchType = new GithubAdapter(migrationCtx, mocktokit as Octokit);
+      const adapterWithoutSearchType = new GithubAdapter(migrationCtxWithoutSearchType, mocktokit as Octokit);
+
+      const getCandidateRepos = [
+        adapterWithSearchType.getCandidateRepos(noOpOnRetry),
+        adapterWithoutSearchType.getCandidateRepos(noOpOnRetry)
+      ];
+
+      const results = await Promise.all(getCandidateRepos);
+      expect(mocktokit.search.code.mock.calls.length).toBe(2);
+      expect(results[0]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);      
+      expect(results[1]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);      
     });
   });
 
