@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { Octokit }from '@octokit/rest';
+import { Octokit } from '@octokit/rest';
 import type { EndpointOptions } from '@octokit/types'
 import chalk from 'chalk';
 import _ from 'lodash';
