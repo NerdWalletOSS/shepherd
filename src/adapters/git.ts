@@ -70,9 +70,7 @@ abstract class GitAdapter implements IRepoAdapter {
   }
 
   public async pushRepo(repo: IRepo, force: boolean): Promise<void> {
-    const options = {
-      '--force': force,
-    };
+    const options = force ? ['--force'] : undefined;
 
     await this.git(repo).push('origin', 'HEAD', options);
   }
