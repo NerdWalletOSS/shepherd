@@ -46,13 +46,13 @@
     "lib"
   ],
   "dependencies": {
-    "@hapi/joi": "^17.1.1",
     "@octokit/rest": "^15.18.1",
     "@types/js-yaml": "^3.12.6",
     "chalk": "^4.1.0",
     "child-process-promise": "^2.2.1",
     "commander": "^6.2.1",
     "fs-extra": "^9.0.1",
+    "joi": "^17.3.0",
     "js-yaml": "^3.14.1",
     "lodash": "^4.17.19",
     "log-symbols": "^4.0.0",
@@ -65,7 +65,6 @@
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^9.0.0",
     "@types/fs-extra": "^9.0.6",
-    "@types/hapi__joi": "^17.1.6",
     "@types/jest": "^26.0.19",
     "@types/lodash": "^4.14.167",
     "@types/log-symbols": "^2.0.0",
