@@ -1,4 +1,4 @@
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import { cloneDeep, mapValues } from 'lodash';
