@@ -34,27 +34,17 @@ class GithubAdapter extends GitAdapter {
     if (octokit) {
       this.octokit = octokit;
     } else {
-      this.octokit = new Octokit();
-      // We'll first try to auth with a token, then with .netrc
-      if (process.env.GITHUB_TOKEN) {
-        this.octokit.auth({
-          type: 'oauth',
-          token: process.env.GITHUB_TOKEN,
-        });
-      } else {
-        const netrcAuth = netrc();
-        if (!netrcAuth['api.github.com']) {
-          throw new Error('No Github credentials found; set either GITHUB_TOKEN or' +
-            ' set user/password for api.github.com in ~/.netrc');
-        }
-        // TODO: we could probably fail gracefully if there's no GITHUB_TOKEN
-        // and also no .netrc credentials
-        this.octokit.authenticate({
-          type: 'basic',
-          username: netrcAuth['api.github.com'].login,
-          password: netrcAuth['api.github.com'].password,
-        });
+      const netrcAuth = netrc();
+      let token = process.env.GITHUB_TOKEN || _.get(netrcAuth['api.github.com'], 'login', undefined);
+
+      if (token) {
+        this.octokit = new Octokit({
+          auth: token
+        });  
       }
+      
+      throw new Error(`No Github credentials found; set either GITHUB_TOKEN or 
+        set a token on the 'login' field in ~/.netrc for api.github.com`);
     }
   }
 
