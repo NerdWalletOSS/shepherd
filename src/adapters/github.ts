@@ -71,7 +71,7 @@ class GithubAdapter extends GitAdapter {
         RestEndpointMethods['search']['repos'] |
         RestEndpointMethods['search']['code'];
       let fullNamePath: string;
-
+      
       switch (search_type) {
         case 'repositories':
           searchMethod = this.octokit.search.repos
@@ -86,7 +86,7 @@ class GithubAdapter extends GitAdapter {
       const searchResults: string[] = await this.octokit.paginate(
         searchMethod,
         { q: search_query },
-        (r: any) => r.items
+        (r: any) => r.data
       )
       repoNames = searchResults.map((r) => _.get(r, fullNamePath)).sort();
     }
