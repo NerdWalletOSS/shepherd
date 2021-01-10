@@ -60,7 +60,7 @@ describe('GithubAdapter', () => {
     });
 
     it(`performs repository search and returns expected result if 'respositories' is specified for search_type`, async () => {
-      const mockApiResult: object[] = [{
+      const mockApiResult: any[] = [{
         full_name: 'repoownername/test-repo'
       }];
 
@@ -95,7 +95,7 @@ describe('GithubAdapter', () => {
     });
 
     it(`performs code search and returns expected result if search_type is 'code' or is not provided`, async () => {
-      const mockApiResult: object[] = [{
+      const mockApiResult: any[] = [{
         repository: {
           full_name: 'repoownername/test-repo'
         }
