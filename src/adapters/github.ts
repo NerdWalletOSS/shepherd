@@ -91,7 +91,7 @@ class GithubAdapter extends GitAdapter {
       repoNames = searchResults.map((r) => _.get(r, fullNamePath)).sort();
     }
 
-    return _.uniq(repoNames).map((r: any) => this.parseRepo(r));
+    return _.uniq(repoNames).map((r: string) => this.parseRepo(r));
   }
 
   public async mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo> {
