@@ -60,14 +60,12 @@ describe('GithubAdapter', () => {
     });
 
     it(`performs repository search and returns expected result if 'respositories' is specified for search_type`, async () => {
-      const mockApiResult: any[] = [{
-        full_name: 'repoownername/test-repo'
-      }];
-
       const mocktokit = ({
         paginate: jest
           .fn()
-          .mockResolvedValue(mockApiResult),
+          .mockResolvedValue([{
+            full_name: 'repoownername/test-repo'
+          }]),
         search: {
           repos: jest.fn().mockReturnValue({
             data: {
@@ -95,16 +93,14 @@ describe('GithubAdapter', () => {
     });
 
     it(`performs code search and returns expected result if search_type is 'code' or is not provided`, async () => {
-      const mockApiResult: any[] = [{
-        repository: {
-          full_name: 'repoownername/test-repo'
-        }
-      }];
-
       const mocktokit = ({
         paginate: jest
           .fn()
-          .mockResolvedValue(mockApiResult),
+          .mockResolvedValue([{
+            repository: {
+              full_name: 'repoownername/test-repo'
+            }
+          }]),
         search: {
           code: jest.fn().mockReturnValue({
             data: {
