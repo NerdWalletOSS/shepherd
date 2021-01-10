@@ -57,7 +57,7 @@ class GithubAdapter extends GitAdapter {
         throw new Error('Cannot use both "org" and "search_query" in GitHub adapter. Pick one.');
       }
 
-      const repos = await this.octokit.paginate(`GET /orgs/{org}/repos`, { org })
+      const repos = await this.octokit.paginate(this.octokit.repos.listForOrg, { org })
       const unarchivedRepos = repos.filter((r: any) => !r.archived);
       repoNames = unarchivedRepos.map((r: any) => r.full_name).sort();
     } else {
@@ -66,23 +66,23 @@ class GithubAdapter extends GitAdapter {
         throw new Error(`"search_type" must be one of the following: ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
       }
 
-      let apiPath;
+      let searchMethod;
       let fullNamePath = '';
 
       switch (search_type) {
-        case 'repositories':
-          apiPath = '/search/repositories'
-          fullNamePath = 'full_name'
-          break;
+        // case 'repositories':
+        //   searchMethod = this.octokit.search.repos
+        //   fullNamePath = 'full_name'
+        //   break;
         case 'code':
         default:
-          apiPath = '/search/code' // github code search query. results are less reliable
+          searchMethod = this.octokit.search.code // github code search query. results are less reliable
           fullNamePath = 'repository.full_name'
       }
 
-      const searchResults = await this.octokit.paginate(`GET ${apiPath}`, { q: search_query })
+      const searchResults = await this.octokit.paginate(searchMethod, { q: search_query })
 
-      repoNames = searchResults.map((r: any) => _.get(r, fullNamePath) ).sort();
+      repoNames = searchResults.items.map((r: string) => _.get(r, fullNamePath) ).sort();
     }
 
     return _.uniq(repoNames).map((r: string) => this.parseRepo(r));
@@ -323,22 +323,18 @@ class GithubAdapter extends GitAdapter {
       // We need to figure out if that's because a PR was open and
       // subsequently closed, or if it's because we just haven't pushed
       // a branch yet
-      const options = this.octokit.pulls.list.endpoint.merge({
+      const pullRequests = await this.octokit.paginate(this.octokit.pulls.list, {
         owner,
         repo: name,
         head: `${owner}:${this.branchName}`,
         state: 'all',
-      }) as EndpointOptions;
+      });
 
-      const pullRequests = await this.octokit.paginate(options);
-
-      console.log(pullRequests);
-
-      // if (pullRequests.data && pullRequests.data.length) {
-      //   // We'll assume that if a remote branch does not exist but a PR
-      //   // does/did, we don't want to apply to this branch
-      //   return SafetyStatus.PullRequestExisted;
-      // }
+      if (pullRequests && pullRequests.length) {
+        // We'll assume that if a remote branch does not exist but a PR
+        // does/did, we don't want to apply to this branch
+        return SafetyStatus.PullRequestExisted;
+      }
     } else {
       // The remote branch exists!
       // We'll get the list of all commits not on master and check if they're
