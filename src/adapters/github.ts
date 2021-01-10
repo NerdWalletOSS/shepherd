@@ -1,6 +1,4 @@
 /* eslint-disable class-methods-use-this */
-/* eslint import/no-unresolved: [1, { ignore: ['dist-types/generated/method-types$'] }] */
-import { RestEndpointMethods } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/method-types';
 import { Octokit } from '@octokit/rest';
 import chalk from 'chalk';
 import _ from 'lodash';
@@ -67,9 +65,7 @@ class GithubAdapter extends GitAdapter {
           ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
       }
 
-      let searchMethod:
-        RestEndpointMethods['search']['repos'] |
-        RestEndpointMethods['search']['code'];
+      let searchMethod: any;
       let fullNamePath: string;
       
       switch (search_type) {
