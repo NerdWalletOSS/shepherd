@@ -7,8 +7,7 @@ import netrc from 'netrc';
 import path from 'path';
 
 import { IMigrationContext } from '../migration-context';
-import { paginate, paginateSearch } from '../util/octokit';
-import { IEnvironmentVariables, IRepo, RetryMethod } from './base';
+import { IEnvironmentVariables, IRepo } from './base';
 import GitAdapter from './git';
 
 const VALID_SEARCH_TYPES = ['code', 'repositories'] as const;
@@ -35,55 +34,53 @@ class GithubAdapter extends GitAdapter {
       this.octokit = octokit;
     } else {
       const netrcAuth = netrc();
-      let token = process.env.GITHUB_TOKEN || _.get(netrcAuth['api.github.com'], 'login', undefined);
+      const token = process.env.GITHUB_TOKEN || _.get(netrcAuth['api.github.com'], 'login', undefined);
 
-      if (token) {
-        this.octokit = new Octokit({
-          auth: token
-        });  
-      }
-      
-      throw new Error(`No Github credentials found; set either GITHUB_TOKEN or 
+      if (!token) {
+        throw new Error(`No Github credentials found; set either GITHUB_TOKEN or 
         set a token on the 'login' field in ~/.netrc for api.github.com`);
+      }
+
+      this.octokit = new Octokit({
+        auth: token
+      });  
     }
   }
 
-  public async getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]> {
+  public async getCandidateRepos(): Promise<IRepo[]> {
     const { org, search_type, search_query } = this.migrationContext.migration.spec.adapter;
     let repoNames = [];
-
-    if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
-      throw new Error(`"search_type" must be one of the following: ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
-    }
 
     // list all of an orgs repos
     if (org) {
       if (search_query) {
         throw new Error('Cannot use both "org" and "search_query" in GitHub adapter. Pick one.');
       }
-      const repos = await paginate(this.octokit, this.octokit.repos.listForOrg, undefined, onRetry)({
-        org,
-      });
+
+      const repos = await this.octokit.paginate(`GET /orgs/{org}/repos`, { org })
       const unarchivedRepos = repos.filter((r: any) => !r.archived);
       repoNames = unarchivedRepos.map((r: any) => r.full_name).sort();
     } else {
-      let searchMethod;
+      // Validate 'search_type' provided by user
+      if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
+        throw new Error(`"search_type" must be one of the following: ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
+      }
+
+      let apiPath;
       let fullNamePath = '';
 
       switch (search_type) {
         case 'repositories':
-          searchMethod = this.octokit.search.repos
+          apiPath = '/search/repositories'
           fullNamePath = 'full_name'
           break;
         case 'code':
         default:
-          searchMethod = this.octokit.search.code // github code search query. results are less reliable
+          apiPath = '/search/code' // github code search query. results are less reliable
           fullNamePath = 'repository.full_name'
       }
 
-      const searchResults = await paginateSearch(this.octokit, searchMethod, onRetry)({
-        q: search_query,
-      });
+      const searchResults = await this.octokit.paginate(`GET ${apiPath}`, { q: search_query })
 
       repoNames = searchResults.map((r: any) => _.get(r, fullNamePath) ).sort();
     }
@@ -171,7 +168,7 @@ class GithubAdapter extends GitAdapter {
     const { owner, name, defaultBranch } = repo;
 
     // Let's check if a PR already exists
-    const { data: pullRequests } = await this.octokit.pullRequests.list({
+    const { data: pullRequests } = await this.octokit.pulls.list({
       owner,
       repo: name,
       head: `${owner}:${this.branchName}`,
@@ -181,10 +178,10 @@ class GithubAdapter extends GitAdapter {
       const pullRequest = pullRequests[0];
       if (pullRequest.state === 'open') {
         // A pull request exists and is open, let's update it
-        await this.octokit.pullRequests.update({
+        await this.octokit.pulls.update({
           owner,
           repo: name,
-          number: pullRequests[0].number,
+          pull_number: pullRequest.number,
           title: spec.title,
           body: message,
         });
@@ -195,7 +192,7 @@ class GithubAdapter extends GitAdapter {
       }
     } else {
       // No PR yet - we have to create it
-      await this.octokit.pullRequests.create({
+      await this.octokit.pulls.create({
         owner,
         repo: name,
         head: this.branchName,
@@ -211,25 +208,24 @@ class GithubAdapter extends GitAdapter {
     const status: string[] = [];
 
     // First, check for a pull request
-    const pullRequests = await this.octokit.pullRequests.list({
+    const { data: pullRequests } = await this.octokit.pulls.list({
       owner,
       repo: name,
       head: `${owner}:${this.branchName}`,
       state: 'all',
     });
 
-    if (pullRequests.data && pullRequests.data.length) {
+    if (pullRequests && pullRequests.length) {
       // GitHub's API is weird - you need a second query to get information about mergeability
-      const { data: pullRequest } = await this.octokit.pullRequests.get({
+      const { data: pullRequest } = await this.octokit.pulls.get({
         owner,
         repo: name,
-        number: pullRequests.data[0].number,
+        pull_number: pullRequests[0].number,
       });
 
       status.push(`PR #${pullRequest.number} [${pullRequest.html_url}]`);
       if (pullRequest.merged_at) {
         status.push(chalk.magenta(`PR was merged at ${pullRequest.merged_at}`));
-      // @ts-ignore: mergeable_state is not included in @octokit/rest type definition
       } else if (pullRequest.mergeable && pullRequest.mergeable_state === 'clean') {
         status.push(chalk.green('PR is mergeable!'));
       } else {

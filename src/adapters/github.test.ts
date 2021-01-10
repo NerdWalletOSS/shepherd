@@ -12,7 +12,7 @@ const mockMigrationContext = () => ({
   },
 });
 
-const noOpOnRetry = () => { /* do-nothing onRetry fn for mocks */ }
+// const noOpOnRetry = () => { /* do-nothing onRetry fn for mocks */ }
 
 describe('GithubAdapter', () => {
   describe('reposEqual', () => {
@@ -53,7 +53,7 @@ describe('GithubAdapter', () => {
       const adapter = new GithubAdapter(migrationCtx, mocktokit);
 
       try {
-        await adapter.getCandidateRepos(noOpOnRetry);
+        await adapter.getCandidateRepos();
       } catch (e) {
         expect(e.message).toContain(`"search_type" must be one of the following:`);
       }
@@ -88,7 +88,7 @@ describe('GithubAdapter', () => {
 
       const adapter = new GithubAdapter(migrationCtx, mocktokit as Octokit);
 
-      const result = await adapter.getCandidateRepos(noOpOnRetry);
+      const result = await adapter.getCandidateRepos();
       expect(mocktokit.search.repos.mock.calls.length).toBe(1);
       expect(result).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
     });
@@ -131,8 +131,8 @@ describe('GithubAdapter', () => {
       const adapterWithoutSearchType = new GithubAdapter(migrationCtxWithoutSearchType, mocktokit as Octokit);
 
       const getCandidateRepos = [
-        adapterWithSearchType.getCandidateRepos(noOpOnRetry),
-        adapterWithoutSearchType.getCandidateRepos(noOpOnRetry)
+        adapterWithSearchType.getCandidateRepos(),
+        adapterWithoutSearchType.getCandidateRepos()
       ];
 
       const results = await Promise.all(getCandidateRepos);
