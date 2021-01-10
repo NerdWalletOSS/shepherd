@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
+import { RestEndpointMethods } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/method-types';
 import { Octokit } from '@octokit/rest';
-import type { EndpointOptions } from '@octokit/types'
 import chalk from 'chalk';
 import _ from 'lodash';
 import netrc from 'netrc';
@@ -49,7 +49,7 @@ class GithubAdapter extends GitAdapter {
 
   public async getCandidateRepos(): Promise<IRepo[]> {
     const { org, search_type, search_query } = this.migrationContext.migration.spec.adapter;
-    let repoNames = [];
+    let repoNames: string[] = [];
 
     // list all of an orgs repos
     if (org) {
@@ -61,31 +61,37 @@ class GithubAdapter extends GitAdapter {
       const unarchivedRepos = repos.filter((r: any) => !r.archived);
       repoNames = unarchivedRepos.map((r: any) => r.full_name).sort();
     } else {
-      // Validate 'search_type' provided by user
       if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
-        throw new Error(`"search_type" must be one of the following: ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
+        throw new Error(`"search_type" must be one of the following: 
+          ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
       }
 
-      let searchMethod;
-      let fullNamePath = '';
+      let searchMethod:
+        RestEndpointMethods['search']['repos'] |
+        RestEndpointMethods['search']['code'];
+      let fullNamePath: string;
 
       switch (search_type) {
-        // case 'repositories':
-        //   searchMethod = this.octokit.search.repos
-        //   fullNamePath = 'full_name'
-        //   break;
+        case 'repositories':
+          searchMethod = this.octokit.search.repos
+          fullNamePath = 'full_name'
+          break;
         case 'code':
         default:
           searchMethod = this.octokit.search.code // github code search query. results are less reliable
           fullNamePath = 'repository.full_name'
       }
 
-      const searchResults = await this.octokit.paginate(searchMethod, { q: search_query })
+      const searchResults: string[] = await this.octokit.paginate(
+        searchMethod,
+        { q: search_query },
+        (r: any) => r.items
+      )
 
-      repoNames = searchResults.items.map((r: string) => _.get(r, fullNamePath) ).sort();
+      repoNames = searchResults.map((r) => _.get(r, fullNamePath)).sort();
     }
 
-    return _.uniq(repoNames).map((r: string) => this.parseRepo(r));
+    return _.uniq(repoNames).map((r: any) => this.parseRepo(r));
   }
 
   public async mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo> {
