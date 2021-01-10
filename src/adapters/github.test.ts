@@ -12,8 +12,6 @@ const mockMigrationContext = () => ({
   },
 });
 
-// const noOpOnRetry = () => { /* do-nothing onRetry fn for mocks */ }
-
 describe('GithubAdapter', () => {
   describe('reposEqual', () => {
     it('recognizes two repos as equal', () => {
