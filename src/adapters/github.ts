@@ -1,4 +1,5 @@
 /* eslint-disable class-methods-use-this */
+/* eslint import/no-unresolved: [1, { ignore: ['dist-types/generated/method-types$'] }] */
 import { RestEndpointMethods } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/method-types';
 import { Octokit } from '@octokit/rest';
 import chalk from 'chalk';
