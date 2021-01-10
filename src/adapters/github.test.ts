@@ -60,14 +60,14 @@ describe('GithubAdapter', () => {
     });
 
     it(`performs repository search and returns expected result if 'respositories' is specified for search_type`, async () => {
+      const mockApiResult: object[] = [{
+        full_name: 'repoownername/test-repo'
+      }];
+
       const mocktokit = ({
-        repos: {
-          get: jest.fn().mockReturnValue({
-            data: {
-              default_branch: 'develop',
-            },
-          }),
-        },
+        paginate: jest
+          .fn()
+          .mockResolvedValue(mockApiResult),
         search: {
           repos: jest.fn().mockReturnValue({
             data: {
@@ -76,55 +76,57 @@ describe('GithubAdapter', () => {
               }]
             }
           })
-        },
-        hasNextPage: () => undefined
+        }
       } as any);
 
       const migrationCtx: any = mockMigrationContext();
       migrationCtx.migration.spec.adapter = {
         type: 'github',
-        search_type: 'repositories'
+        search_type: 'repositories',
+        search_query: 'topics:test'
       };
 
       const adapter = new GithubAdapter(migrationCtx, mocktokit as Octokit);
 
       const result = await adapter.getCandidateRepos();
-      expect(mocktokit.search.repos.mock.calls.length).toBe(1);
+      expect(mocktokit.paginate.mock.calls.length).toBe(1);
+      expect(mocktokit.paginate.mock.calls[0][1]).toStrictEqual({ q: 'topics:test' });
       expect(result).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
     });
 
     it(`performs code search and returns expected result if search_type is 'code' or is not provided`, async () => {
+      const mockApiResult: object[] = [{
+        repository: {
+          full_name: 'repoownername/test-repo'
+        }
+      }];
+
       const mocktokit = ({
-        repos: {
-          get: jest.fn().mockReturnValue({
-            data: {
-              default_branch: 'develop',
-            },
-          }),
-        },
+        paginate: jest
+          .fn()
+          .mockResolvedValue(mockApiResult),
         search: {
           code: jest.fn().mockReturnValue({
             data: {
               items: [{
-                repository: {
-                  full_name: 'repoownername/test-repo'
-                }
+                full_name: 'repoownername/test-repo'
               }]
             }
           })
-        },
-        hasNextPage: () => undefined
+        }
       } as any);
 
       const migrationCtx: any = mockMigrationContext();
       migrationCtx.migration.spec.adapter = {
         type: 'github',
-        search_type: 'code'
+        search_type: 'code',
+        search_query: 'path:/ filename:package.json in:path'
       };
 
       const migrationCtxWithoutSearchType: any = mockMigrationContext();
       migrationCtxWithoutSearchType.migration.spec.adapter = {
-        type: 'github'
+        type: 'github',
+        search_query: 'path:/ filename:package.json in:path'
       };
 
       const adapterWithSearchType = new GithubAdapter(migrationCtx, mocktokit as Octokit);
@@ -136,7 +138,9 @@ describe('GithubAdapter', () => {
       ];
 
       const results = await Promise.all(getCandidateRepos);
-      expect(mocktokit.search.code.mock.calls.length).toBe(2);
+      expect(mocktokit.paginate.mock.calls.length).toBe(2);
+      expect(mocktokit.paginate.mock.calls[0][1]).toStrictEqual({ q: 'path:/ filename:package.json in:path' });
+      expect(mocktokit.paginate.mock.calls[1][1]).toStrictEqual({ q: 'path:/ filename:package.json in:path' });
       expect(results[0]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);      
       expect(results[1]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);      
     });
@@ -169,7 +173,7 @@ describe('GithubAdapter', () => {
 
   describe('prRepo', () => {
     const mockPrOctokit = (existingPr: any): Octokit => ({
-      pullRequests: {
+      pulls: {
         list: jest.fn().mockReturnValue(existingPr),
         create: jest.fn(),
         update: jest.fn(),
@@ -193,7 +197,10 @@ describe('GithubAdapter', () => {
       const octokit = mockPrOctokit({ data: [] });
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
       await adapter.createPullRequest(REPO, 'Test PR message');
-      const createMock: jest.Mock = octokit.pullRequests.create as jest.Mock;
+
+      const listMock = octokit.pulls.list;
+      const createMock = octokit.pulls.create;
+      expect(listMock).toBeCalled();
       expect(createMock).toBeCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
@@ -213,11 +220,12 @@ describe('GithubAdapter', () => {
       });
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
       await adapter.createPullRequest(REPO, 'Test PR message, part 2');
-      const updateMock: jest.Mock = octokit.pullRequests.update as jest.Mock;
+      const updateMock = octokit.pulls.update;
+
       expect(updateMock).toBeCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
-        number: 1234,
+        pull_number: 1234,
         title: 'Test migration',
         body: 'Test PR message, part 2',
       });
@@ -232,7 +240,7 @@ describe('GithubAdapter', () => {
       });
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
       await expect(adapter.createPullRequest(REPO, 'Test PR message, part 2')).rejects.toThrow();
-      const updateMock: jest.Mock = octokit.pullRequests.update as jest.Mock;
+      const updateMock = octokit.pulls.update;
       expect(updateMock).not.toBeCalled();
     });
   });

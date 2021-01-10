@@ -87,7 +87,6 @@ class GithubAdapter extends GitAdapter {
         { q: search_query },
         (r: any) => r.items
       )
-
       repoNames = searchResults.map((r) => _.get(r, fullNamePath)).sort();
     }
 
@@ -182,6 +181,7 @@ class GithubAdapter extends GitAdapter {
 
     if (pullRequests && pullRequests.length) {
       const pullRequest = pullRequests[0];
+
       if (pullRequest.state === 'open') {
         // A pull request exists and is open, let's update it
         await this.octokit.pulls.update({
