@@ -33,11 +33,11 @@ class GithubAdapter extends GitAdapter {
       this.octokit = octokit;
     } else {
       const netrcAuth = netrc();
-      const token = process.env.GITHUB_TOKEN || _.get(netrcAuth['api.github.com'], 'login', undefined);
+      const token = process.env.GITHUB_TOKEN || _.get(netrcAuth['api.github.com'], 'password', undefined);
 
       if (!token) {
         throw new Error(`No Github credentials found; set either GITHUB_TOKEN or 
-        set a token on the 'login' field in ~/.netrc for api.github.com`);
+        set a token on the 'password' field in ~/.netrc for api.github.com`);
       }
 
       this.octokit = new Octokit({
