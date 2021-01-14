@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.12.0...v1.13.0) (2021-01-14)
+
+
+### Features
+
+* update octokit ([#360](https://github.com/NerdWalletOSS/shepherd/issues/360)) ([5604e4f](https://github.com/NerdWalletOSS/shepherd/commit/5604e4fa25f2ef23eab4beaf32d97af1941bc7ab))
+
 # [1.12.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.11.0...v1.12.0) (2021-01-08)
 
 
