@@ -1,11 +1,13 @@
 /* eslint-disable class-methods-use-this */
 import { Octokit } from '@octokit/rest';
+const { graphql } = require("@octokit/graphql");
 import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
 import _ from 'lodash';
-import netrc from 'netrc';
+const netrc = require('netrc');
 
 class GithubService {
   private octokit: Octokit;
+  private graphql: any;
 
   constructor(octokit?: Octokit) {
     if (octokit) {
@@ -18,6 +20,12 @@ class GithubService {
         throw new Error(`No Github credentials found; set either GITHUB_TOKEN or 
         set a token on the 'password' field in ~/.netrc for api.github.com`);
       }
+
+      this.graphql = graphql.defaults({
+        headers: {
+          authorization: `token ${token}`,
+        },
+      });
 
       this.octokit = new Octokit({
         auth: token
@@ -55,6 +63,38 @@ class GithubService {
 
     const unarchivedRepos = allOrgRepos.filter((r: any) => !r.archived);
     return unarchivedRepos.map((r: any) => r.full_name).sort();
+  }
+
+  public async getActiveReposForOrgGQL({ org }: any) {
+    let response;
+    const query = `
+      query ($search_query: String!, $first: Int!) {
+        search(query: $search_query, type: REPOSITORY, first: $first) {
+          nodes {
+            ... on Repository {
+              nameWithOwner
+            }
+          },
+          pageInfo {
+            endCursor
+            hasNextPage
+          }
+        }
+      }           
+    `;
+
+    try {
+      response = await this.graphql(query,
+        {
+          search_query: `org:${org} archived:no`,
+          first: 100
+        }
+      );
+    } catch (e) {
+      console.error('Error getting org repos:', e.message);
+    }
+
+    console.dir({ nodes: response.search.nodes, pageInfo: response.search.pageInfo });
   }
 
   public listPullRequests(criteria: RestEndpointMethodTypes['pulls']['list']['parameters']):
