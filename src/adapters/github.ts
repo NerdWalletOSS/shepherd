@@ -29,7 +29,7 @@ class GithubAdapter extends GitAdapter {
 
   public async getCandidateRepos(): Promise<IRepo[]> {
     const { org, search_type, search_query } = this.migrationContext.migration.spec.adapter;
-    let repoNames: string[] = [];
+    let repoNames;
 
     // list all of an orgs repos
     if (org) {
@@ -37,7 +37,7 @@ class GithubAdapter extends GitAdapter {
         throw new Error('Cannot use both "org" and "search_query" in GitHub adapter. Pick one.');
       }
 
-      repoNames = await this.githubService.getActiveReposForOrg({ org });
+      repoNames = await this.githubService.getActiveReposForOrgGQL({ org });
     } else {
       if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
         throw new Error(`"search_type" must be one of the following: 
@@ -59,10 +59,6 @@ class GithubAdapter extends GitAdapter {
       }
 
       const searchResults: string[] = await searchMethod(search_query);
-        searchMethod,
-        { q: search_query },
-        (r: any) => r.data
-      )
       repoNames = searchResults.map((r) => _.get(r, fullNamePath)).sort();
     }
 

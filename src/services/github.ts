@@ -94,7 +94,10 @@ class GithubService {
       console.error('Error getting org repos:', e.message);
     }
 
-    console.dir({ nodes: response.search.nodes, pageInfo: response.search.pageInfo });
+    console.log({
+      nodes: new Set(response.search.nodes.map((r: any) => r.nameWithOwner).sort()),
+      pageInfo: response.search.pageInfo
+    });
   }
 
   public listPullRequests(criteria: RestEndpointMethodTypes['pulls']['list']['parameters']):

@@ -46,6 +46,7 @@
     "lib"
   ],
   "dependencies": {
+    "@octokit/graphql": "^4.5.8",
     "@octokit/rest": "^18.0.12",
     "@types/js-yaml": "^3.12.6",
     "chalk": "^4.1.0",
