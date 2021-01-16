@@ -1,23 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import { Octokit } from '@octokit/rest';
-import { OctokitResponse } from '@octokit/types';
 import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
-import chalk from 'chalk';
 import _ from 'lodash';
 import netrc from 'netrc';
-import path from 'path';
-
-import { IMigrationContext } from '../migration-context';
-import { IEnvironmentVariables, IRepo } from './base';
-import GitAdapter from './git';
-
-const VALID_SEARCH_TYPES = ['code', 'repositories'] as const;
-
-enum SafetyStatus {
-  Success,
-  PullRequestExisted,
-  NonShepherdCommits,
-}
 
 class GithubService {
   private octokit: Octokit;
@@ -44,39 +29,56 @@ class GithubService {
     return this.octokit.paginate(method, criteria);
   }
 
-  public async repoSearch(criteria: RestEndpointMethodTypes['search']['repos']) {
-
+  public repoSearch(criteria: RestEndpointMethodTypes['search']['repos']['parameters']):
+  Promise<RestEndpointMethodTypes['search']['repos']['response']> {
+    return this.paginate(this.octokit.search.repos, criteria);
   }
 
-  public async codeSearch(criteria: RestEndpointMethodTypes['search']['code']) {
-
+  public codeSearch(criteria: RestEndpointMethodTypes['search']['code']['parameters']):
+  Promise<RestEndpointMethodTypes['search']['code']['response']> {
+    return this.paginate(this.octokit.search.code, criteria);
   }
 
-  public getRepos(criteria: RestEndpointMethodTypes['repos']['get']) {
+  public getRepos(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
+  Promise<RestEndpointMethodTypes['repos']['get']['response']> {
     return this.octokit.repos.get(criteria);
   }
 
-  public listOrgRepos(criteria: RestEndpointMethodTypes['repos']['listForOrg']): Promise<any> {
-    return this.paginate(this.octokit.repos.listForOrg, criteria);
+  public listOrgRepos({ org }: RestEndpointMethodTypes['repos']['listForOrg']['parameters']):
+  Promise<RestEndpointMethodTypes['repos']['listForOrg']['response']> {
+    return this.paginate(this.octokit.repos.listForOrg, { org });
   }
 
-  public listPullRequests(criteria: RestEndpointMethodTypes['pulls']['list']) {
+  public async getActiveReposForOrg(criteria: RestEndpointMethodTypes['repos']['listForOrg']['parameters']):
+  Promise<RestEndpointMethodTypes['repos']['listForOrg']['response']> {
+    const allOrgRepos = await this.paginate(this.octokit.repos.listForOrg, { org: criteria.org });
+
+    const unarchivedRepos = allOrgRepos.filter((r: any) => !r.archived);
+    return unarchivedRepos.map((r: any) => r.full_name).sort();
+  }
+
+  public listPullRequests(criteria: RestEndpointMethodTypes['pulls']['list']['parameters']):
+  Promise<RestEndpointMethodTypes['pulls']['list']['response']> {
     return this.paginate(this.octokit.pulls.list, criteria);
   }
 
-  public updatePullRequest(criteria: RestEndpointMethodTypes['pulls']['update']) {
-    return this.octokit.pulls.update(criteria);
-  }
-
-  public createPullRequest(criteria: RestEndpointMethodTypes['pulls']['create']) {
+  public createPullRequest(criteria: RestEndpointMethodTypes['pulls']['create']['parameters']):
+  Promise<RestEndpointMethodTypes['pulls']['create']['response']> {
     return this.octokit.pulls.create(criteria);
   }
 
-  public getCombinedRefStatus(criteria: RestEndpointMethodTypes['repos']['getCombinedStatusForRef']) {
+  public updatePullRequest(criteria: RestEndpointMethodTypes['pulls']['update']['parameters']):
+  Promise<RestEndpointMethodTypes['pulls']['update']['response']> {
+    return this.octokit.pulls.update(criteria);
+  }
+
+  public getCombinedRefStatus(criteria: RestEndpointMethodTypes['repos']['getCombinedStatusForRef']['parameters']): 
+  Promise<RestEndpointMethodTypes['repos']['getCombinedStatusForRef']['response']> {
     return this.octokit.repos.getCombinedStatusForRef(criteria);
   }
 
-  public getBranch(criteria: RestEndpointMethodTypes['repos']['getBranch']) {
+  public getBranch(criteria: RestEndpointMethodTypes['repos']['getBranch']['parameters']):
+  Promise<RestEndpointMethodTypes['repos']['getBranch']['response']> {
     return this.octokit.repos.getBranch(criteria);
   }
 }

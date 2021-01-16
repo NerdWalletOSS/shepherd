@@ -37,9 +37,7 @@ class GithubAdapter extends GitAdapter {
         throw new Error('Cannot use both "org" and "search_query" in GitHub adapter. Pick one.');
       }
 
-      const repos = await this.githubService.listOrgRepos({ org });
-      const unarchivedRepos = repos.filter((r: any) => !r.archived);
-      repoNames = unarchivedRepos.map((r: any) => r.full_name).sort();
+      repoNames = await this.githubService.getActiveReposForOrg({ org });
     } else {
       if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
         throw new Error(`"search_type" must be one of the following: 
