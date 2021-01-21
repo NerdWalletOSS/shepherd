@@ -1,13 +1,13 @@
 /* eslint-disable class-methods-use-this */
-import { Octokit } from '@octokit/rest';
 import chalk from 'chalk';
 import _ from 'lodash';
-import netrc from 'netrc';
 import path from 'path';
 
 import { IMigrationContext } from '../migration-context';
 import { IEnvironmentVariables, IRepo } from './base';
 import GitAdapter from './git';
+import GithubService from '../services/github'
+
 
 const VALID_SEARCH_TYPES = ['code', 'repositories'] as const;
 
@@ -18,37 +18,18 @@ enum SafetyStatus {
 }
 
 class GithubAdapter extends GitAdapter {
-  private octokit: Octokit;
+  private githubService: GithubService;
 
-  /**
-   * Constructs a new GitHub adapter. The second parameter allows for
-   * dependency injection during testing. If an Octokit instance is not
-   * provided, one will be created and authenticated automatically.
-   */
-  constructor(migrationContext: IMigrationContext, octokit?: Octokit) {
+  constructor(migrationContext: IMigrationContext, githubService: GithubService) {
     super(migrationContext);
     this.migrationContext = migrationContext;
 
-    if (octokit) {
-      this.octokit = octokit;
-    } else {
-      const netrcAuth = netrc();
-      const token = process.env.GITHUB_TOKEN || _.get(netrcAuth['api.github.com'], 'password', undefined);
-
-      if (!token) {
-        throw new Error(`No Github credentials found; set either GITHUB_TOKEN or 
-        set a token on the 'password' field in ~/.netrc for api.github.com`);
-      }
-
-      this.octokit = new Octokit({
-        auth: token
-      });  
-    }
+    this.githubService = githubService;
   }
 
   public async getCandidateRepos(): Promise<IRepo[]> {
     const { org, search_type, search_query } = this.migrationContext.migration.spec.adapter;
-    let repoNames: string[] = [];
+    let repoNames;
 
     // list all of an orgs repos
     if (org) {
@@ -56,9 +37,7 @@ class GithubAdapter extends GitAdapter {
         throw new Error('Cannot use both "org" and "search_query" in GitHub adapter. Pick one.');
       }
 
-      const repos = await this.octokit.paginate(this.octokit.repos.listForOrg, { org })
-      const unarchivedRepos = repos.filter((r: any) => !r.archived);
-      repoNames = unarchivedRepos.map((r: any) => r.full_name).sort();
+      repoNames = await this.githubService.getActiveReposForOrgGQL({ org });
     } else {
       if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
         throw new Error(`"search_type" must be one of the following: 
@@ -70,20 +49,16 @@ class GithubAdapter extends GitAdapter {
       
       switch (search_type) {
         case 'repositories':
-          searchMethod = this.octokit.search.repos
+          searchMethod = this.githubService.repoSearch
           fullNamePath = 'full_name'
           break;
         case 'code':
         default:
-          searchMethod = this.octokit.search.code // github code search query. results are less reliable
+          searchMethod = this.githubService.codeSearch // github code search query. results are less reliable
           fullNamePath = 'repository.full_name'
       }
 
-      const searchResults: string[] = await this.octokit.paginate(
-        searchMethod,
-        { q: search_query },
-        (r: any) => r.data
-      )
+      const searchResults: string[] = await searchMethod(search_query);
       repoNames = searchResults.map((r) => _.get(r, fullNamePath)).sort();
     }
 
