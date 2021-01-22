@@ -28,7 +28,7 @@ class GithubAdapter extends GitAdapter {
 
   public async getCandidateRepos(): Promise<IRepo[]> {
     const { org, search_type, search_query } = this.migrationContext.migration.spec.adapter;
-    let repoNames: any;
+    let repoNames: string[];
 
     // list all of an orgs repos
     if (org) {
@@ -57,7 +57,7 @@ class GithubAdapter extends GitAdapter {
       repoNames = await searchMethod(search_query);
     }
 
-    return _.uniq(repoNames).map((r: any) => this.parseRepo(r));
+    return _.uniq(repoNames).map((r) => this.parseRepo(r));
   }
 
   public async mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo> {

@@ -60,7 +60,8 @@ export default class GithubService {
   }
 
   public async getActiveReposForOrg(criteria: RestEndpointMethodTypes['repos']['listForOrg']['parameters']):
-  Promise<[RestEndpointMethodTypes['repos']['listForOrg']['response']]> {
+  Promise<[string]> {
+    // Promise<[RestEndpointMethodTypes['repos']['listForOrg']['response']]>
     const allOrgRepos = await this.paginateRest(this.octokit.repos.listForOrg, { org: criteria.org });
 
     const unarchivedRepos = allOrgRepos.filter((r: any) => !r.archived);
