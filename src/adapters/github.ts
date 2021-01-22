@@ -39,22 +39,23 @@ class GithubAdapter extends GitAdapter {
       repoNames = await this.githubService.getActiveReposForOrg({ org });
     } else {
       if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
-        throw new Error(`"search_type" must be one of the following: 
+        throw new Error(`"search_type" must be one of the following:
           ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
       }
 
       let searchMethod;
-      
+
       switch (search_type) {
         case 'repositories':
-          searchMethod = this.githubService.repoSearch
+          searchMethod = this.githubService.repoSearch.bind(this.githubService);
           break;
-        case 'code':
+        case 'code':  // github code search query. results are less reliable
         default:
-          searchMethod = this.githubService.codeSearch // github code search query. results are less reliable
+          searchMethod = this.githubService.codeSearch.bind(this.githubService);
       }
 
       repoNames = await searchMethod(search_query);
+      console.log({ repoNames });
     }
 
     return _.uniq(repoNames).map((r: any) => this.parseRepo(r));
@@ -149,7 +150,7 @@ class GithubAdapter extends GitAdapter {
 
     if (pullRequests && pullRequests.length) {
       const pullRequest: any = pullRequests[0];
-      
+
       if (pullRequest.state === 'open') {
         // A pull request exists and is open, let's update it
         await this.githubService.updatePullRequest({

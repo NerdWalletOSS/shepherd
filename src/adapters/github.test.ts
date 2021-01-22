@@ -1,7 +1,9 @@
 import type { Octokit } from '@octokit/rest';
 
 import { IMigrationContext } from '../migration-context';
+import GithubService from '../services/github';
 import GithubAdapter from './github';
+jest.mock('../services/github');
 
 const mockMigrationContext = () => ({
   migration: {
@@ -15,16 +17,22 @@ const mockMigrationContext = () => ({
 describe('GithubAdapter', () => {
   describe('reposEqual', () => {
     it('recognizes two repos as equal', () => {
+      const mocktokit = ({} as any as Octokit);
       const repo1 = { owner: 'NerdWallet', name: 'shepherd' };
       const repo2 = { owner: 'NerdWallet', name: 'shepherd' };
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, {} as Octokit);
+
+      const service = new GithubService(mocktokit as Octokit);
+      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
       expect(adapter.reposEqual(repo1, repo2)).toBe(true);
     });
 
     it('recognizes two repos as equal if one is missing a default branch', () => {
+      const mocktokit = ({} as any as Octokit);
       const repo1 = { owner: 'NerdWallet', name: 'shepherd', defaultBranch: 'master' };
       const repo2 = { owner: 'NerdWallet', name: 'shepherd' };
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, {} as Octokit);
+
+      const service = new GithubService(mocktokit as Octokit);
+      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
       expect(adapter.reposEqual(repo1, repo2)).toBe(true);
     });
   });
@@ -48,7 +56,8 @@ describe('GithubAdapter', () => {
         search_type: 'invalid_search_type'
       };
 
-      const adapter = new GithubAdapter(migrationCtx, mocktokit);
+      const service = new GithubService(mocktokit as Octokit);
+      const adapter = new GithubAdapter(migrationCtx, service);
 
       try {
         await adapter.getCandidateRepos();
@@ -82,11 +91,12 @@ describe('GithubAdapter', () => {
         search_query: 'topics:test'
       };
 
-      const adapter = new GithubAdapter(migrationCtx, mocktokit as Octokit);
+      const service: any = new GithubService(mocktokit as Octokit);
+      service.repoSearch.mockResolvedValue(['repoownername/test-repo']);
+      const adapter = new GithubAdapter(migrationCtx, service);
 
       const result = await adapter.getCandidateRepos();
-      expect(mocktokit.paginate.mock.calls.length).toBe(1);
-      expect(mocktokit.paginate.mock.calls[0][1]).toStrictEqual({ q: 'topics:test' });
+      expect(service.repoSearch).toBeCalledWith('topics:test');
       expect(result).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
     });
 
@@ -123,8 +133,9 @@ describe('GithubAdapter', () => {
         search_query: 'path:/ filename:package.json in:path'
       };
 
-      const adapterWithSearchType = new GithubAdapter(migrationCtx, mocktokit as Octokit);
-      const adapterWithoutSearchType = new GithubAdapter(migrationCtxWithoutSearchType, mocktokit as Octokit);
+      const service: any = new GithubService(mocktokit as Octokit);
+      const adapterWithSearchType = new GithubAdapter(migrationCtx, service);
+      const adapterWithoutSearchType = new GithubAdapter(migrationCtxWithoutSearchType, service);
 
       const getCandidateRepos = [
         adapterWithSearchType.getCandidateRepos(),
@@ -132,11 +143,8 @@ describe('GithubAdapter', () => {
       ];
 
       const results = await Promise.all(getCandidateRepos);
-      expect(mocktokit.paginate.mock.calls.length).toBe(2);
-      expect(mocktokit.paginate.mock.calls[0][1]).toStrictEqual({ q: 'path:/ filename:package.json in:path' });
-      expect(mocktokit.paginate.mock.calls[1][1]).toStrictEqual({ q: 'path:/ filename:package.json in:path' });
-      expect(results[0]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);      
-      expect(results[1]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);      
+      expect(results[0]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
+      expect(results[1]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
     });
   });
 
@@ -152,7 +160,8 @@ describe('GithubAdapter', () => {
         },
       } as any as Octokit);
 
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, mocktokit);
+      const service: any = new GithubService(mocktokit as Octokit);
+      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
       const repo = {
         owner: 'NerdWallet',
         name: 'test',
@@ -179,6 +188,7 @@ describe('GithubAdapter', () => {
           },
         }),
       },
+      paginate: () => {}
     } as any as Octokit);
 
     const REPO = {
@@ -189,7 +199,8 @@ describe('GithubAdapter', () => {
 
     it('creates a new PR if one does not exist', async () => {
       const octokit = mockPrOctokit({ data: [] });
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
+      const service: any = new GithubService(octokit);
+      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
       await adapter.createPullRequest(REPO, 'Test PR message');
 
       const listMock = octokit.pulls.list;
@@ -212,7 +223,8 @@ describe('GithubAdapter', () => {
           state: 'open',
         }],
       });
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
+      const service: any = new GithubService(octokit);
+      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
       await adapter.createPullRequest(REPO, 'Test PR message, part 2');
       const updateMock = octokit.pulls.update;
 
@@ -232,7 +244,8 @@ describe('GithubAdapter', () => {
           state: 'closed',
         }],
       });
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, octokit);
+      const service: any = new GithubService(octokit);
+      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
       await expect(adapter.createPullRequest(REPO, 'Test PR message, part 2')).rejects.toThrow();
       const updateMock = octokit.pulls.update;
       expect(updateMock).not.toBeCalled();
