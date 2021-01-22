@@ -21,7 +21,7 @@ describe('GithubAdapter', () => {
       const repo1 = { owner: 'NerdWallet', name: 'shepherd' };
       const repo2 = { owner: 'NerdWallet', name: 'shepherd' };
 
-      const service = new GithubService(mocktokit as Octokit);
+      const service = new GithubService(mocktokit);
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
       expect(adapter.reposEqual(repo1, repo2)).toBe(true);
     });
@@ -31,7 +31,7 @@ describe('GithubAdapter', () => {
       const repo1 = { owner: 'NerdWallet', name: 'shepherd', defaultBranch: 'master' };
       const repo2 = { owner: 'NerdWallet', name: 'shepherd' };
 
-      const service = new GithubService(mocktokit as Octokit);
+      const service = new GithubService(mocktokit);
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
       expect(adapter.reposEqual(repo1, repo2)).toBe(true);
     });
@@ -46,7 +46,7 @@ describe('GithubAdapter', () => {
         search_type: 'invalid_search_type'
       };
 
-      const service = new GithubService(mocktokit as Octokit);
+      const service = new GithubService(mocktokit);
       const adapter = new GithubAdapter(migrationCtx, service);
 
       try {
@@ -65,7 +65,7 @@ describe('GithubAdapter', () => {
         search_query: 'topics:test'
       };
 
-      const service: any = new GithubService(mocktokit as Octokit);
+      const service: any = new GithubService(mocktokit);
       service.repoSearch.mockResolvedValue(['repoownername/test-repo']);
       const adapter = new GithubAdapter(migrationCtx, service);
 
@@ -89,7 +89,7 @@ describe('GithubAdapter', () => {
         search_query: 'path:/ filename:package.json in:path'
       };
 
-      const service: any = new GithubService(mocktokit as Octokit);
+      const service: any = new GithubService(mocktokit);
       service.codeSearch.mockResolvedValue(['repoownername/test-repo']);
       const adapterWithSearchType = new GithubAdapter(migrationCtx, service);
       const adapterWithoutSearchType = new GithubAdapter(migrationCtxWithoutSearchType, service);
@@ -110,7 +110,7 @@ describe('GithubAdapter', () => {
   describe('mapRepoAfterCheckout', () => {
     it('saves the default branch', async () => {
       const mocktokit = ({} as any as Octokit);
-      const service: any = new GithubService(mocktokit as Octokit);
+      const service: any = new GithubService(mocktokit);
       const repo = {
         owner: 'NerdWallet',
         name: 'test',

@@ -2,7 +2,7 @@
 import { Octokit } from '@octokit/rest';
 import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
 import _ from 'lodash';
-const netrc = require('netrc');
+import netrc from 'netrc';
 
 export default class GithubService {
   private octokit: Octokit;
