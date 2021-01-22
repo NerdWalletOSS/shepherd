@@ -15,7 +15,7 @@ export default class GithubService {
       const token = process.env.GITHUB_TOKEN || _.get(netrcAuth['api.github.com'], 'password', undefined);
 
       if (!token) {
-        throw new Error(`No Github credentials found; set either GITHUB_TOKEN or 
+        throw new Error(`No Github credentials found; set either GITHUB_TOKEN or
         set a token on the 'password' field in ~/.netrc for api.github.com`);
       }
 
@@ -30,14 +30,14 @@ export default class GithubService {
   }
 
   public async repoSearch(criteria: RestEndpointMethodTypes['search']['repos']['parameters']): Promise<any> {
-    const searchResults: [RestEndpointMethodTypes['search']['repos']['response']] = 
+    const searchResults: [RestEndpointMethodTypes['search']['repos']['response']] =
     await this.paginateRest(this.octokit.search.repos, criteria);
-    
+
     return searchResults.map((r) => _.get(r, 'full_name')).sort();
   }
 
   public async codeSearch(criteria: RestEndpointMethodTypes['search']['code']['parameters']): Promise<any> {
-    const searchResults: [RestEndpointMethodTypes['search']['code']['response']] = 
+    const searchResults: [RestEndpointMethodTypes['search']['code']['response']] =
     await this.paginateRest(this.octokit.search.code, criteria);
 
     return searchResults.map((r) => _.get(r, 'repository.full_name')).sort();
@@ -46,6 +46,12 @@ export default class GithubService {
   public getRepos(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
   Promise<RestEndpointMethodTypes['repos']['get']['response']> {
     return this.octokit.repos.get(criteria);
+  }
+
+  public getDefaultBranchForRepo(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
+  Promise<string> {
+    const data: any = this.getRepos(criteria);
+    return data.default_branch;
   }
 
   public listOrgRepos({ org }: RestEndpointMethodTypes['repos']['listForOrg']['parameters']):
@@ -81,7 +87,7 @@ export default class GithubService {
     return this.octokit.pulls.update(criteria);
   }
 
-  public getCombinedRefStatus(criteria: RestEndpointMethodTypes['repos']['getCombinedStatusForRef']['parameters']): 
+  public getCombinedRefStatus(criteria: RestEndpointMethodTypes['repos']['getCombinedStatusForRef']['parameters']):
   Promise<RestEndpointMethodTypes['repos']['getCombinedStatusForRef']['response']> {
     return this.octokit.repos.getCombinedStatusForRef(criteria);
   }

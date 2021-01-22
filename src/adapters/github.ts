@@ -55,7 +55,6 @@ class GithubAdapter extends GitAdapter {
       }
 
       repoNames = await searchMethod(search_query);
-      console.log({ repoNames });
     }
 
     return _.uniq(repoNames).map((r: any) => this.parseRepo(r));
@@ -63,14 +62,14 @@ class GithubAdapter extends GitAdapter {
 
   public async mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo> {
     const { owner, name } = repo;
-    const { data } = await this.githubService.getRepos({
+    const defaultBranch = await this.githubService.getDefaultBranchForRepo({
       owner,
       repo: name,
     });
 
     return {
       ...repo,
-      defaultBranch: data.default_branch,
+      defaultBranch
     };
   }
 

@@ -39,17 +39,7 @@ describe('GithubAdapter', () => {
 
   describe('getCandidateRepos', () => {
     it('validates search_type option if provided', async () => {
-      const mocktokit = ({
-        repos: {
-          get: jest.fn().mockReturnValue({
-            data: {
-              default_branch: 'develop',
-            },
-          }),
-        },
-        search: {}
-      } as any as Octokit);
-
+      const mocktokit = ({} as any as Octokit);
       const migrationCtx: any = mockMigrationContext();
       migrationCtx.migration.spec.adapter = {
         type: 'github',
@@ -67,23 +57,7 @@ describe('GithubAdapter', () => {
     });
 
     it(`performs repository search and returns expected result if 'respositories' is specified for search_type`, async () => {
-      const mocktokit = ({
-        paginate: jest
-          .fn()
-          .mockResolvedValue([{
-            full_name: 'repoownername/test-repo'
-          }]),
-        search: {
-          repos: jest.fn().mockReturnValue({
-            data: {
-              items: [{
-                full_name: 'repoownername/test-repo'
-              }]
-            }
-          })
-        }
-      } as any);
-
+      const mocktokit = ({} as any as Octokit);
       const migrationCtx: any = mockMigrationContext();
       migrationCtx.migration.spec.adapter = {
         type: 'github',
@@ -101,25 +75,7 @@ describe('GithubAdapter', () => {
     });
 
     it(`performs code search and returns expected result if search_type is 'code' or is not provided`, async () => {
-      const mocktokit = ({
-        paginate: jest
-          .fn()
-          .mockResolvedValue([{
-            repository: {
-              full_name: 'repoownername/test-repo'
-            }
-          }]),
-        search: {
-          code: jest.fn().mockReturnValue({
-            data: {
-              items: [{
-                full_name: 'repoownername/test-repo'
-              }]
-            }
-          })
-        }
-      } as any);
-
+      const mocktokit = ({} as any as Octokit);
       const migrationCtx: any = mockMigrationContext();
       migrationCtx.migration.spec.adapter = {
         type: 'github',
@@ -134,6 +90,7 @@ describe('GithubAdapter', () => {
       };
 
       const service: any = new GithubService(mocktokit as Octokit);
+      service.codeSearch.mockResolvedValue(['repoownername/test-repo']);
       const adapterWithSearchType = new GithubAdapter(migrationCtx, service);
       const adapterWithoutSearchType = new GithubAdapter(migrationCtxWithoutSearchType, service);
 
@@ -143,6 +100,8 @@ describe('GithubAdapter', () => {
       ];
 
       const results = await Promise.all(getCandidateRepos);
+      expect(service.codeSearch).toBeCalledTimes(2);
+      expect(service.codeSearch).toBeCalledWith('path:/ filename:package.json in:path');
       expect(results[0]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
       expect(results[1]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
     });
@@ -150,23 +109,18 @@ describe('GithubAdapter', () => {
 
   describe('mapRepoAfterCheckout', () => {
     it('saves the default branch', async () => {
-      const mocktokit = ({
-        repos: {
-          get: jest.fn().mockReturnValue({
-            data: {
-              default_branch: 'develop',
-            },
-          }),
-        },
-      } as any as Octokit);
-
+      const mocktokit = ({} as any as Octokit);
       const service: any = new GithubService(mocktokit as Octokit);
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
       const repo = {
         owner: 'NerdWallet',
         name: 'test',
       };
+      service.getDefaultBranchForRepo.mockResolvedValue('develop');
+      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
+
       const mappedRepo = await adapter.mapRepoAfterCheckout(repo);
+      expect(service.getDefaultBranchForRepo).toBeCalledTimes(1);
+      expect(service.getDefaultBranchForRepo).toBeCalledWith({ owner: repo.owner, repo: repo.name });
       expect(mappedRepo).toEqual({
         ...repo,
         defaultBranch: 'develop',
@@ -175,22 +129,6 @@ describe('GithubAdapter', () => {
   });
 
   describe('prRepo', () => {
-    const mockPrOctokit = (existingPr: any): Octokit => ({
-      pulls: {
-        list: jest.fn().mockReturnValue(existingPr),
-        create: jest.fn(),
-        update: jest.fn(),
-      },
-      repos: {
-        get: jest.fn().mockReturnValue({
-          data: {
-            default_branch: 'master',
-          },
-        }),
-      },
-      paginate: () => {}
-    } as any as Octokit);
-
     const REPO = {
       owner: 'NerdWallet',
       name: 'shepherd',
@@ -198,15 +136,19 @@ describe('GithubAdapter', () => {
     };
 
     it('creates a new PR if one does not exist', async () => {
-      const octokit = mockPrOctokit({ data: [] });
+      const octokit = ({} as any as Octokit);
       const service: any = new GithubService(octokit);
+      service.listPullRequests.mockResolvedValue([])
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
+
       await adapter.createPullRequest(REPO, 'Test PR message');
 
-      const listMock = octokit.pulls.list;
-      const createMock = octokit.pulls.create;
-      expect(listMock).toBeCalled();
-      expect(createMock).toBeCalledWith({
+      expect(service.listPullRequests).toBeCalledWith({
+        owner: 'NerdWallet',
+        repo: 'shepherd',
+        head: 'NerdWallet:test-migration',
+      });
+      expect(service.createPullRequest).toBeCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
         head: 'test-migration',
@@ -217,38 +159,34 @@ describe('GithubAdapter', () => {
     });
 
     it('updates a PR if one exists and is open', async () => {
-      const octokit = mockPrOctokit({
-        data: [{
+      const octokit = ({} as any as Octokit);
+      const service: any = new GithubService(octokit);
+      service.listPullRequests.mockResolvedValue([{
           number: 1234,
           state: 'open',
-        }],
-      });
-      const service: any = new GithubService(octokit);
+      }]);
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
       await adapter.createPullRequest(REPO, 'Test PR message, part 2');
-      const updateMock = octokit.pulls.update;
 
-      expect(updateMock).toBeCalledWith({
+      expect(service.updatePullRequest).toBeCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
-        pull_number: 1234,
         title: 'Test migration',
         body: 'Test PR message, part 2',
+        pull_number: 1234
       });
     });
 
     it('does not update a closed PR', async () => {
-      const octokit = mockPrOctokit({
-        data: [{
+      const octokit = ({} as any as Octokit);
+      const service: any = new GithubService(octokit);
+      service.listPullRequests.mockResolvedValue([{
           number: 1234,
           state: 'closed',
-        }],
-      });
-      const service: any = new GithubService(octokit);
+      }]);
       const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
       await expect(adapter.createPullRequest(REPO, 'Test PR message, part 2')).rejects.toThrow();
-      const updateMock = octokit.pulls.update;
-      expect(updateMock).not.toBeCalled();
+      expect(service.updatePullRequest).not.toBeCalled()
     });
   });
 });
