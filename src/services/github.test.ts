@@ -1,9 +1,10 @@
 import type { Octokit } from '@octokit/rest';
-import GithubServie from './github';
+// import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
+import GithubService from './github';
 
 describe('GithubService', () => {
-//   describe('paginateRest', () => {
-//     it('calls paginateRest with provided method and criteria', () => {
+//   describe('octokit.paginate', () => {
+//     it('calls octokit.paginate with provided method and criteria', () => {
 //     });
 //   });
 
@@ -24,6 +25,37 @@ describe('GithubService', () => {
 //     });
 //   });
 
+//   describe.only('listOrgRepos', () => {
+//     it('calls octokit.paginate with criteria & returns results provided', async () => {
+//         const orgRepos = [{
+//             archived: true,
+//             full_name: 'testOrg/archived-repo'
+//         }, {
+//             archived: false,
+//             full_name: 'testOrg/active-repo'
+//         }];
+
+//         const mocktokit = {
+//             paginate: jest.fn().mockResolvedValue(orgRepos),
+//             repos: {
+//               listForOrg: () => {},
+//               get: jest.fn().mockResolvedValue({
+//                 data: {
+//                   default_branch: 'master',
+//                 },
+//               }),
+//             },
+//         } as any as Octokit;
+
+//         const service = new GithubService(mocktokit);
+//         const searchCriteria = { org: 'testOrg' };
+//         const result = await service.listOrgRepos(searchCriteria);
+
+//         expect(mocktokit.paginate).toBeCalledWith(mocktokit.repos.listForOrg, searchCriteria)
+//         expect(result).toEqual('testOrg/active-repo');
+//     });
+//   });
+
   describe('getDefaultBranchForRepo', () => {
     it('calls repos.get with provided criteria & returns default branch', async () => {
         const mocktokit = {
@@ -35,7 +67,7 @@ describe('GithubService', () => {
               }),
             },
         } as any as Octokit;
-        const service = new GithubServie(mocktokit);
+        const service = new GithubService(mocktokit);
         const searchCriteria = {
             owner: 'NerdwalletOSS',
             repo: 'shepherd',
@@ -47,30 +79,136 @@ describe('GithubService', () => {
     });
   });
 
-//   describe('listOrgRepos', () => {
-//     it('calls paginateRest & returns results provided', () => {
-//     });
-//   });
+  describe('getActiveReposForOrg', () => {
+    it('calls octokit.paginate with criteria & returns sorted list of active repos', async () => {
+        const orgRepos = [
+            {
+                archived: true,
+                full_name: 'testOrg/archived-repo'
+            },
+            {
+                archived: false,
+                full_name: 'testOrg/very-active-repo'
+            },
+            {
+                archived: false,
+                full_name: 'testOrg/active-repo'
+            }
+        ];
 
-//   describe('getActiveReposForOrg', () => {
-//     it('calls paginateRest & returns sorted key from returned object', () => {
-//     });
-//   });
+        const mocktokit = {
+            paginate: jest.fn().mockResolvedValue(orgRepos),
+            repos: {
+              listForOrg: () => {},
+              get: jest.fn().mockResolvedValue({
+                data: {
+                  default_branch: 'master',
+                },
+              }),
+            },
+        } as any as Octokit;
 
-//   describe('getPullRequest', () => {
-//     it('calls get with provided criteria & returns results', () => {
-//     });
-//   });
+        const service = new GithubService(mocktokit);
+        const searchCriteria = { org: 'testOrg' };
+        const result = await service.getActiveReposForOrg(searchCriteria);
 
-//   describe('listPullRequests', () => {
-//     it('calls paginateRest with provided criteria & returns results', () => {
-//     });
-//   });
+        expect(mocktokit.paginate).toBeCalledWith(mocktokit.repos.listForOrg, searchCriteria)
+        expect(result).toEqual(['testOrg/active-repo', 'testOrg/very-active-repo']);
+    });
+  });
 
-//   describe('createPullRequest', () => {
-//     it('calls pulls.create with provided criteria & returns results', () => {
-//     });
-//   });
+  describe('getPullRequest', () => {
+    it('calls pulls.get with provided criteria & returns results', async () => {
+        const samplePRResponse = {
+            data: {
+                number: 1,
+                html_url: 'https://github.com/testOrg/test-repo',
+                merged_at: null,
+                mergable: true,
+                mergable_state: 'clean'
+            }
+        };
+
+        const mocktokit = {
+            pulls: {
+              get: jest.fn().mockResolvedValue(samplePRResponse),
+            },
+        } as any as Octokit;
+
+        const service = new GithubService(mocktokit);
+        const searchCriteria = {
+            owner: 'testOrg',
+            repo: 'test-repo',
+            pull_number: 1,
+        };
+        const result = await service.getPullRequest(searchCriteria);
+
+        expect(mocktokit.pulls.get).toBeCalledWith(searchCriteria);
+        expect(result).toEqual(samplePRResponse);
+    });
+  });
+
+  describe('listPullRequests', () => {
+    it('calls octokit.paginate with provided criteria & returns results', async () => {
+        const samplePRsResponse = [
+            {
+                number: 1,
+            },
+            {
+                number: 2
+            }
+        ];
+
+        const mocktokit = {
+            paginate: jest.fn().mockResolvedValue(samplePRsResponse),
+            pulls: {
+              list: jest.fn(),
+            },
+        } as any as Octokit;
+
+        const service = new GithubService(mocktokit);
+        const searchCriteria: any = {
+            owner: 'testOrg',
+            repo: 'test-repo',
+            head: 'testOrg:branch1',
+            state: 'all',
+        };
+        const result = await service.listPullRequests(searchCriteria);
+
+        expect(mocktokit.paginate).toBeCalledWith(mocktokit.pulls.list, searchCriteria);
+        expect(result).toEqual(samplePRsResponse);
+    });
+  });
+
+  describe('createPullRequest', () => {
+    it('calls pulls.create with provided criteria & returns results', async () => {
+        const prCreateResponse = {
+            url: 'https://api.github.com/repos/testOrg/test-repo/pulls/1',
+            id: 1,
+            html_url: 'https://github.com/testOrg/test-repo/pull/1'
+        };
+
+        const mocktokit = {
+            pulls: {
+              create: jest.fn().mockResolvedValue(prCreateResponse),
+            },
+        } as any as Octokit;
+
+        const service = new GithubService(mocktokit);
+        const prCreateParams = {
+            owner: 'testOrg',
+            repo: 'test-repo',
+            head: 'shepherd-1',
+            base: 'master',
+            title: 'feat: some feature',
+            body: 'This is the best PR ever',
+        };
+        const result = await service.createPullRequest(prCreateParams);
+
+        expect(mocktokit.pulls.create).toBeCalledWith(prCreateParams);
+        expect(result).toEqual(prCreateResponse);
+    });
+  });
 
 //   describe('updatePullRequest', () => {
 //     it('calls pulls.update with provided criteria & returns results', () => {

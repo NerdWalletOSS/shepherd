@@ -54,24 +54,25 @@ export default class GithubService {
     return this.octokit.repos.get(criteria);
   }
 
+  private listOrgRepos({ org }: RestEndpointMethodTypes['repos']['listForOrg']['parameters']):
+  Promise<RestEndpointMethodTypes['repos']['listForOrg']['response']['data']> {
+    return this.paginateRest(this.octokit.repos.listForOrg, { org });
+  }
+
   public async getDefaultBranchForRepo(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
   Promise<string> {
     const { data } = await this.getRepos(criteria);
     return data.default_branch;
   }
 
-  public listOrgRepos({ org }: RestEndpointMethodTypes['repos']['listForOrg']['parameters']):
-  Promise<[RestEndpointMethodTypes['repos']['listForOrg']['response']]> {
-    return this.paginateRest(this.octokit.repos.listForOrg, { org });
-  }
-
   public async getActiveReposForOrg(criteria: RestEndpointMethodTypes['repos']['listForOrg']['parameters']):
-  Promise<[string]> {
-    // Promise<[RestEndpointMethodTypes['repos']['listForOrg']['response']]>
-    const allOrgRepos = await this.paginateRest(this.octokit.repos.listForOrg, { org: criteria.org });
+  Promise<string[]> {
+    const allOrgRepos = await this.listOrgRepos({ org: criteria.org });
 
-    const unarchivedRepos = allOrgRepos.filter((r: any) => !r.archived);
-    return unarchivedRepos.map((r: any) => r.full_name).sort();
+    return allOrgRepos
+      .filter((r) => !r.archived)
+      .map((r) => r.full_name)
+      .sort();
   }
 
   public getPullRequest(criteria: RestEndpointMethodTypes['pulls']['get']['parameters']):
@@ -80,7 +81,7 @@ export default class GithubService {
   }
 
   public listPullRequests(criteria: RestEndpointMethodTypes['pulls']['list']['parameters']):
-  Promise<[RestEndpointMethodTypes['pulls']['list']['response']]> {
+  Promise<RestEndpointMethodTypes['pulls']['list']['response']['data']> {
     return this.paginateRest(this.octokit.pulls.list, criteria);
   }
 

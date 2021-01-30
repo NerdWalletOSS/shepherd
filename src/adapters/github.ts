@@ -178,7 +178,6 @@ class GithubAdapter extends GitAdapter {
       const { data: pullRequest } = await this.githubService.getPullRequest({
         owner,
         repo: name,
-        // @ts-ignore (typings are broken)
         pull_number: pullRequests[0].number,
       });
 
