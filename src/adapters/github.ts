@@ -8,9 +8,6 @@ import { IEnvironmentVariables, IRepo } from './base';
 import GitAdapter from './git';
 import GithubService from '../services/github'
 
-
-const VALID_SEARCH_TYPES = ['code', 'repositories'] as const;
-
 enum SafetyStatus {
   Success,
   PullRequestExisted,
@@ -30,7 +27,7 @@ class GithubAdapter extends GitAdapter {
     const { org, search_type, search_query } = this.migrationContext.migration.spec.adapter;
     let repoNames: string[];
 
-    // list all of an orgs repos
+    // list all of an orgs active repos
     if (org) {
       if (search_query) {
         throw new Error('Cannot use both "org" and "search_query" in GitHub adapter. Pick one.');
@@ -38,23 +35,10 @@ class GithubAdapter extends GitAdapter {
 
       repoNames = await this.githubService.getActiveReposForOrg({ org });
     } else {
-      if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
-        throw new Error(`"search_type" must be one of the following:
-          ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
-      }
-
-      let searchMethod;
-
-      switch (search_type) {
-        case 'repositories':
-          searchMethod = this.githubService.repoSearch.bind(this.githubService);
-          break;
-        case 'code':  // github code search query. results are less reliable
-        default:
-          searchMethod = this.githubService.codeSearch.bind(this.githubService);
-      }
-
-      repoNames = await searchMethod(search_query);
+      repoNames = await this.githubService.getActiveReposForSearchTypeAndQuery({
+        search_type,
+        search_query
+      });
     }
 
     return _.uniq(repoNames).map((r) => this.parseRepo(r));

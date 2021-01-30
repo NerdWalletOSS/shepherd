@@ -66,11 +66,14 @@ describe('GithubAdapter', () => {
       };
 
       const service: any = new GithubService(mocktokit);
-      service.repoSearch.mockResolvedValue(['repoownername/test-repo']);
+      service.getActiveReposForSearchTypeAndQuery.mockResolvedValue(['repoownername/test-repo']);
       const adapter = new GithubAdapter(migrationCtx, service);
 
       const result = await adapter.getCandidateRepos();
-      expect(service.repoSearch).toBeCalledWith('topics:test');
+      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledWith({
+        search_type: 'repositories',
+        search_query: 'topics:test'
+      });
       expect(result).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
     });
 
@@ -90,7 +93,7 @@ describe('GithubAdapter', () => {
       };
 
       const service: any = new GithubService(mocktokit);
-      service.codeSearch.mockResolvedValue(['repoownername/test-repo']);
+      service.getActiveReposForSearchTypeAndQuery.mockResolvedValue(['repoownername/test-repo']);
       const adapterWithSearchType = new GithubAdapter(migrationCtx, service);
       const adapterWithoutSearchType = new GithubAdapter(migrationCtxWithoutSearchType, service);
 
@@ -100,8 +103,11 @@ describe('GithubAdapter', () => {
       ];
 
       const results = await Promise.all(getCandidateRepos);
-      expect(service.codeSearch).toBeCalledTimes(2);
-      expect(service.codeSearch).toBeCalledWith('path:/ filename:package.json in:path');
+      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledTimes(2);
+      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledWith({
+        search_type: 'code',
+        search_query: 'path:/ filename:package.json in:path'
+      });
       expect(results[0]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
       expect(results[1]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
     });

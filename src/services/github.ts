@@ -4,6 +4,12 @@ import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
 import _ from 'lodash';
 import netrc from 'netrc';
 
+const VALID_SEARCH_TYPES: ReadonlyArray<string> = ['code', 'repositories'] as const;
+
+interface SearchTypeAndQueryParams { 
+  search_type: string
+  search_query: string
+} 
 export default class GithubService {
   private octokit: Octokit;
 
@@ -29,14 +35,14 @@ export default class GithubService {
     return this.octokit.paginate(method, criteria);
   }
 
-  public async repoSearch(criteria: RestEndpointMethodTypes['search']['repos']['parameters']): Promise<any> {
+  private async findReposByMetadata(criteria: RestEndpointMethodTypes['search']['repos']['parameters']): Promise<string[]> {
     const searchResults: [RestEndpointMethodTypes['search']['repos']['response']] =
     await this.paginateRest(this.octokit.search.repos, criteria);
 
     return searchResults.map((r) => _.get(r, 'full_name')).sort();
   }
 
-  public async codeSearch(criteria: RestEndpointMethodTypes['search']['code']['parameters']): Promise<any> {
+  private async findReposByCode(criteria: RestEndpointMethodTypes['search']['code']['parameters']): Promise<string[]> {
     const searchResults: [RestEndpointMethodTypes['search']['code']['response']] =
     await this.paginateRest(this.octokit.search.code, criteria);
 
@@ -96,5 +102,21 @@ export default class GithubService {
   public getBranch(criteria: RestEndpointMethodTypes['repos']['getBranch']['parameters']):
   Promise<RestEndpointMethodTypes['repos']['getBranch']['response']> {
     return this.octokit.repos.getBranch(criteria);
+  }
+
+  public getActiveReposForSearchTypeAndQuery({ search_type, search_query }: SearchTypeAndQueryParams): 
+  Promise<any> {
+    if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
+      throw new Error(`"search_type" must be one of the following:
+        ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
+    }
+
+    switch (search_type) {
+      case 'repositories':
+        return this.findReposByMetadata({ q: search_query });
+      case 'code':
+      default:
+        return this.findReposByCode({ q: search_query });
+    } 
   }
 }
