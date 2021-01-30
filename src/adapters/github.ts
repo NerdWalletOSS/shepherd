@@ -132,7 +132,7 @@ class GithubAdapter extends GitAdapter {
     });
 
     if (pullRequests && pullRequests.length) {
-      const pullRequest: any = pullRequests[0];
+      const pullRequest = pullRequests[0];
 
       if (pullRequest.state === 'open') {
         // A pull request exists and is open, let's update it
