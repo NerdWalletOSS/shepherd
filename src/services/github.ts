@@ -36,14 +36,14 @@ export default class GithubService {
   }
 
   private async findReposByMetadata(criteria: RestEndpointMethodTypes['search']['repos']['parameters']): Promise<string[]> {
-    const searchResults: [RestEndpointMethodTypes['search']['repos']['response']] =
+    const searchResults: RestEndpointMethodTypes['search']['repos']['response']['data']['items'] =
     await this.paginateRest(this.octokit.search.repos, criteria);
 
     return searchResults.map((r) => _.get(r, 'full_name')).sort();
   }
 
   private async findReposByCode(criteria: RestEndpointMethodTypes['search']['code']['parameters']): Promise<string[]> {
-    const searchResults: [RestEndpointMethodTypes['search']['code']['response']] =
+    const searchResults: RestEndpointMethodTypes['search']['code']['response']['data']['items'] =
     await this.paginateRest(this.octokit.search.code, criteria);
 
     return searchResults.map((r) => _.get(r, 'repository.full_name')).sort();

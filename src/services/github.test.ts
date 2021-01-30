@@ -3,59 +3,6 @@ import type { Octokit } from '@octokit/rest';
 import GithubService from './github';
 
 describe('GithubService', () => {
-//   describe('octokit.paginate', () => {
-//     it('calls octokit.paginate with provided method and criteria', () => {
-//     });
-//   });
-
-//   describe('findReposByMetadata', () => {
-//     it('', () => {
-//     });
-//   });
-
-//   describe('findReposByCode', () => {
-//     it('recognizes two repos as equal', () => {
-//     });
-//   });
-
-//   describe('getRepos', () => {
-//     it('calls octokit.repos.get & returns provided results', () => {
-        // const octokit = new Octokit();
-        // const mocktokit = ({} as any as Octokit);
-//     });
-//   });
-
-//   describe.only('listOrgRepos', () => {
-//     it('calls octokit.paginate with criteria & returns results provided', async () => {
-//         const orgRepos = [{
-//             archived: true,
-//             full_name: 'testOrg/archived-repo'
-//         }, {
-//             archived: false,
-//             full_name: 'testOrg/active-repo'
-//         }];
-
-//         const mocktokit = {
-//             paginate: jest.fn().mockResolvedValue(orgRepos),
-//             repos: {
-//               listForOrg: () => {},
-//               get: jest.fn().mockResolvedValue({
-//                 data: {
-//                   default_branch: 'master',
-//                 },
-//               }),
-//             },
-//         } as any as Octokit;
-
-//         const service = new GithubService(mocktokit);
-//         const searchCriteria = { org: 'testOrg' };
-//         const result = await service.listOrgRepos(searchCriteria);
-
-//         expect(mocktokit.paginate).toBeCalledWith(mocktokit.repos.listForOrg, searchCriteria)
-//         expect(result).toEqual('testOrg/active-repo');
-//     });
-//   });
-
   describe('getDefaultBranchForRepo', () => {
     it('calls repos.get with provided criteria & returns default branch', async () => {
         const mocktokit = {
@@ -210,29 +157,173 @@ describe('GithubService', () => {
     });
   });
 
-//   describe('updatePullRequest', () => {
-//     it('calls pulls.update with provided criteria & returns results', () => {
-//     });
-//   });
+  describe('updatePullRequest', () => {
+    it('calls pulls.update with provided criteria & returns results', async () => {
+        const prUpdateResponse = {
+            url: 'https://api.github.com/repos/testOrg/test-repo/pulls/1',
+            id: 1,
+            html_url: 'https://github.com/testOrg/test-repo/pull/1'
+        };
 
-//   describe('getCombinedRefStatus', () => {
-//     it('calls repos.getCombinedStatusForRef with provided criteria & returns results', () => {
-//     });
-//   });
+        const mocktokit = {
+            pulls: {
+              update: jest.fn().mockResolvedValue(prUpdateResponse),
+            },
+        } as any as Octokit;
 
-//   describe('getBranch', () => {
-//     it('calls repos.getBranch with provided criteria & returns results', () => {
-//     });
-//   });
+        const service = new GithubService(mocktokit);
+        const prUpdateParams = {
+            owner: 'testOrg',
+            repo: 'test-repo',
+            pull_number: 1,
+            title: 'feat: some feature',
+            body: 'Update: still the best PR ever',
+        };
+        const result = await service.updatePullRequest(prUpdateParams);
 
-//   describe('getActiveReposForSearchTypeAndQuery', () => {
-//     it('validates search_type is valid', () => {
-//     });
+        expect(mocktokit.pulls.update).toBeCalledWith(prUpdateParams);
+        expect(result).toEqual(prUpdateResponse);        
+    });
+  });
 
-//     it('finds repos by metadata if repository search is specified & returns results', () => {
-//     });
+  describe('getCombinedRefStatus', () => {
+    it('calls repos.getCombinedStatusForRef with provided criteria & returns results', async () => {
+        const combinedRefStatusResponse = {
+            data: {
+                state: 'open',
+                statuses: {
+                    state: 'pending'
+                }    
+            }
+        };
 
-//     it('finds repos by code if code search specified or search type omitted & returns results', () => {
-//     });
-//   });
+        const mocktokit = {
+            repos: {
+              getCombinedStatusForRef: jest.fn().mockResolvedValue(combinedRefStatusResponse)
+            }
+        } as any as Octokit;
+
+        const service = new GithubService(mocktokit);
+        const criteria = {
+            owner: 'testOrg',
+            repo: 'test-repo',
+            ref: 'mass-update',
+        };
+        const result = await service.getCombinedRefStatus(criteria);
+
+        expect(mocktokit.repos.getCombinedStatusForRef).toBeCalledWith(criteria);
+        expect(result).toEqual(combinedRefStatusResponse);
+    });
+  });
+
+  describe('getBranch', () => {
+    it('calls repos.getBranch with provided criteria & returns results', async () => {
+        const branchResponse = {
+            name: 'mass-update',
+            commit: {
+                url: 'https://github.com/testOrg/test-repo/tree/mass-update'
+            }
+        };
+
+        const mocktokit = {
+            repos: {
+              getBranch: jest.fn().mockResolvedValue(branchResponse)
+            }
+        } as any as Octokit;
+
+        const service = new GithubService(mocktokit);
+        const criteria = {
+            owner: 'testOrg',
+            repo: 'test-repo',
+            branch: 'mass-update',
+        };
+        const result = await service.getBranch(criteria);
+
+        expect(mocktokit.repos.getBranch).toBeCalledWith(criteria);
+        expect(result).toEqual(branchResponse);
+    });
+  });
+
+  describe('getActiveReposForSearchTypeAndQuery', () => {
+    it('validates search_type is valid & throws if not', async () => {
+        const mocktokit = {} as any as Octokit;
+
+        const service = new GithubService(mocktokit);
+        const criteria = {
+            search_type: 'invalid_search_type',
+            search_query: 'any'
+        };
+        const fn = service.getActiveReposForSearchTypeAndQuery.bind(service, criteria)
+        expect(fn).toThrowError(`"search_type" must be one of the following:
+        'code' | 'repositories'`);
+    });
+
+    it('finds repos by metadata if repository search is specified & returns results', async () => {
+        const repoSearchResponse = [
+            {
+                name: 'repo1',
+                full_name: 'testOrg/repo1',
+            },
+            {
+                name: 'repo2',
+                full_name: 'testOrg/repo2',
+            }
+        ]
+        const mocktokit = {
+            paginate: jest.fn().mockResolvedValue(repoSearchResponse),
+            search: {
+                repos: jest.fn()
+            }
+        } as any as Octokit;
+
+        const service = new GithubService(mocktokit);
+        const criteria = {
+            search_type: 'repositories',
+            search_query: 'topics:test'
+        };
+
+        const result = await service.getActiveReposForSearchTypeAndQuery(criteria);
+
+        expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.repos, { q: criteria.search_query });
+        expect(result).toEqual(repoSearchResponse.map((o) => o.full_name));
+    });
+
+    it('finds repos by code if code search specified or search type omitted & returns results', async () => {
+        const codeSearchResponse = [
+            {
+                name: 'package.json',
+                repository: {
+                    name: 'repo1',
+                    full_name: 'testOrg/repo1',
+                },
+    
+            },
+            {
+                name: 'package.json',
+                repository: {
+                    name: 'repo2',
+                    full_name: 'testOrg/repo2',
+                },
+            }
+        ];
+
+        const mocktokit = {
+            paginate: jest.fn().mockResolvedValue(codeSearchResponse),
+            search: {
+                code: jest.fn()
+            }
+        } as any as Octokit;
+
+        const service = new GithubService(mocktokit);
+        const criteria = {
+            search_type: 'code',
+            search_query: 'org:testOrg path:/ filename:package.json in:path'
+        };
+
+        const result = await service.getActiveReposForSearchTypeAndQuery(criteria);
+
+        expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.code, { q: criteria.search_query });
+        expect(result).toEqual(codeSearchResponse.map((o) => o.repository.full_name ));
+    });
+  });
 });
