@@ -1,6 +1,5 @@
 import type { Octokit } from '@octokit/rest';
 import GithubServie from './github';
-jest.mock('Octokit');
 
 describe('GithubService', () => {
 //   describe('paginateRest', () => {
@@ -26,7 +25,7 @@ describe('GithubService', () => {
 //   });
 
   describe('getDefaultBranchForRepo', () => {
-    it('calls getRepos with provided criteria & returns default branch', async () => {
+    it('calls repos.get with provided criteria & returns default branch', async () => {
         const mocktokit = {
             repos: {
               get: jest.fn().mockResolvedValue({
@@ -37,15 +36,14 @@ describe('GithubService', () => {
             },
         } as any as Octokit;
         const service = new GithubServie(mocktokit);
-        const result = await service.getDefaultBranchForRepo({
+        const searchCriteria = {
             owner: 'NerdwalletOSS',
             repo: 'shepherd',
-        })
+        };
+        const result = await service.getDefaultBranchForRepo(searchCriteria);
         
-        expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledWith({
-            search_type: 'repositories',
-            search_query: 'topics:test'
-        });       
+        expect(mocktokit.repos.get).toBeCalledWith(searchCriteria)
+        expect(result).toEqual('master');
     });
   });
 

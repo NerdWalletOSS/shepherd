@@ -56,7 +56,7 @@ export default class GithubService {
 
   public async getDefaultBranchForRepo(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
   Promise<string> {
-    const data: any = await this.getRepos(criteria);
+    const { data } = await this.getRepos(criteria);
     return data.default_branch;
   }
 
