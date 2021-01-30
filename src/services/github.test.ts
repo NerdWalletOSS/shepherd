@@ -1,5 +1,4 @@
 import type { Octokit } from '@octokit/rest';
-// import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
 import GithubService from './github';
 
 describe('GithubService', () => {
