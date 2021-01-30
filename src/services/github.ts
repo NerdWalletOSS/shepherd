@@ -49,14 +49,14 @@ export default class GithubService {
     return searchResults.map((r) => _.get(r, 'repository.full_name')).sort();
   }
 
-  public getRepos(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
+  private getRepos(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
   Promise<RestEndpointMethodTypes['repos']['get']['response']> {
     return this.octokit.repos.get(criteria);
   }
 
-  public getDefaultBranchForRepo(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
+  public async getDefaultBranchForRepo(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
   Promise<string> {
-    const data: any = this.getRepos(criteria);
+    const data: any = await this.getRepos(criteria);
     return data.default_branch;
   }
 
@@ -106,7 +106,7 @@ export default class GithubService {
 
   public getActiveReposForSearchTypeAndQuery({ search_type, search_query }: SearchTypeAndQueryParams): 
   Promise<any> {
-    if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
+    if (!VALID_SEARCH_TYPES.includes(search_type)) {
       throw new Error(`"search_type" must be one of the following:
         ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
     }
