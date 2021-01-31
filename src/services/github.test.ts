@@ -252,7 +252,8 @@ describe('GithubService', () => {
             search_type: 'invalid_search_type',
             search_query: 'any'
         };
-        const fn = service.getActiveReposForSearchTypeAndQuery.bind(service, criteria)
+        const fn = service.getActiveReposForSearchTypeAndQuery.bind(service, criteria);
+
         expect(fn).toThrowError(`"search_type" must be one of the following:
         'code' | 'repositories'`);
     });

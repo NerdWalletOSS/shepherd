@@ -38,22 +38,38 @@ describe('GithubAdapter', () => {
   });
 
   describe('getCandidateRepos', () => {
-    it('validates search_type option if provided', async () => {
+    it('validates search_query is not specified with org search', () => {
       const mocktokit = ({} as any as Octokit);
       const migrationCtx: any = mockMigrationContext();
       migrationCtx.migration.spec.adapter = {
+        org: 'testOrg',
         type: 'github',
-        search_type: 'invalid_search_type'
+        search_query: 'topics:test'
       };
 
       const service = new GithubService(mocktokit);
       const adapter = new GithubAdapter(migrationCtx, service);
 
-      try {
-        await adapter.getCandidateRepos();
-      } catch (e) {
-        expect(e.message).toContain(`"search_type" must be one of the following:`);
-      }
+      return expect(adapter.getCandidateRepos())
+        .rejects
+        .toThrow('Cannot use both \"org\" and \"search_query\" in GitHub adapter. Pick one.');
+    });
+
+    it('performs org search if specified and returns expected result', async () => {
+      const mocktokit = ({} as any as Octokit);
+      const migrationCtx: any = mockMigrationContext();
+      migrationCtx.migration.spec.adapter = {
+        type: 'github',
+        org: 'testOrg'
+      };
+
+      const service: any = new GithubService(mocktokit);
+      service.getActiveReposForOrg.mockResolvedValue(['testOrg/test-repo']);
+      const adapter = new GithubAdapter(migrationCtx, service);
+
+      const result = await adapter.getCandidateRepos();
+      expect(service.getActiveReposForOrg).toBeCalledWith({ org: 'testOrg' });
+      expect(result).toStrictEqual([ { owner: 'testOrg', name: 'test-repo' } ]);
     });
 
     it(`performs repository search and returns expected result if 'respositories' is specified for search_type`, async () => {
@@ -110,6 +126,22 @@ describe('GithubAdapter', () => {
       });
       expect(results[0]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
       expect(results[1]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
+    });
+  });
+
+  describe('parseRepo', () => {
+    it('throws if owner or name not found in repo string', () => {
+      const mocktokit = ({} as any as Octokit);
+      const migrationCtx: any = mockMigrationContext();
+      const service = new GithubService(mocktokit);
+      const adapter = new GithubAdapter(migrationCtx, service);
+      const calledWithoutName = adapter.parseRepo.bind(null, 'ownerbutnoname/');
+      const calledWithoutOwner = adapter.parseRepo.bind(null, '/namebutnoowner');
+      const calledWithNeither = adapter.parseRepo.bind(null, '');
+      
+      expect(calledWithoutName).toThrow('Could not parse repo "ownerbutnoname/"');
+      expect(calledWithoutOwner).toThrow('Could not parse repo "/namebutnoowner"');
+      expect(calledWithNeither).toThrow('Could not parse repo ""');
     });
   });
 

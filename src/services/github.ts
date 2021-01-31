@@ -9,7 +9,8 @@ const VALID_SEARCH_TYPES: ReadonlyArray<string> = ['code', 'repositories'] as co
 interface SearchTypeAndQueryParams { 
   search_type: string
   search_query: string
-} 
+}
+
 export default class GithubService {
   private octokit: Octokit;
 
