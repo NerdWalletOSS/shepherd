@@ -45,7 +45,7 @@ describe('GithubService', () => {
         const mocktokit = {
             paginate: jest.fn().mockResolvedValue(orgRepos),
             repos: {
-              listForOrg: () => {},
+              listForOrg: () => { return null; },
               get: jest.fn().mockResolvedValue({
                 data: {
                   default_branch: 'master',
