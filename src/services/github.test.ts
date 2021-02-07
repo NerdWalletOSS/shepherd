@@ -315,15 +315,24 @@ describe('GithubService', () => {
         } as any as Octokit;
 
         const service = new GithubService(mocktokit);
-        const criteria = {
+        const criteria1 = {
             search_type: 'code',
             search_query: 'org:testOrg path:/ filename:package.json in:path'
         };
 
-        const result = await service.getActiveReposForSearchTypeAndQuery(criteria);
+        const criteria2 = {
+            search_query: 'org:testOrg path:/ filename:package.json in:path'
+        };
 
-        expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.code, { q: criteria.search_query });
-        expect(result).toEqual(codeSearchResponse.map((o) => o.repository.full_name ));
+        const results = await Promise.all([
+            service.getActiveReposForSearchTypeAndQuery(criteria1),
+            service.getActiveReposForSearchTypeAndQuery(criteria2)
+        ]);
+
+        expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.code, { q: criteria1.search_query });
+        expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.code, { q: criteria2.search_query });
+        expect(results[0]).toEqual(codeSearchResponse.map((o) => o.repository.full_name ));
+        expect(results[1]).toEqual(codeSearchResponse.map((o) => o.repository.full_name ));
     });
   });
 });

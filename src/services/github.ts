@@ -7,7 +7,7 @@ import netrc from 'netrc';
 const VALID_SEARCH_TYPES: ReadonlyArray<string> = ['code', 'repositories'] as const;
 
 interface SearchTypeAndQueryParams { 
-  search_type: string
+  search_type?: string
   search_query: string
 }
 
@@ -108,7 +108,7 @@ export default class GithubService {
 
   public getActiveReposForSearchTypeAndQuery({ search_type, search_query }: SearchTypeAndQueryParams): 
   Promise<any> {
-    if (!VALID_SEARCH_TYPES.includes(search_type)) {
+    if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
       throw new Error(`"search_type" must be one of the following:
         ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
     }
