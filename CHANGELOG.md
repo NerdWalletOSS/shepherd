@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.13.1...v1.14.0) (2021-02-11)
+
+
+### Features
+
+* add github service ([#377](https://github.com/NerdWalletOSS/shepherd/issues/377)) ([7bbd54a](https://github.com/NerdWalletOSS/shepherd/commit/7bbd54a40666ede0b45f8e247fad1a0a0f65cf2a))
+
 ## [1.13.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.13.0...v1.13.1) (2021-01-18)
 
 
