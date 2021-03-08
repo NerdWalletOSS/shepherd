@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.14.0...v1.14.1) (2021-03-08)
+
+
+### Bug Fixes
+
+* drop deprecated silent() from simple-git ([#445](https://github.com/NerdWalletOSS/shepherd/issues/445)) ([8ce510e](https://github.com/NerdWalletOSS/shepherd/commit/8ce510e0585d5e5aba666603fee101b4dbde7b72))
+
 # [1.14.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.13.1...v1.14.0) (2021-02-11)
 
 
