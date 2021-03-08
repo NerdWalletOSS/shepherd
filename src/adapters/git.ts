@@ -91,8 +91,7 @@ abstract class GitAdapter implements IRepoAdapter {
   protected abstract getRepositoryUrl(repo: IRepo): string;
 
   protected git(repo: IRepo): SimpleGit {
-    const git = simpleGit(this.getRepoDir(repo));
-    return git;
+    return simpleGit(this.getRepoDir(repo));
   }
 
   protected isShepherdCommitMessage(message: string): boolean {
