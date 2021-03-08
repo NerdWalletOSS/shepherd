@@ -38,7 +38,6 @@ abstract class GitAdapter implements IRepoAdapter {
       await this.git(repo).fetch('origin');
     } else {
       const git = simpleGit();
-      git.silent(true);
       await git.clone(repoPath, localPath, ['--depth', '1']);
     }
 
@@ -93,7 +92,6 @@ abstract class GitAdapter implements IRepoAdapter {
 
   protected git(repo: IRepo): SimpleGit {
     const git = simpleGit(this.getRepoDir(repo));
-    git.silent(true);
     return git;
   }
 
