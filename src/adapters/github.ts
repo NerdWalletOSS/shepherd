@@ -8,9 +8,6 @@ import { IEnvironmentVariables, IRepo } from './base';
 import GitAdapter from './git';
 import GithubService from '../services/github'
 
-
-const VALID_SEARCH_TYPES = ['code', 'repositories'] as const;
-
 enum SafetyStatus {
   Success,
   PullRequestExisted,
@@ -23,57 +20,40 @@ class GithubAdapter extends GitAdapter {
   constructor(migrationContext: IMigrationContext, githubService: GithubService) {
     super(migrationContext);
     this.migrationContext = migrationContext;
-
     this.githubService = githubService;
   }
 
   public async getCandidateRepos(): Promise<IRepo[]> {
     const { org, search_type, search_query } = this.migrationContext.migration.spec.adapter;
-    let repoNames;
+    let repoNames: string[];
 
-    // list all of an orgs repos
+    // list all of an orgs active repos
     if (org) {
       if (search_query) {
         throw new Error('Cannot use both "org" and "search_query" in GitHub adapter. Pick one.');
       }
 
-      repoNames = await this.githubService.getActiveReposForOrgGQL({ org });
+      repoNames = await this.githubService.getActiveReposForOrg({ org });
     } else {
-      if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
-        throw new Error(`"search_type" must be one of the following: 
-          ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
-      }
-
-      let searchMethod: any;
-      let fullNamePath: string;
-      
-      switch (search_type) {
-        case 'repositories':
-          searchMethod = this.githubService.repoSearch
-          fullNamePath = 'full_name'
-          break;
-        case 'code':
-        default:
-          searchMethod = this.githubService.codeSearch // github code search query. results are less reliable
-          fullNamePath = 'repository.full_name'
-      }
-
-      const searchResults: string[] = await searchMethod(search_query);
-      repoNames = searchResults.map((r) => _.get(r, fullNamePath)).sort();
+      repoNames = await this.githubService.getActiveReposForSearchTypeAndQuery({
+        search_type,
+        search_query
+      });
     }
 
-    return _.uniq(repoNames).map((r: string) => this.parseRepo(r));
+    return _.uniq(repoNames).map((r) => this.parseRepo(r));
   }
 
   public async mapRepoAfterCheckout(repo: Readonly<IRepo>): Promise<IRepo> {
     const { owner, name } = repo;
-    const { data } = await this.octokit.repos.get({
+    const defaultBranch = await this.githubService.getDefaultBranchForRepo({
       owner,
       repo: name,
     });
+
     return {
       ...repo,
-      defaultBranch: data.default_branch,
+      defaultBranch
     };
   }
 
@@ -145,7 +125,7 @@ class GithubAdapter extends GitAdapter {
     const { owner, name, defaultBranch } = repo;
 
     // Let's check if a PR already exists
-    const { data: pullRequests } = await this.octokit.pulls.list({
+    const pullRequests = await this.githubService.listPullRequests({
       owner,
       repo: name,
       head: `${owner}:${this.branchName}`,
@@ -156,7 +136,7 @@ class GithubAdapter extends GitAdapter {
 
       if (pullRequest.state === 'open') {
         // A pull request exists and is open, let's update it
-        await this.octokit.pulls.update({
+        await this.githubService.updatePullRequest({
           owner,
           repo: name,
           pull_number: pullRequest.number,
@@ -170,7 +150,7 @@ class GithubAdapter extends GitAdapter {
       }
     } else {
       // No PR yet - we have to create it
-      await this.octokit.pulls.create({
+      await this.githubService.createPullRequest({
         owner,
         repo: name,
         head: this.branchName,
@@ -186,7 +166,7 @@ class GithubAdapter extends GitAdapter {
     const status: string[] = [];
 
     // First, check for a pull request
-    const { data: pullRequests } = await this.octokit.pulls.list({
+    const pullRequests = await this.githubService.listPullRequests({
       owner,
       repo: name,
       head: `${owner}:${this.branchName}`,
@@ -195,7 +175,7 @@ class GithubAdapter extends GitAdapter {
 
     if (pullRequests && pullRequests.length) {
       // GitHub's API is weird - you need a second query to get information about mergeability
-      const { data: pullRequest } = await this.octokit.pulls.get({
+      const { data: pullRequest } = await this.githubService.getPullRequest({
         owner,
         repo: name,
         pull_number: pullRequests[0].number,
@@ -211,7 +191,7 @@ class GithubAdapter extends GitAdapter {
         // Let's see what's blocking us
         // Sadly, we can only get information about failing status checks, not being blocked
         // by things like required reviews
-        const combinedStatus = await this.octokit.repos.getCombinedStatusForRef({
+        const combinedStatus = await this.githubService.getCombinedRefStatus({
           owner,
           repo: name,
           ref: this.branchName,
@@ -246,7 +226,7 @@ class GithubAdapter extends GitAdapter {
     } else {
       try {
         // This will throw an exception if the branch does not exist
-        await this.octokit.repos.getBranch({
+        await this.githubService.getBranch({
           owner,
           repo: name,
           branch: this.branchName,
@@ -301,7 +281,7 @@ class GithubAdapter extends GitAdapter {
       // We need to figure out if that's because a PR was open and
       // subsequently closed, or if it's because we just haven't pushed
       // a branch yet
-      const pullRequests = await this.octokit.paginate(this.octokit.pulls.list, {
+      const pullRequests = await this.githubService.listPullRequests({
         owner,
         repo: name,
         head: `${owner}:${this.branchName}`,
