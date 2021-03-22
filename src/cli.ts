@@ -104,7 +104,11 @@ applyCommand.option('--force-reset-branch', 'Force a reset of the branch before 
 applyCommand.option('--skip-reset-on-error', 'Keep changes in the working tree even if the migration fails', false);
 applyCommand.action(handleCommand(apply));
 
-addCommand('commit', 'Commit all changes for the specified migration', true, commit);
+const commitCommand = buildCommand('commit', 'Commit all changes for the specified migration');
+addReposOption(commitCommand);
+commitCommand.option('--no-verify', 'Skips commit verification checks', false);
+commitCommand.action(handleCommand(commit))
+
 addCommand('reset', 'Reset all changes for the specified migration', true, reset);
 
 const pushCommand = buildCommand('push', 'Push all changes for the specified migration');
