@@ -57,10 +57,14 @@ abstract class GitAdapter implements IRepoAdapter {
     }
   }
 
-  public async commitRepo(repo: IRepo): Promise<void> {
+  public async commitRepo(repo: IRepo, verify = true): Promise<void> {
     const { migration: { spec } } = this.migrationContext;
     await this.git(repo).add('.');
-    await this.git(repo).commit(`${spec.title} [shepherd]`);
+    const opts: any = {};
+    if (!verify) {
+      opts[`--no-verify`] = null;
+    }
+    await this.git(repo).commit(`${spec.title} [shepherd]`, opts);
   }
 
   public async resetChangedFiles(repo: IRepo): Promise<void> {
