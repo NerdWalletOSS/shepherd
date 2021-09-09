@@ -1,12 +1,15 @@
 /* eslint-disable class-methods-use-this */
 import { Octokit } from '@octokit/rest';
+import { retry } from '@octokit/plugin-retry';
 import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
 import _ from 'lodash';
 import netrc from 'netrc';
 
 const VALID_SEARCH_TYPES: ReadonlyArray<string> = ['code', 'repositories'] as const;
 
-interface SearchTypeAndQueryParams { 
+const RetryableOctokit = Octokit.plugin(retry);
+
+interface SearchTypeAndQueryParams {
   search_type?: string
   search_query: string
 }
@@ -26,8 +29,12 @@ export default class GithubService {
         set a token on the 'password' field in ~/.netrc for api.github.com`);
       }
 
-      this.octokit = new Octokit({
-        auth: token
+      this.octokit = new RetryableOctokit({
+        auth: token,
+        retry: {
+          // By default the doNotRetry setting includes 403, which means we face secondary rate limits
+          doNotRetry: [400, 401, 404, 422],
+        }
       });
     }
   }
