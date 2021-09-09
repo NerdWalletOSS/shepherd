@@ -1,3 +1,10 @@
+## [1.14.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.14.1...v1.14.2) (2021-09-09)
+
+
+### Bug Fixes
+
+* checkout and setup-node action versions. ([7ddc850](https://github.com/NerdWalletOSS/shepherd/commit/7ddc850e61b02e76705d857291adefd82fa0c2d6))
+
 ## [1.14.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.14.0...v1.14.1) (2021-03-08)
 
 
