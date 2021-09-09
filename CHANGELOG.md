@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.14.2...v1.15.0) (2021-09-09)
+
+
+### Features
+
+* Use the retry plugin for octokit ([#492](https://github.com/NerdWalletOSS/shepherd/issues/492)) ([278709d](https://github.com/NerdWalletOSS/shepherd/commit/278709df88927c16649e8f8eb604b2d989c1934d))
+
 ## [1.14.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.14.1...v1.14.2) (2021-09-09)
 
 
