@@ -46,12 +46,6 @@ const releaseConfig = {
         ],
         '@semantic-release/changelog',
         [
-            '@semantic-release/npm',
-            {
-                npmPublish: false
-            }
-        ],
-        [
             '@semantic-release/git',
             {
                 assets: [
@@ -62,7 +56,8 @@ const releaseConfig = {
                 message: 'chore(release): ${nextRelease.version} \n\n${nextRelease.notes}'
             }
         ],
-        '@semantic-release/github'
+        '@semantic-release/github',
+        '@semantic-release/npm'
     ]
 };
 
