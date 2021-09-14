@@ -1,3 +1,10 @@
+## [1.15.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.0...v1.15.1) (2021-09-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lodash to v4.17.21 ([#421](https://github.com/NerdWalletOSS/shepherd/issues/421)) ([ca620fe](https://github.com/NerdWalletOSS/shepherd/commit/ca620fe3484d43edb9550a9d56a59908e312db17))
+
 # [1.15.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.14.2...v1.15.0) (2021-09-09)
 
 
