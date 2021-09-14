@@ -1,6 +1,6 @@
 {
   "name": "@nerdwallet/shepherd",
-  "version": "1.14.1",
+  "version": "1.14.2",
   "description": "A utility for applying code changes across many repositories",
   "keywords": [
     "codemod",
@@ -46,6 +46,7 @@
     "lib"
   ],
   "dependencies": {
+    "@octokit/plugin-retry": "^3.0.9",
     "@octokit/rest": "^18.1.0",
     "@types/js-yaml": "^3.12.6",
     "chalk": "^4.1.0",

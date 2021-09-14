@@ -1,3 +1,24 @@
+## [1.15.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.0...v1.15.1) (2021-09-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lodash to v4.17.21 ([#421](https://github.com/NerdWalletOSS/shepherd/issues/421)) ([ca620fe](https://github.com/NerdWalletOSS/shepherd/commit/ca620fe3484d43edb9550a9d56a59908e312db17))
+
+# [1.15.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.14.2...v1.15.0) (2021-09-09)
+
+
+### Features
+
+* Use the retry plugin for octokit ([#492](https://github.com/NerdWalletOSS/shepherd/issues/492)) ([278709d](https://github.com/NerdWalletOSS/shepherd/commit/278709df88927c16649e8f8eb604b2d989c1934d))
+
+## [1.14.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.14.1...v1.14.2) (2021-09-09)
+
+
+### Bug Fixes
+
+* checkout and setup-node action versions. ([7ddc850](https://github.com/NerdWalletOSS/shepherd/commit/7ddc850e61b02e76705d857291adefd82fa0c2d6))
+
 ## [1.14.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.14.0...v1.14.1) (2021-03-08)
 
 
