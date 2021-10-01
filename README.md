@@ -65,7 +65,7 @@ hooks:
     - git log -1 --format=%cd | grep 2018 --silent # Only migrate things that have seen commits in 2018
   post_checkout: npm install
   apply: mv .eslintrc .eslintrc.json
-  pr_message: echo "Hey! This PR renames `.eslintrc` to `.eslintrc.json`"
+  pr_message: echo 'Hey! This PR renames `.eslintrc` to `.eslintrc.json`'
 ```
 
 Let's go through this line-by-line:

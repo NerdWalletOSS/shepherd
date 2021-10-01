@@ -226,7 +226,7 @@ We're almost done! Our last step is to open a pull request with these changes. T
 # shepherd.yml
 hooks:
   pr_message:
-    - echo "Hey! This PR renames `.eslintrc` to `.eslintrc.yml`"
+    - echo 'Hey! This PR renames `.eslintrc` to `.eslintrc.yml`'
 ```
 
 You can now open a pull request for your repos:
@@ -256,7 +256,7 @@ hooks:
   apply:
     - mv .eslintrc .eslintrc.yml
   pr_message:
-    - echo "Hey! This PR renames `.eslintrc` to `.eslintrc.yml`"
+    - echo 'Hey! This PR renames `.eslintrc` to `.eslintrc.yml`'
 ```
 
 And here are all the commands we used to apply this migration:
