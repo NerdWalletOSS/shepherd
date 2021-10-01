@@ -1,3 +1,10 @@
+## [1.15.3](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.2...v1.15.3) (2021-10-01)
+
+
+### Bug Fixes
+
+* Remove space from .eslintignore filename ([#506](https://github.com/NerdWalletOSS/shepherd/issues/506)) ([49e0510](https://github.com/NerdWalletOSS/shepherd/commit/49e0510509c0926ba201146ab0ca6ca1a8a6eb78))
+
 ## [1.15.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.1...v1.15.2) (2021-10-01)
 
 ## [1.15.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.0...v1.15.1) (2021-09-10)
