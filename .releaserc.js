@@ -44,6 +44,7 @@ const releaseConfig = {
                 parserOpts
             }
         ],
+        '@semantic-release/npm',
         '@semantic-release/changelog',
         [
             '@semantic-release/git',
@@ -56,8 +57,7 @@ const releaseConfig = {
                 message: 'chore(release): ${nextRelease.version} \n\n${nextRelease.notes}'
             }
         ],
-        '@semantic-release/github',
-        '@semantic-release/npm'
+        '@semantic-release/github'
     ]
 };
 
