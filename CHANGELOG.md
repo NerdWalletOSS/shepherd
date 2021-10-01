@@ -1,3 +1,10 @@
+## [1.15.4](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.3...v1.15.4) (2021-10-01)
+
+
+### Bug Fixes
+
+* Remove engines block from Renovate config ([#505](https://github.com/NerdWalletOSS/shepherd/issues/505)) ([351b095](https://github.com/NerdWalletOSS/shepherd/commit/351b095ea0ec1ea995978f543c977fbd48f9b02c))
+
 ## [1.15.3](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.2...v1.15.3) (2021-10-01)
 
 
