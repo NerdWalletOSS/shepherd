@@ -12,15 +12,6 @@
     "enabled": true,
     "automerge": true
   },
-  "engines": {
-    "enabled": false,
-    "npm": {
-      "enabled": false
-    },
-    "node": {
-      "enabled": false
-    }
-  },
   "branchPrefix": "renovate_",
   "semanticCommits": true,
   "semanticCommitScope": "deps",
