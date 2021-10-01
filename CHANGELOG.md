@@ -1,3 +1,5 @@
+## [1.15.2](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.1...v1.15.2) (2021-10-01)
+
 ## [1.15.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.0...v1.15.1) (2021-09-10)
 
 
