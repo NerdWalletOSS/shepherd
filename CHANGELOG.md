@@ -1,3 +1,10 @@
+## [1.15.5](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.4...v1.15.5) (2021-10-01)
+
+
+### Bug Fixes
+
+* Make semantic-release commit the updated package.json files ([#504](https://github.com/NerdWalletOSS/shepherd/issues/504)) ([afe9537](https://github.com/NerdWalletOSS/shepherd/commit/afe9537c5c39b192a7ccc6c082bd85e1788d6df8)), closes [/github.com/semantic-release/semantic-release/issues/1593#issuecomment-656866839](https://github.com//github.com/semantic-release/semantic-release/issues/1593/issues/issuecomment-656866839)
+
 ## [1.15.4](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.3...v1.15.4) (2021-10-01)
 
 
