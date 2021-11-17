@@ -22,10 +22,10 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:watch": "npm run build -- --watch",
-    "fix-lint": "npm run lint -- --fix",
+    "build:watch": "yarn build --watch",
+    "fix-lint": "yarn lint --fix",
     "lint": "eslint src/**/*.ts",
-    "prepublishOnly": "npm run test && npm run build",
+    "prepublishOnly": "yarn test && yarn build",
     "test": "jest --coverage src/"
   },
   "jest": {
