@@ -17,5 +17,9 @@ node_modules/
 # Output of 'npm pack'
 *.tgz
 
+# IDEs
+.idea
+*.iml
+
 # macOS-specific
 *.DS_Store
