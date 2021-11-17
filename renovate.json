@@ -5,7 +5,7 @@
     "default:automergeDigest"
   ],
   "postUpdateOptions": [
-    "npmDedupe"
+    "yarnDedupeHighest"
   ],
   "rangeStrategy": "update-lockfile",
   "lockFileMaintenance": {
