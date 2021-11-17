@@ -2,12 +2,13 @@
 import { Octokit } from '@octokit/rest';
 import { retry } from '@octokit/plugin-retry';
 import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
+import { throttling } from '@octokit/plugin-throttling';
 import _ from 'lodash';
 import netrc from 'netrc';
 
 const VALID_SEARCH_TYPES: ReadonlyArray<string> = ['code', 'repositories'] as const;
 
-const RetryableOctokit = Octokit.plugin(retry);
+const RetryableThrottledOctokit = Octokit.plugin(retry, throttling);
 
 interface SearchTypeAndQueryParams {
   search_type?: string
@@ -29,8 +30,26 @@ export default class GithubService {
         set a token on the 'password' field in ~/.netrc for api.github.com`);
       }
 
-      this.octokit = new RetryableOctokit({
+      this.octokit = new RetryableThrottledOctokit({
         auth: token,
+        throttle: {
+          // @ts-ignore
+          onRateLimit: (retryAfter: number, options: any, octokit: any) => {
+            console.log('onRateLimit', retryAfter);
+            console.log(options);
+            if (options.request.retryCount === 0) {
+              return true;
+            }
+          },
+          // @ts-ignore
+          onAbuseLimit: (retryAfter: number, options: any, octokit: any) => {
+            console.log('onAbuseLimit', retryAfter);
+            console.log(options);
+            if (options.request.retryCount === 0) {
+              return true;
+            }
+          },
+        },
         retry: {
           // By default the doNotRetry setting includes 403, which means we face secondary rate limits
           doNotRetry: [400, 401, 404, 422],
