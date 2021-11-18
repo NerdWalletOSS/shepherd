@@ -12,7 +12,7 @@ const mockMigrationContext = () => ({
       title: 'Test migration'
     },
   },
-});
+} as IMigrationContext);
 
 describe('GithubAdapter', () => {
   describe('reposEqual', () => {
@@ -21,8 +21,9 @@ describe('GithubAdapter', () => {
       const repo1 = { owner: 'NerdWallet', name: 'shepherd' };
       const repo2 = { owner: 'NerdWallet', name: 'shepherd' };
 
-      const service = new GithubService(mocktokit);
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
+      const context = mockMigrationContext();
+      const service = new GithubService(context, mocktokit);
+      const adapter = new GithubAdapter(context, service);
       expect(adapter.reposEqual(repo1, repo2)).toBe(true);
     });
 
@@ -31,8 +32,9 @@ describe('GithubAdapter', () => {
       const repo1 = { owner: 'NerdWallet', name: 'shepherd', defaultBranch: 'master' };
       const repo2 = { owner: 'NerdWallet', name: 'shepherd' };
 
-      const service = new GithubService(mocktokit);
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
+      const context = mockMigrationContext();
+      const service = new GithubService(context, mocktokit);
+      const adapter = new GithubAdapter(context, service);
       expect(adapter.reposEqual(repo1, repo2)).toBe(true);
     });
   });
@@ -40,15 +42,15 @@ describe('GithubAdapter', () => {
   describe('getCandidateRepos', () => {
     it('validates search_query is not specified with org search', () => {
       const mocktokit = ({} as any as Octokit);
-      const migrationCtx: any = mockMigrationContext();
-      migrationCtx.migration.spec.adapter = {
+      const context = mockMigrationContext();
+      context.migration.spec.adapter = {
         org: 'testOrg',
         type: 'github',
         search_query: 'topics:test'
       };
 
-      const service = new GithubService(mocktokit);
-      const adapter = new GithubAdapter(migrationCtx, service);
+      const service = new GithubService(context, mocktokit);
+      const adapter = new GithubAdapter(context, service);
 
       return expect(adapter.getCandidateRepos())
         .rejects
@@ -57,15 +59,16 @@ describe('GithubAdapter', () => {
 
     it('performs org search if specified and returns expected result', async () => {
       const mocktokit = ({} as any as Octokit);
-      const migrationCtx: any = mockMigrationContext();
-      migrationCtx.migration.spec.adapter = {
+      const context = mockMigrationContext();
+      context.migration.spec.adapter = {
         type: 'github',
         org: 'testOrg'
       };
 
-      const service: any = new GithubService(mocktokit);
+      const service: any = new GithubService(context, mocktokit);
       service.getActiveReposForOrg.mockResolvedValue(['testOrg/test-repo']);
-      const adapter = new GithubAdapter(migrationCtx, service);
+
+      const adapter = new GithubAdapter(context, service);
 
       const result = await adapter.getCandidateRepos();
       expect(service.getActiveReposForOrg).toBeCalledWith({ org: 'testOrg' });
@@ -74,16 +77,17 @@ describe('GithubAdapter', () => {
 
     it(`performs repository search and returns expected result if 'respositories' is specified for search_type`, async () => {
       const mocktokit = ({} as any as Octokit);
-      const migrationCtx: any = mockMigrationContext();
-      migrationCtx.migration.spec.adapter = {
+      const context = mockMigrationContext();
+      context.migration.spec.adapter = {
         type: 'github',
         search_type: 'repositories',
         search_query: 'topics:test'
       };
 
-      const service: any = new GithubService(mocktokit);
+      const service: any = new GithubService(context, mocktokit);
       service.getActiveReposForSearchTypeAndQuery.mockResolvedValue(['repoownername/test-repo']);
-      const adapter = new GithubAdapter(migrationCtx, service);
+
+      const adapter = new GithubAdapter(context, service);
 
       const result = await adapter.getCandidateRepos();
       expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledWith({
@@ -93,48 +97,57 @@ describe('GithubAdapter', () => {
       expect(result).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
     });
 
-    it(`performs code search and returns expected result if search_type is 'code' or is not provided`, async () => {
+    it(`performs code search and returns expected result if search_type is 'code'`, async () => {
       const mocktokit = ({} as any as Octokit);
-      const migrationCtx: any = mockMigrationContext();
-      migrationCtx.migration.spec.adapter = {
+      const context = mockMigrationContext();
+      context.migration.spec.adapter = {
         type: 'github',
         search_type: 'code',
         search_query: 'path:/ filename:package.json in:path'
       };
 
-      const migrationCtxWithoutSearchType: any = mockMigrationContext();
-      migrationCtxWithoutSearchType.migration.spec.adapter = {
-        type: 'github',
-        search_query: 'path:/ filename:package.json in:path'
-      };
-
-      const service: any = new GithubService(mocktokit);
+      const service: any = new GithubService(context, mocktokit);
       service.getActiveReposForSearchTypeAndQuery.mockResolvedValue(['repoownername/test-repo']);
-      const adapterWithSearchType = new GithubAdapter(migrationCtx, service);
-      const adapterWithoutSearchType = new GithubAdapter(migrationCtxWithoutSearchType, service);
+      const adapter = new GithubAdapter(context, service);
 
-      const getCandidateRepos = [
-        adapterWithSearchType.getCandidateRepos(),
-        adapterWithoutSearchType.getCandidateRepos()
-      ];
+      const result = await adapter.getCandidateRepos();
 
-      const results = await Promise.all(getCandidateRepos);
-      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledTimes(2);
+      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledTimes(1);
       expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledWith({
         search_type: 'code',
         search_query: 'path:/ filename:package.json in:path'
       });
-      expect(results[0]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
-      expect(results[1]).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
+      expect(result).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
+    });
+
+    it(`performs code search and returns expected result if search_type is not provided`, async () => {
+      const mocktokit = ({} as any as Octokit);
+      const context = mockMigrationContext();
+      context.migration.spec.adapter = {
+        type: 'github',
+        search_query: 'path:/ filename:package.json in:path'
+      };
+
+      const service: any = new GithubService(context, mocktokit);
+      service.getActiveReposForSearchTypeAndQuery.mockResolvedValue(['repoownername/test-repo']);
+      const adapter = new GithubAdapter(context, service);
+
+      const result = await adapter.getCandidateRepos();
+
+      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledTimes(1);
+      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledWith({
+        search_query: 'path:/ filename:package.json in:path'
+      });
+      expect(result).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);
     });
   });
 
   describe('parseRepo', () => {
     it('throws if owner or name not found in repo string', () => {
+      const context = mockMigrationContext();
       const mocktokit = ({} as any as Octokit);
-      const migrationCtx: any = mockMigrationContext();
-      const service = new GithubService(mocktokit);
-      const adapter = new GithubAdapter(migrationCtx, service);
+      const service = new GithubService(context, mocktokit);
+      const adapter = new GithubAdapter(context, service);
       const calledWithoutName = adapter.parseRepo.bind(null, 'ownerbutnoname/');
       const calledWithoutOwner = adapter.parseRepo.bind(null, '/namebutnoowner');
       const calledWithNeither = adapter.parseRepo.bind(null, '');
@@ -147,14 +160,15 @@ describe('GithubAdapter', () => {
 
   describe('mapRepoAfterCheckout', () => {
     it('saves the default branch', async () => {
+      const context = mockMigrationContext();
       const mocktokit = ({} as any as Octokit);
-      const service: any = new GithubService(mocktokit);
+      const service: any = new GithubService(context, mocktokit);
       const repo = {
         owner: 'NerdWallet',
         name: 'test',
       };
       service.getDefaultBranchForRepo.mockResolvedValue('develop');
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
+      const adapter = new GithubAdapter(context, service);
 
       const mappedRepo = await adapter.mapRepoAfterCheckout(repo);
       expect(service.getDefaultBranchForRepo).toBeCalledTimes(1);
@@ -174,10 +188,11 @@ describe('GithubAdapter', () => {
     };
 
     it('creates a new PR if one does not exist', async () => {
+      const context = mockMigrationContext();
       const octokit = ({} as any as Octokit);
-      const service: any = new GithubService(octokit);
+      const service: any = new GithubService(context, octokit);
       service.listPullRequests.mockResolvedValue([])
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
+      const adapter = new GithubAdapter(context, service);
 
       await adapter.createPullRequest(REPO, 'Test PR message');
 
@@ -197,13 +212,14 @@ describe('GithubAdapter', () => {
     });
 
     it('updates a PR if one exists and is open', async () => {
+      const context = mockMigrationContext();
       const octokit = ({} as any as Octokit);
-      const service: any = new GithubService(octokit);
+      const service: any = new GithubService(context, octokit);
       service.listPullRequests.mockResolvedValue([{
           number: 1234,
           state: 'open',
       }]);
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
+      const adapter = new GithubAdapter(context, service);
       await adapter.createPullRequest(REPO, 'Test PR message, part 2');
 
       expect(service.updatePullRequest).toBeCalledWith({
@@ -216,13 +232,14 @@ describe('GithubAdapter', () => {
     });
 
     it('does not update a closed PR', async () => {
+      const context = mockMigrationContext();
       const octokit = ({} as any as Octokit);
-      const service: any = new GithubService(octokit);
+      const service: any = new GithubService(context, octokit);
       service.listPullRequests.mockResolvedValue([{
           number: 1234,
           state: 'closed',
       }]);
-      const adapter = new GithubAdapter(mockMigrationContext() as IMigrationContext, service);
+      const adapter = new GithubAdapter(context, service);
       await expect(adapter.createPullRequest(REPO, 'Test PR message, part 2')).rejects.toThrow();
       expect(service.updatePullRequest).not.toBeCalled()
     });

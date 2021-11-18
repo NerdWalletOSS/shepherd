@@ -6,9 +6,11 @@ import { throttling } from '@octokit/plugin-throttling';
 import _ from 'lodash';
 import netrc from 'netrc';
 
+import { IMigrationContext } from '../migration-context';
+
 const VALID_SEARCH_TYPES: ReadonlyArray<string> = ['code', 'repositories'] as const;
 
-const RetryableThrottledOctokit = Octokit.plugin(retry, throttling);
+const RetryableThrottledOctokit = Octokit.plugin(throttling, retry);
 
 interface SearchTypeAndQueryParams {
   search_type?: string
@@ -18,7 +20,7 @@ interface SearchTypeAndQueryParams {
 export default class GithubService {
   private octokit: Octokit;
 
-  constructor(octokit?: Octokit) {
+  constructor(context: IMigrationContext, octokit?: Octokit) {
     if (octokit) {
       this.octokit = octokit;
     } else {
@@ -33,11 +35,15 @@ export default class GithubService {
       this.octokit = new RetryableThrottledOctokit({
         auth: token,
         throttle: {
-          onRateLimit: (_retryAfter: number, options: any) => {
-            return options.request.retryCount < 3;
+          onRateLimit: (retryAfter: number, options: any) => {
+            context.logger.warn(`Hit rate limit for ${options.method} ${options.url}`);
+            context.logger.warn(`Retrying in ${retryAfter} second(s)`);
+            return options.request.retryCount < 5;
           },
-          onAbuseLimit: (_retryAfter: number, options: any) => {
-            return options.request.retryCount < 3;
+          onAbuseLimit: (retryAfter: number, options: any) => {
+            context.logger.warn(`Hit abuse limit for ${options.method} ${options.url}`);
+            context.logger.warn(`Retrying in ${retryAfter} second(s)`);
+            return options.request.retryCount < 5;
           },
         },
       });
