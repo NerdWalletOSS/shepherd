@@ -33,27 +33,13 @@ export default class GithubService {
       this.octokit = new RetryableThrottledOctokit({
         auth: token,
         throttle: {
-          // @ts-ignore
-          onRateLimit: (retryAfter: number, options: any, octokit: any) => {
-            console.log('onRateLimit', retryAfter);
-            console.log(options);
-            if (options.request.retryCount === 0) {
-              return true;
-            }
+          onRateLimit: (_retryAfter: number, options: any) => {
+            return options.request.retryCount < 3;
           },
-          // @ts-ignore
-          onAbuseLimit: (retryAfter: number, options: any, octokit: any) => {
-            console.log('onAbuseLimit', retryAfter);
-            console.log(options);
-            if (options.request.retryCount === 0) {
-              return true;
-            }
+          onAbuseLimit: (_retryAfter: number, options: any) => {
+            return options.request.retryCount < 3;
           },
         },
-        retry: {
-          // By default the doNotRetry setting includes 403, which means we face secondary rate limits
-          doNotRetry: [400, 401, 404, 422],
-        }
       });
     }
   }
