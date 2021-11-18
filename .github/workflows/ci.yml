@@ -13,13 +13,23 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node }}
+      - name: Get Yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Yarn cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
       - name: Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
       - name: Lint
-        run: npm run lint
+        run: yarn lint
       - name: Build
-        run: npm run build
+        run: yarn build
       - name: Test
         env:
           SITE: SHEPHERD_DOT_DIRECTORY="./fixtures/artifacts/.shepherd"
-        run: npm run test
+        run: yarn test

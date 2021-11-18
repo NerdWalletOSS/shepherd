@@ -130,10 +130,15 @@ Run `shepherd --help` to see all available commands and descriptions for each on
 
 ### Developing
 
-Run `npm install` to install dependencies, and then `npm install -g` to make the `shepherd` executable available on your `PATH`.
+Run `yarn` to install dependencies.
 
-Shepherd is written in TypeScript, which requires compilation to JavaScript. When developing Shepherd, it's recommended to run `npm run build:watch` in a separate terminal. This will incrementally compile the source code as you edit it.
+Shepherd is written in TypeScript, which requires compilation to JavaScript. When developing Shepherd, it's recommended to run `yarn build:watch` in a separate terminal. This will incrementally compile the source code as you edit it. You can then invoke the Shepherd CLI by referencing the absolute path to the compiled `cli.js` file:
 
-Shepherd currently has minimal test coverage, but we're aiming to improve that with each new PR. Tests are written with Jest and should be named in a `*.test.ts` alongside the file under test. To run the test suite, run `npm run test`.
+```sh
+cd ../my-other-project
+../shepherd/lib/cli.js checkout path/to/migration
+```
 
-We use [TSLint](https://github.com/palantir/tslint) to ensure a consistent coding style and to help prevent certain classes of problems. Run `npm run lint` to run the linter, and `npm run fix-lint` to automatically fix applicable problems.
+Shepherd currently has minimal test coverage, but we're aiming to improve that with each new PR. Tests are written with Jest and should be named in a `*.test.ts` alongside the file under test. To run the test suite, run `yarn test`.
+
+We use [ESLint](https://eslint.org/) to ensure a consistent coding style and to help prevent certain classes of problems. Run `yarn lint` to run the linter, and `yarn fix-lint` to automatically fix applicable problems.
