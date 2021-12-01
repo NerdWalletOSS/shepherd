@@ -1,5 +1,8 @@
 import type { Octokit } from '@octokit/rest';
+import { IMigrationContext } from '../migration-context';
 import GithubService from './github';
+
+const mockMigrationContext = () => ({} as IMigrationContext);
 
 describe('GithubService', () => {
   describe('getDefaultBranchForRepo', () => {
@@ -13,7 +16,7 @@ describe('GithubService', () => {
               }),
             },
         } as any as Octokit;
-        const service = new GithubService(mocktokit);
+        const service = new GithubService(mockMigrationContext(), mocktokit);
         const searchCriteria = {
             owner: 'NerdwalletOSS',
             repo: 'shepherd',
@@ -54,7 +57,7 @@ describe('GithubService', () => {
             },
         } as any as Octokit;
 
-        const service = new GithubService(mocktokit);
+        const service = new GithubService(mockMigrationContext(), mocktokit);
         const searchCriteria = { org: 'testOrg' };
         const result = await service.getActiveReposForOrg(searchCriteria);
 
@@ -81,7 +84,7 @@ describe('GithubService', () => {
             },
         } as any as Octokit;
 
-        const service = new GithubService(mocktokit);
+        const service = new GithubService(mockMigrationContext(), mocktokit);
         const searchCriteria = {
             owner: 'testOrg',
             repo: 'test-repo',
@@ -112,7 +115,7 @@ describe('GithubService', () => {
             },
         } as any as Octokit;
 
-        const service = new GithubService(mocktokit);
+        const service = new GithubService(mockMigrationContext(), mocktokit);
         const searchCriteria: any = {
             owner: 'testOrg',
             repo: 'test-repo',
@@ -140,7 +143,7 @@ describe('GithubService', () => {
             },
         } as any as Octokit;
 
-        const service = new GithubService(mocktokit);
+        const service = new GithubService(mockMigrationContext(), mocktokit);
         const prCreateParams = {
             owner: 'testOrg',
             repo: 'test-repo',
@@ -170,7 +173,7 @@ describe('GithubService', () => {
             },
         } as any as Octokit;
 
-        const service = new GithubService(mocktokit);
+        const service = new GithubService(mockMigrationContext(), mocktokit);
         const prUpdateParams = {
             owner: 'testOrg',
             repo: 'test-repo',
@@ -202,7 +205,7 @@ describe('GithubService', () => {
             }
         } as any as Octokit;
 
-        const service = new GithubService(mocktokit);
+        const service = new GithubService(mockMigrationContext(), mocktokit);
         const criteria = {
             owner: 'testOrg',
             repo: 'test-repo',
@@ -230,7 +233,7 @@ describe('GithubService', () => {
             }
         } as any as Octokit;
 
-        const service = new GithubService(mocktokit);
+        const service = new GithubService(mockMigrationContext(), mocktokit);
         const criteria = {
             owner: 'testOrg',
             repo: 'test-repo',
@@ -247,7 +250,7 @@ describe('GithubService', () => {
     it('validates search_type is valid & throws if not', async () => {
         const mocktokit = {} as any as Octokit;
 
-        const service = new GithubService(mocktokit);
+        const service = new GithubService(mockMigrationContext(), mocktokit);
         const criteria = {
             search_type: 'invalid_search_type',
             search_query: 'any'
@@ -276,7 +279,7 @@ describe('GithubService', () => {
             }
         } as any as Octokit;
 
-        const service = new GithubService(mocktokit);
+        const service = new GithubService(mockMigrationContext(), mocktokit);
         const criteria = {
             search_type: 'repositories',
             search_query: 'topics:test'
@@ -314,7 +317,7 @@ describe('GithubService', () => {
             }
         } as any as Octokit;
 
-        const service = new GithubService(mocktokit);
+        const service = new GithubService(mockMigrationContext(), mocktokit);
         const criteria1 = {
             search_type: 'code',
             search_query: 'org:testOrg path:/ filename:package.json in:path'

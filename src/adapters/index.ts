@@ -6,7 +6,7 @@ import GithubService from '../services/github';
 export function adapterForName(name: string, context: IMigrationContext): IRepoAdapter {
   switch (name) {
     case 'github': {
-      const githubService = new GithubService();
+      const githubService = new GithubService(context);
       return new GithubAdapter(context, githubService);
     }
     default:

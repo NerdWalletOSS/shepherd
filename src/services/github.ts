@@ -2,12 +2,15 @@
 import { Octokit } from '@octokit/rest';
 import { retry } from '@octokit/plugin-retry';
 import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
+import { throttling } from '@octokit/plugin-throttling';
 import _ from 'lodash';
 import netrc from 'netrc';
 
+import { IMigrationContext } from '../migration-context';
+
 const VALID_SEARCH_TYPES: ReadonlyArray<string> = ['code', 'repositories'] as const;
 
-const RetryableOctokit = Octokit.plugin(retry);
+const RetryableThrottledOctokit = Octokit.plugin(throttling, retry);
 
 interface SearchTypeAndQueryParams {
   search_type?: string
@@ -17,7 +20,7 @@ interface SearchTypeAndQueryParams {
 export default class GithubService {
   private octokit: Octokit;
 
-  constructor(octokit?: Octokit) {
+  constructor(context: IMigrationContext, octokit?: Octokit) {
     if (octokit) {
       this.octokit = octokit;
     } else {
@@ -29,12 +32,20 @@ export default class GithubService {
         set a token on the 'password' field in ~/.netrc for api.github.com`);
       }
 
-      this.octokit = new RetryableOctokit({
+      this.octokit = new RetryableThrottledOctokit({
         auth: token,
-        retry: {
-          // By default the doNotRetry setting includes 403, which means we face secondary rate limits
-          doNotRetry: [400, 401, 404, 422],
-        }
+        throttle: {
+          onRateLimit: (retryAfter: number, options: any) => {
+            context.logger.warn(`Hit rate limit for ${options.method} ${options.url}`);
+            context.logger.warn(`Retrying in ${retryAfter} second(s)`);
+            return options.request.retryCount < 5;
+          },
+          onAbuseLimit: (retryAfter: number, options: any) => {
+            context.logger.warn(`Hit abuse limit for ${options.method} ${options.url}`);
+            context.logger.warn(`Retrying in ${retryAfter} second(s)`);
+            return options.request.retryCount < 5;
+          },
+        },
       });
     }
   }
