@@ -61,11 +61,9 @@ export default class GithubService {
     return searchResults.map((r) => _.get(r, 'full_name')).sort();
   }
 
-  private async findReposByCode(criteria: RestEndpointMethodTypes['search']['code']['parameters']): Promise<string[]> {
-    const searchResults: RestEndpointMethodTypes['search']['code']['response']['data']['items'] =
-    await this.paginateRest(this.octokit.search.code, criteria);
-
-    return searchResults.map((r) => _.get(r, 'repository.full_name')).sort();
+  private async findReposByCode(criteria: RestEndpointMethodTypes['search']['code']['parameters']):
+  Promise<RestEndpointMethodTypes['search']['code']['response']['data']['items']> {
+    return this.paginateRest(this.octokit.search.code, criteria);
   }
 
   private getRepo(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
@@ -139,11 +137,11 @@ export default class GithubService {
       default: {
         const repos = await this.findReposByCode({ q: search_query });
         const archived = await Promise.all(repos.map(async r => {
-          const [owner, name] = r.split('/');
+          const { owner: { login: owner }, name } = r.repository;
           const { data } = await this.getRepo({ owner, repo: name });
           return data.archived;
         }));
-        return repos.filter((_r, i) => !archived[i]);
+        return repos.filter((_r, i) => !archived[i]).map((r) => r.repository.full_name);
       }
     } 
   }
