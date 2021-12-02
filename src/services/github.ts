@@ -125,8 +125,7 @@ export default class GithubService {
   public async getActiveReposForSearchTypeAndQuery({ search_type, search_query }: SearchTypeAndQueryParams): 
   Promise<string[]> {
     if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
-      throw new Error(`"search_type" must be one of the following:
-        ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
+      throw new Error(`"search_type" must be one of the following: ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
     }
 
     switch (search_type) {

@@ -255,10 +255,10 @@ describe('GithubService', () => {
             search_type: 'invalid_search_type',
             search_query: 'any'
         };
-        const fn = service.getActiveReposForSearchTypeAndQuery.bind(service, criteria);
 
-        expect(fn).toThrowError(`"search_type" must be one of the following:
-        'code' | 'repositories'`);
+        await expect(service.getActiveReposForSearchTypeAndQuery(criteria)).rejects.toThrowError(
+            `"search_type" must be one of the following: 'code' | 'repositories'`
+        );
     });
 
     it('finds repos by metadata if repository search is specified & returns results', async () => {
