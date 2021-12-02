@@ -10,6 +10,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          # This ensures our custom `GITHUB_TOKEN` is used by `semantic-release`
+          # instead of the default credentials. This is important for bypassing
+          # the branch protection rules that are configured for master.
+          # see https://github.com/semantic-release/semantic-release/blob/8fda7fd423d24e7b425fbee83790f49dd0478e2d/docs/recipes/ci-configurations/github-actions.md#pushing-packagejson-changes-to-a-master-branch
+          persist-credentials: false
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
