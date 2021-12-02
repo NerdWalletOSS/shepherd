@@ -256,20 +256,27 @@ describe('GithubService', () => {
             search_query: 'any'
         };
 
-        await expect(service.getActiveReposForSearchTypeAndQuery(criteria)).rejects.toThrowError(
-            `"search_type" must be one of the following: 'code' | 'repositories'`
+        // @ts-expect-error -- Testing invalid `search_type`
+        await expect(service.getActiveReposForSearchTypeAndQuery(criteria)).rejects.toThrow(
+            'Invalid search_type: invalid_search_type'
         );
     });
 
-    it('finds repos by metadata if repository search is specified & returns results', async () => {
+    it('finds repos by metadata if repository search is specified', async () => {
         const repoSearchResponse = [
             {
                 name: 'repo1',
                 full_name: 'testOrg/repo1',
+                owner: {
+                    login: 'testOrg',
+                },
             },
             {
                 name: 'repo2',
                 full_name: 'testOrg/repo2',
+                owner: {
+                    login: 'testOrg',
+                },
             }
         ]
         const mocktokit = {
@@ -280,62 +287,128 @@ describe('GithubService', () => {
         } as any as Octokit;
 
         const service = new GithubService(mockMigrationContext(), mocktokit);
-        const criteria = {
+
+        const SEARCH_QUERY = 'topics:test'
+
+        const result = await service.getActiveReposForSearchTypeAndQuery({
             search_type: 'repositories',
-            search_query: 'topics:test'
-        };
+            search_query: SEARCH_QUERY
+        });
 
-        const result = await service.getActiveReposForSearchTypeAndQuery(criteria);
-
-        expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.repos, { q: criteria.search_query });
+        expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.repos, { q: SEARCH_QUERY });
         expect(result).toEqual(repoSearchResponse.map((o) => o.full_name));
     });
 
-    it('finds repos by code if code search specified or search type omitted & returns results', async () => {
+    it('finds repos by code if code search specified', async () => {
         const codeSearchResponse = [
             {
                 name: 'package.json',
                 repository: {
                     name: 'repo1',
                     full_name: 'testOrg/repo1',
+                    owner: {
+                        login: 'testOrg',
+                    },
                 },
-    
             },
             {
                 name: 'package.json',
                 repository: {
                     name: 'repo2',
                     full_name: 'testOrg/repo2',
+                    owner: {
+                        login: 'testOrg',
+                    },
                 },
             }
         ];
 
         const mocktokit = {
             paginate: jest.fn().mockResolvedValue(codeSearchResponse),
+            repos: {
+                get: jest.fn().mockResolvedValue({
+                    data: {
+                        archived: false,
+                    },
+                }),
+            },
             search: {
                 code: jest.fn()
             }
         } as any as Octokit;
 
         const service = new GithubService(mockMigrationContext(), mocktokit);
-        const criteria1 = {
+
+        const SEARCH_QUERY = 'org:testOrg path:/ filename:package.json in:path';
+
+        const result = await service.getActiveReposForSearchTypeAndQuery({
             search_type: 'code',
-            search_query: 'org:testOrg path:/ filename:package.json in:path'
-        };
+            search_query: SEARCH_QUERY,
+        });
 
-        const criteria2 = {
-            search_query: 'org:testOrg path:/ filename:package.json in:path'
-        };
+        expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.code, { q: SEARCH_QUERY });
+        expect(result).toEqual(['testOrg/repo1', 'testOrg/repo2']);
+    });
 
-        const results = await Promise.all([
-            service.getActiveReposForSearchTypeAndQuery(criteria1),
-            service.getActiveReposForSearchTypeAndQuery(criteria2)
-        ]);
+    it('filters out archived repos when using code search', async () => {
+        const codeSearchResponse = [
+            {
+                name: 'package.json',
+                repository: {
+                    name: 'repo1',
+                    full_name: 'testOrg/repo1',
+                    owner: {
+                        login: 'testOrg',
+                    },
+                },
+            },
+            {
+                name: 'package.json',
+                repository: {
+                    name: 'repo2',
+                    full_name: 'testOrg/repo2',
+                    owner: {
+                        login: 'testOrg',
+                    },
+                },
+            }
+        ];
 
-        expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.code, { q: criteria1.search_query });
-        expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.code, { q: criteria2.search_query });
-        expect(results[0]).toEqual(codeSearchResponse.map((o) => o.repository.full_name ));
-        expect(results[1]).toEqual(codeSearchResponse.map((o) => o.repository.full_name ));
+        const mocktokit = {
+            paginate: jest.fn().mockResolvedValue(codeSearchResponse),
+            repos: {
+                get: jest.fn().mockImplementation((params) => {
+                    if (params.repo === 'repo2') {
+                        return {
+                            data: {
+                                archived: true,
+                            },
+                        };
+                    }
+
+                    return {
+                        data: {
+                            archived: false,
+                        },
+                    };
+                }),
+            },
+            search: {
+                code: jest.fn()
+            }
+        } as any as Octokit;
+
+        const service = new GithubService(mockMigrationContext(), mocktokit);
+
+        const SEARCH_QUERY = 'org:testOrg path:/ filename:package.json in:path';
+
+        const result = await service.getActiveReposForSearchTypeAndQuery({
+            search_type: 'code',
+            search_query: SEARCH_QUERY,
+        });
+
+        expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.code, { q: SEARCH_QUERY });
+        expect(result).toEqual(['testOrg/repo1']);
     });
   });
 });
