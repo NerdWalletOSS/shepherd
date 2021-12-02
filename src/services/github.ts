@@ -68,7 +68,7 @@ export default class GithubService {
     return searchResults.map((r) => _.get(r, 'repository.full_name')).sort();
   }
 
-  private getRepos(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
+  private getRepo(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
   Promise<RestEndpointMethodTypes['repos']['get']['response']> {
     return this.octokit.repos.get(criteria);
   }
@@ -80,7 +80,7 @@ export default class GithubService {
 
   public async getDefaultBranchForRepo(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
   Promise<string> {
-    const { data } = await this.getRepos(criteria);
+    const { data } = await this.getRepo(criteria);
     return data.default_branch;
   }
 
@@ -124,19 +124,27 @@ export default class GithubService {
     return this.octokit.repos.getBranch(criteria);
   }
 
-  public getActiveReposForSearchTypeAndQuery({ search_type, search_query }: SearchTypeAndQueryParams): 
-  Promise<any> {
+  public async getActiveReposForSearchTypeAndQuery({ search_type, search_query }: SearchTypeAndQueryParams): 
+  Promise<string[]> {
     if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
       throw new Error(`"search_type" must be one of the following:
         ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
     }
 
     switch (search_type) {
-      case 'repositories':
+      case 'repositories': {
         return this.findReposByMetadata({ q: search_query });
+      }
       case 'code':
-      default:
-        return this.findReposByCode({ q: search_query });
+      default: {
+        const repos = await this.findReposByCode({ q: search_query });
+        const archived = await Promise.all(repos.map(async r => {
+          const [owner, name] = r.split('/');
+          const { data } = await this.getRepo({ owner, repo: name });
+          return data.archived;
+        }));
+        return repos.filter((_r, i) => !archived[i]);
+      }
     } 
   }
 }
