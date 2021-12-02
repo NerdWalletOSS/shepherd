@@ -136,6 +136,7 @@ describe('GithubAdapter', () => {
 
       expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledTimes(1);
       expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledWith({
+        search_type: 'code',
         search_query: 'path:/ filename:package.json in:path'
       });
       expect(result).toStrictEqual([ { owner: 'repoownername', name: 'test-repo' } ]);

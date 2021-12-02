@@ -24,7 +24,7 @@ class GithubAdapter extends GitAdapter {
   }
 
   public async getCandidateRepos(): Promise<IRepo[]> {
-    const { org, search_type, search_query } = this.migrationContext.migration.spec.adapter;
+    const { org, search_type = 'code', search_query } = this.migrationContext.migration.spec.adapter;
     let repoNames: string[];
 
     // list all of an orgs active repos

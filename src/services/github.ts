@@ -8,12 +8,10 @@ import netrc from 'netrc';
 
 import { IMigrationContext } from '../migration-context';
 
-const VALID_SEARCH_TYPES: ReadonlyArray<string> = ['code', 'repositories'] as const;
-
 const RetryableThrottledOctokit = Octokit.plugin(throttling, retry);
 
 interface SearchTypeAndQueryParams {
-  search_type?: string
+  search_type: 'repositories' | 'code';
   search_query: string
 }
 
@@ -61,14 +59,12 @@ export default class GithubService {
     return searchResults.map((r) => _.get(r, 'full_name')).sort();
   }
 
-  private async findReposByCode(criteria: RestEndpointMethodTypes['search']['code']['parameters']): Promise<string[]> {
-    const searchResults: RestEndpointMethodTypes['search']['code']['response']['data']['items'] =
-    await this.paginateRest(this.octokit.search.code, criteria);
-
-    return searchResults.map((r) => _.get(r, 'repository.full_name')).sort();
+  private async findReposByCode(criteria: RestEndpointMethodTypes['search']['code']['parameters']):
+  Promise<RestEndpointMethodTypes['search']['code']['response']['data']['items']> {
+    return this.paginateRest(this.octokit.search.code, criteria);
   }
 
-  private getRepos(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
+  private getRepo(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
   Promise<RestEndpointMethodTypes['repos']['get']['response']> {
     return this.octokit.repos.get(criteria);
   }
@@ -80,7 +76,7 @@ export default class GithubService {
 
   public async getDefaultBranchForRepo(criteria: RestEndpointMethodTypes['repos']['get']['parameters']):
   Promise<string> {
-    const { data } = await this.getRepos(criteria);
+    const { data } = await this.getRepo(criteria);
     return data.default_branch;
   }
 
@@ -124,19 +120,24 @@ export default class GithubService {
     return this.octokit.repos.getBranch(criteria);
   }
 
-  public getActiveReposForSearchTypeAndQuery({ search_type, search_query }: SearchTypeAndQueryParams): 
-  Promise<any> {
-    if (search_type && !VALID_SEARCH_TYPES.includes(search_type)) {
-      throw new Error(`"search_type" must be one of the following:
-        ${VALID_SEARCH_TYPES.map(e => `'${e}'`).join(' | ')}`);
-    }
-
+  public async getActiveReposForSearchTypeAndQuery({ search_type, search_query }: SearchTypeAndQueryParams): 
+  Promise<string[]> {
     switch (search_type) {
-      case 'repositories':
+      case 'repositories': {
         return this.findReposByMetadata({ q: search_query });
-      case 'code':
-      default:
-        return this.findReposByCode({ q: search_query });
+      }
+      case 'code': {
+        const repos = await this.findReposByCode({ q: search_query });
+        const archived = await Promise.all(repos.map(async r => {
+          const { owner: { login: owner }, name } = r.repository;
+          const { data } = await this.getRepo({ owner, repo: name });
+          return data.archived;
+        }));
+        return repos.filter((_r, i) => !archived[i]).map((r) => r.repository.full_name);
+      }
+      default: {
+        throw new Error(`Invalid search_type: ${search_type}`);
+      }
     } 
   }
 }
