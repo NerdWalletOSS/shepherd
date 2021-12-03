@@ -1,3 +1,16 @@
+# [1.16.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.5...v1.16.0) (2021-12-03)
+
+
+### Bug Fixes
+
+* Use custom GitHub token to bypass branch protection ([#565](https://github.com/NerdWalletOSS/shepherd/issues/565)) ([2c17503](https://github.com/NerdWalletOSS/shepherd/commit/2c17503e0721d2dc2c7c34fcba1c89b581b7c0d3))
+
+
+### Features
+
+* Exclude archived repos when using code search ([#564](https://github.com/NerdWalletOSS/shepherd/issues/564)) ([ec4fa27](https://github.com/NerdWalletOSS/shepherd/commit/ec4fa27b769b9357166cce149e5ce7d268ed764f))
+* GitHub request throttling ([#551](https://github.com/NerdWalletOSS/shepherd/issues/551)) ([b93d30e](https://github.com/NerdWalletOSS/shepherd/commit/b93d30e7d1811118e603a9529e5fde0ccb66bda6))
+
 ## [1.15.5](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.4...v1.15.5) (2021-10-01)
 
 
