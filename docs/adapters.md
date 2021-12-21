@@ -1,6 +1,6 @@
 # Adapters
 
-Shepherd is designed to be agnostic to the type of repositories it operates on. This allows it to be used with any version control system (git, svn, mercurial, etc.) or any hosted VCS (GitHub, Bitbucket, etc.). Shepherd supports these variety of systems by hiding all repository operations behind an *adapter*.
+Shepherd is designed to be agnostic to the type of repositories it operates on. This allows it to be used with any version control system (git, svn, mercurial, etc.) or any hosted VCS (GitHub, Bitbucket, etc.). Shepherd supports these variety of systems by hiding all repository operations behind an _adapter_.
 
 An adapter exposes a consistent interface for common repository operations, which are then used by Shepherd as you execute commands to perform a migration. The interface for an adapter is specified in `src/adapters/base.ts`.
 

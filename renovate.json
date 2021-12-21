@@ -1,12 +1,6 @@
 {
-  "extends": [
-    "config:base",
-    "docker:enableMajor",
-    "default:automergeDigest"
-  ],
-  "postUpdateOptions": [
-    "yarnDedupeHighest"
-  ],
+  "extends": ["config:base", "docker:enableMajor", "default:automergeDigest"],
+  "postUpdateOptions": ["yarnDedupeHighest"],
   "rangeStrategy": "update-lockfile",
   "lockFileMaintenance": {
     "enabled": true,
@@ -25,7 +19,7 @@
   "masterIssue": true,
   "masterIssueAutoclose": true,
   "node": {
-    "supportPolicy": [10,12,14],
+    "supportPolicy": [10, 12, 14],
     "semanticCommitScope": "travis",
     "automerge": true
   },

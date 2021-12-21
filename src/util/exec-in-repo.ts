@@ -11,7 +11,7 @@ interface IExecRepoResult {
 export default async (
   context: IMigrationContext,
   repo: IRepo,
-  command: string,
+  command: string
 ): Promise<IExecRepoResult> => {
   const repoDir = context.adapter.getRepoDir(repo);
   const dataDir = context.adapter.getDataDir(repo);
@@ -30,7 +30,7 @@ export default async (
       ...adapterEnvironmentVars,
     },
     shell: true,
-    capture: [ 'stdout', 'stderr' ],
+    capture: ['stdout', 'stderr'],
   };
   const promise = spawn(command, [], execOptions);
   return {

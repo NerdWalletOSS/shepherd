@@ -3,7 +3,7 @@ const pkg = require(process.cwd() + '/package.json');
 
 const dependencyKeys = ['dependencies', 'peerDependencies', 'devDependencies'];
 let hasReact;
-dependencyKeys.forEach(key => {
+dependencyKeys.forEach((key) => {
   if (pkg[key] && pkg[key].react) {
     hasReact = true;
     // v16 is less than the given range then this app is v16 compatible

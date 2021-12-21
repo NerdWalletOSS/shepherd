@@ -8,7 +8,7 @@ const version3deps = [];
 const version4deps = [];
 const dependencies = pkg['dependencies'];
 if (dependencies) {
-  Object.keys(dependencies).forEach(pkgName => {
+  Object.keys(dependencies).forEach((pkgName) => {
     if (pkgName === 'lodash' || pkgName.startsWith('lodash.')) {
       const version = dependencies[pkgName];
       if (semver.ltr('3.999.999', version)) {
@@ -20,7 +20,7 @@ if (dependencies) {
         throw new Error(`Unknown package version: ${pkgName} ${version}`);
       }
     }
-  })
+  });
 }
 
 if (!version3deps.length && !version4deps.length) {
@@ -31,9 +31,9 @@ if (!version3deps.length && !version4deps.length) {
 if (version3deps.length && version4deps.length) {
   console.error('Cannot handle mix of dependency versions');
   console.error('[version 3]');
-  version3deps.map(d => console.error(d));
+  version3deps.map((d) => console.error(d));
   console.error('[version 4]');
-  version4deps.map(d => console.error(d));
+  version4deps.map((d) => console.error(d));
   process.exit(1);
 }
 

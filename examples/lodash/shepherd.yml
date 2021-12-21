@@ -1,6 +1,6 @@
 id: 2018.07.30-lodash-3-to-4
 title: Update Lodash to the latest version
-adapter: 
+adapter:
   type: github
   search_query: org:NerdWallet path:/ filename:package.json lodash
 hooks:

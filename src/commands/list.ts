@@ -7,7 +7,7 @@ export default async (context: IMigrationContext) => {
     adapter,
   } = context;
 
-  for (const repo of (repos || [])) {
+  for (const repo of repos || []) {
     logger.info(adapter.stringifyRepo(repo));
   }
 };

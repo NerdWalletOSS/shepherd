@@ -11,10 +11,7 @@ describe('normalizeSpec', () => {
         search_query: 'filename:package.json',
       },
       hooks: {
-        apply: [
-          'echo hi',
-          'echo bye',
-        ],
+        apply: ['echo hi', 'echo bye'],
       },
     };
     expect(normalizeSpec(spec)).toEqual(spec);
@@ -75,10 +72,7 @@ describe('validateSpec', () => {
       search_query: 'filename:package.json',
     },
     hooks: {
-      apply: [
-        'echo hi',
-        'echo bye',
-      ],
+      apply: ['echo hi', 'echo bye'],
     },
   };
 

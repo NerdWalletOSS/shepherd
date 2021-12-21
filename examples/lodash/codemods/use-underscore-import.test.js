@@ -4,22 +4,10 @@ const codemod = require('./use-underscore-import');
 const testUtil = require('./test-util');
 const { testChanged, testUnchanged } = testUtil(jscodeshift, codemod);
 describe('use-underscore-import', () => {
-  testChanged(
-    "import { get } from 'lodash'; get('a');",
-    "import _ from 'lodash'; _.get('a')"
-  );
-  testChanged(
-    "import get from 'lodash/get'; get('a');",
-    "import _ from 'lodash'; _.get('a')"
-  );
-  testChanged(
-    "import get from 'lodash/get'; get('a');",
-    "import _ from 'lodash'; _.get('a')"
-  );
-  testChanged(
-    "import get1 from 'lodash/get'; get1('a');",
-    "import _ from 'lodash'; _.get('a')"
-  );
+  testChanged("import { get } from 'lodash'; get('a');", "import _ from 'lodash'; _.get('a')");
+  testChanged("import get from 'lodash/get'; get('a');", "import _ from 'lodash'; _.get('a')");
+  testChanged("import get from 'lodash/get'; get('a');", "import _ from 'lodash'; _.get('a')");
+  testChanged("import get1 from 'lodash/get'; get1('a');", "import _ from 'lodash'; _.get('a')");
   testChanged(
     "import set from 'lodash/object/set'; set('a');",
     "import _ from 'lodash'; _.set('a')"
@@ -34,7 +22,7 @@ describe('use-underscore-import', () => {
   );
   testChanged(
     "import { map, identity } from 'lodash'; map([], identity);",
-    "import _ from 'lodash'; _.map([], _.identity);",
+    "import _ from 'lodash'; _.map([], _.identity);"
   );
   testUnchanged("import _ from 'lodash'; _.get('a')");
- });
+});
