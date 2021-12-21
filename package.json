@@ -23,8 +23,8 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "yarn build --watch",
-    "fix-lint": "yarn lint --fix",
-    "lint": "eslint src/**/*.ts",
+    "fix-lint": "prettier --write . && eslint src/**/*.ts --fix",
+    "lint": "prettier --check . && eslint src/**/*.ts",
     "prepublishOnly": "yarn test && yarn build",
     "test": "jest --coverage src/"
   },
