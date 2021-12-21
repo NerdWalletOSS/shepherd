@@ -1,13 +1,13 @@
 import execa from 'execa';
-import { Project } from 'fixturify-project';
+import { createMigration, MigrationProject } from './__utils__/migration-project';
 
 const ROOT = process.cwd();
 
 describe('cli', () => {
-  let project: Project;
+  let project: MigrationProject;
 
   beforeEach(function () {
-    project = new Project('shepherd-migration', '0.0.0', () => {});
+    project = createMigration('shepherd-migration');
 
     project.writeSync();
   });
@@ -178,10 +178,7 @@ Options:
     });
   });
 
-  function shepherd(
-    argsOrOptions?: string[] | execa.Options,
-    options?: execa.Options
-  ) {
+  function shepherd(argsOrOptions?: string[] | execa.Options, options?: execa.Options) {
     if (arguments.length > 0) {
       if (arguments.length === 1) {
         if (Array.isArray(argsOrOptions)) {

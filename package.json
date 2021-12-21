@@ -38,6 +38,9 @@
       "node"
     ],
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?)$",
+    "testPathIgnorePatterns": [
+      "/__utils__/"
+    ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     }
