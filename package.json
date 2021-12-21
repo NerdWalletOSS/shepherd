@@ -26,7 +26,7 @@
     "fix-lint": "eslint src/**/*.ts --fix && prettier --write .",
     "lint": "eslint src/**/*.ts && prettier --check .",
     "prepublishOnly": "yarn test && yarn build",
-    "test": "jest --coverage src/"
+    "test": "jest --coverage"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -37,7 +37,7 @@
       "json",
       "node"
     ],
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?)$",
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     }
@@ -79,11 +79,16 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
+    "execa": "^5.0.0",
+    "fixturify-project": "^4.0.2",
     "jest": "^27.0.0",
     "prettier": "2.5.1",
     "semantic-release": "^17.3.8",
     "ts-jest": "^27.0.0",
     "typescript": "^3.9.9"
+  },
+  "resolutions": {
+    "resolve-package-path": "^4.0.3"
   },
   "publishConfig": {
     "access": "public"

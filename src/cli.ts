@@ -140,6 +140,7 @@ addCommand('pr-status', 'Check the status of all PRs for the specified migration
 // These commands don't take --repos arguments
 addCommand('list', 'List all checked out repositories for the given migration', false, list);
 
+program.name('shepherd');
 program
   .command('version')
   .description('Print Shepherd version')
