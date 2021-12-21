@@ -20,6 +20,7 @@ describe('cli', () => {
   it('can show help', async () => {
     let result = await shepherd();
 
+    expect(result.exitCode).toEqual(0);
     expect(result.stdout).toMatchInlineSnapshot(`
 "Usage: shepherd [options] [command]
 
