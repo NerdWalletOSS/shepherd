@@ -26,12 +26,14 @@ So, in order to properly run this migration, we need to do several stages of tra
 We first need to transform any `lodash.xxx` imports into `lodash/xxx` imports.
 
 Before:
+
 ```js
 import get from 'lodash.get';
 import isPlainObject from 'lodash.isplainobject';
 ```
 
 After:
+
 ```js
 import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
@@ -44,6 +46,7 @@ This is implmemented in `codemods/npm-codemod.js`.
 We need to transform the various ways of importing and accessing Lodash methods so that we can run the v3 -> v4 codemods.
 
 Before:
+
 ```js
 import { get } from 'lodash';
 import get from 'lodash/get';
@@ -52,6 +55,7 @@ get(...);
 ```
 
 After:
+
 ```js
 import _ from 'lodash';
 
@@ -67,6 +71,7 @@ We can now run the v3 -> v4 codemods; these are provided by the community.
 We now need to go the other direction from the second step.
 
 Before:
+
 ```js
 import _ from 'lodash';
 
@@ -74,6 +79,7 @@ _.get(...);
 ```
 
 After:
+
 ```js
 import { get } from 'lodash';
 

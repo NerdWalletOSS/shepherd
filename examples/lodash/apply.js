@@ -19,10 +19,11 @@ const runCodemod = (codemodPath) => {
   const cmd = `npx jscodeshift --extensions js,jsx --ignore-pattern "node_modules" --parser babylon --transform ${codemodPath} ${process.env.SHEPHERD_REPO_DIR}`;
   console.log(`$ ${cmd}`);
   execSync(cmd, { stdio: 'inherit' });
-}
-const runLodashCodemod = (name) => runCodemod(path.join('node_modules', 'lodash-codemods', 'lib', name));
+};
+const runLodashCodemod = (name) =>
+  runCodemod(path.join('node_modules', 'lodash-codemods', 'lib', name));
 
-if (deps.some(d => d.startsWith('lodash.'))) {
+if (deps.some((d) => d.startsWith('lodash.'))) {
   // We need to transform the lodash.* style imports first
   runCodemod('codemods/npm-codemod.js');
 }
@@ -37,8 +38,8 @@ if (v3deps.length) {
     'method-name-changes.js',
     'remove-category-from-import.js',
     'this-arg-removal.js',
-  ]
-  lodashCodemods.forEach(codemod => runLodashCodemod(codemod));
+  ];
+  lodashCodemods.forEach((codemod) => runLodashCodemod(codemod));
 }
 
 // runCodemod('codemods/use-path-import.js');

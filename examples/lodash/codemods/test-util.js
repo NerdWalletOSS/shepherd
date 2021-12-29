@@ -6,24 +6,24 @@ module.exports = (jscodeshift, plugin) => {
     j: jscodeshift,
     stats: () => {},
   };
-   function runPlugin(source) {
+  function runPlugin(source) {
     const fileInfo = { path: 'file.js', source };
     return plugin(fileInfo, mockApi);
   }
-   const formatCode = input => recast.prettyPrint(recast.parse(input)).code;
-   const expectEqual = (actual, expected) => {
+  const formatCode = (input) => recast.prettyPrint(recast.parse(input)).code;
+  const expectEqual = (actual, expected) => {
     // We'll round trip everything through an AST to ensure that we're
     // comparing AST structure and not formatting
     const formattedActual = formatCode(actual);
     const formattedExpected = formatCode(expected);
     expect(formattedActual).toEqual(formattedExpected);
   };
-   const testChanged = (input, expected) => {
+  const testChanged = (input, expected) => {
     test(input, () => {
       expectEqual(runPlugin(input), expected);
     });
   };
-   const testUnchanged = input => {
+  const testUnchanged = (input) => {
     test(input, () => {
       const res = runPlugin(input);
       if (res === undefined) {
@@ -33,5 +33,5 @@ module.exports = (jscodeshift, plugin) => {
       }
     });
   };
-   return { testChanged, testUnchanged };
+  return { testChanged, testUnchanged };
 };

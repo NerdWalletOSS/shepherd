@@ -7,7 +7,7 @@ module.exports = (fileInfo, api) => {
   const ast = j(fileInfo.source);
 
   const imports = ast.find(j.ImportDeclaration);
-  const lodashImports = imports.filter(path => {
+  const lodashImports = imports.filter((path) => {
     const { node } = path;
     return node.source.value.indexOf('lodash.') === 0;
   });
@@ -25,14 +25,14 @@ module.exports = (fileInfo, api) => {
   // its actual method name, we'll do a case insensitive compare against all
   // keys in lodash. We'll start searching in lodash@4 and fallback to
   // lodash@3 if the first lookup fails.
-  const findMethod = lowercaseMethod => {
-    const isMatch = method => method.toLowerCase(method) === lowercaseMethod;
+  const findMethod = (lowercaseMethod) => {
+    const isMatch = (method) => method.toLowerCase(method) === lowercaseMethod;
     return lodashMethods.find(isMatch) || lodash3Methods.find(isMatch);
   };
 
   // Let's generate some new imports!
   const newImports = [];
-  lodashImports.forEach(path => {
+  lodashImports.forEach((path) => {
     const { node } = path;
 
     const lowercaseMethod = node.source.value.split('.')[1];
@@ -41,9 +41,7 @@ module.exports = (fileInfo, api) => {
       b.importDefaultSpecifier(b.identifier(node.specifiers[0].local.name)),
     ];
     const importPath = `lodash/${method}`;
-    newImports.push(
-      b.importDeclaration(importSpecifiers, b.literal(importPath))
-    );
+    newImports.push(b.importDeclaration(importSpecifiers, b.literal(importPath)));
   });
 
   // If any comments exist prior to the first import, let's try to keep them
@@ -58,7 +56,7 @@ module.exports = (fileInfo, api) => {
   lodashImports.at(-1).insertAfter(newImports);
 
   // Remove any old imports
-  lodashImports.forEach(path => path.replace());
+  lodashImports.forEach((path) => path.replace());
 
   return ast.toSource({ quote: 'single' });
 };

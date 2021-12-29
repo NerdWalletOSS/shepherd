@@ -9,12 +9,13 @@ interface IOptions {
   warnMissingDirectory?: boolean;
 }
 
-export default async (context: IMigrationContext, param1: (RepoHandler | IOptions), param2?: RepoHandler) => {
+export default async (
+  context: IMigrationContext,
+  param1: RepoHandler | IOptions,
+  param2?: RepoHandler
+) => {
   const {
-    migration: {
-      repos: migrationRepos,
-      selectedRepos,
-    },
+    migration: { repos: migrationRepos, selectedRepos },
     logger,
     adapter,
   } = context;
@@ -56,7 +57,7 @@ export default async (context: IMigrationContext, param1: (RepoHandler | IOption
 
     // Quick sanity check in case we're working from user-selected repos
     const repoDir = adapter.getRepoDir(repo);
-    if (warnMissingDirectory && !await fs.pathExists(repoDir)) {
+    if (warnMissingDirectory && !(await fs.pathExists(repoDir))) {
       logger.error(`Directory ${repoDir} does not exist`);
     }
 

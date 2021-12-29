@@ -33,7 +33,7 @@ const getLegacyRepoListFile = (migrationContext: IMigrationContext) => {
 const loadRepoList = async (migrationContext: IMigrationContext): Promise<IRepo[] | null> => {
   await migrateToJsonIfNeeded(migrationContext);
   const repoListFile = getRepoListFile(migrationContext);
-  if (!await fs.pathExists(repoListFile)) {
+  if (!(await fs.pathExists(repoListFile))) {
     return null;
   }
   return JSON.parse(await fs.readFile(repoListFile, 'utf8'));
@@ -42,7 +42,7 @@ const loadRepoList = async (migrationContext: IMigrationContext): Promise<IRepo[
 const updateRepoList = async (
   migrationContext: IMigrationContext,
   checkedOutRepos: IRepo[],
-  discardedRepos: IRepo[],
+  discardedRepos: IRepo[]
 ): Promise<IRepo[]> => {
   // We need to keep the list of repos in sync with what's actually on disk
   // To do this, we'll load the existing list, delete any repos that were not
@@ -56,13 +56,14 @@ const updateRepoList = async (
   }
 
   const { reposEqual } = migrationContext.adapter;
-  const repos = unionWith(differenceWith(existingRepos, discardedRepos, reposEqual), checkedOutRepos, reposEqual);
+  const repos = unionWith(
+    differenceWith(existingRepos, discardedRepos, reposEqual),
+    checkedOutRepos,
+    reposEqual
+  );
 
   await fs.outputFile(getRepoListFile(migrationContext), JSON.stringify(repos));
   return repos;
 };
 
-export {
-  updateRepoList,
-  loadRepoList,
-};
+export { updateRepoList, loadRepoList };

@@ -5,12 +5,9 @@ module.exports = (fileInfo, api) => {
   const ast = j(fileInfo.source);
 
   const imports = ast.find(j.ImportDeclaration);
-  const lodashImports = imports.filter(path => {
+  const lodashImports = imports.filter((path) => {
     const { node } = path;
-    return (
-      node.source.value === 'lodash' ||
-      node.source.value.indexOf('lodash/') === 0
-    );
+    return node.source.value === 'lodash' || node.source.value.indexOf('lodash/') === 0;
   });
 
   if (lodashImports.length === 0) {
@@ -21,7 +18,7 @@ module.exports = (fileInfo, api) => {
   // Let's now normalize the various imports to a standardized representation
   let lodashIdentifier = '_';
   const mappedLodashImports = [];
-  lodashImports.forEach(path => {
+  lodashImports.forEach((path) => {
     const { node } = path;
     const { source, specifiers } = node;
 
@@ -31,7 +28,7 @@ module.exports = (fileInfo, api) => {
         lodashIdentifier = specifiers[0].local.name;
       } else {
         // import { get } from 'lodash';
-        specifiers.forEach(specifier => {
+        specifiers.forEach((specifier) => {
           const local = specifier.local.name;
           const imported = specifier.imported.name;
           mappedLodashImports.push({ local, imported });
@@ -46,12 +43,12 @@ module.exports = (fileInfo, api) => {
   });
 
   // Now let's use these imports to transform to accessing members of `_`
-  mappedLodashImports.forEach(importDescription => {
+  mappedLodashImports.forEach((importDescription) => {
     ast
       .find(j.Identifier, {
         name: importDescription.local,
       })
-      .forEach(path => {
+      .forEach((path) => {
         if (path.parent.node.type !== 'MemberExpression') {
           // We'll assume this was a destructured import
           path.replace(
@@ -59,10 +56,10 @@ module.exports = (fileInfo, api) => {
               b.identifier(lodashIdentifier),
               b.identifier(importDescription.imported)
             )
-          )
+          );
         }
-      })
-  })
+      });
+  });
 
   const newImport = b.importDeclaration(
     [b.importDefaultSpecifier(b.identifier(lodashIdentifier))],
@@ -81,7 +78,7 @@ module.exports = (fileInfo, api) => {
   lodashImports.at(-1).insertAfter(newImport);
 
   // Remove any old imports
-  lodashImports.forEach(path => path.replace());
+  lodashImports.forEach((path) => path.replace());
 
   return ast.toSource({ quote: 'single' });
 };

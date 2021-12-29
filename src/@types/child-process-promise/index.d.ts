@@ -23,5 +23,9 @@ declare module 'child-process-promise' {
   }
 
   export function exec(command: string, options: ExecOptions): ChildProcessPromise;
-  export function spawn(command: string, args: string[], options: SpawnOptions): ChildProcessPromise;
+  export function spawn(
+    command: string,
+    args: string[],
+    options: SpawnOptions
+  ): ChildProcessPromise;
 }

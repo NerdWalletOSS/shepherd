@@ -39,39 +39,39 @@ export default class ConsoleLogger implements ILogger {
 
   public debug = (message: string): void => {
     this.log('debug', message);
-  }
+  };
 
   public info = (message: string): void => {
     this.log('info', message);
-  }
+  };
 
   public warn = (message: string): void => {
     this.log('warn', message);
-  }
+  };
 
   public error = (message: string): void => {
     this.log('error', message);
-  }
+  };
 
   public fatal = (message: string): void => {
     this.log('fatal', message);
-  }
+  };
 
   public succeedIcon = (message: string): void => {
     this.info(`${logSymbols.success} ${message}`);
-  }
+  };
 
   public failIcon = (message: string): void => {
     this.error(`${logSymbols.error} ${message}`);
-  }
+  };
 
   public warnIcon = (message: string): void => {
     this.warn(`${logSymbols.warning} ${message}`);
-  }
+  };
 
   public infoIcon = (message: string): void => {
     this.info(`${logSymbols.info} ${message}`);
-  }
+  };
 
   public spinner = (message: string): ISpinner => {
     if (this.oraInstance) {
@@ -82,7 +82,9 @@ export default class ConsoleLogger implements ILogger {
     this.oraInstance.start();
 
     const finish = (method: string, color?: (msg: string) => string) => (text?: string) => {
-      if (!this.oraInstance) { return; }
+      if (!this.oraInstance) {
+        return;
+      }
       if (color && text) {
         this.oraInstance[method](color(text));
       } else {
@@ -108,7 +110,7 @@ export default class ConsoleLogger implements ILogger {
         }
       },
     };
-  }
+  };
 
   private log = (level: string, message: string) => {
     let color = (msg: string) => msg;
@@ -144,5 +146,5 @@ export default class ConsoleLogger implements ILogger {
       // Resume the spinner!
       this.oraInstance.start();
     }
-  }
+  };
 }

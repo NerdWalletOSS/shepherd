@@ -6,7 +6,7 @@ import path from 'path';
 import { IMigrationContext } from '../migration-context';
 import { IEnvironmentVariables, IRepo } from './base';
 import GitAdapter from './git';
-import GithubService from '../services/github'
+import GithubService from '../services/github';
 
 enum SafetyStatus {
   Success,
@@ -24,7 +24,11 @@ class GithubAdapter extends GitAdapter {
   }
 
   public async getCandidateRepos(): Promise<IRepo[]> {
-    const { org, search_type = 'code', search_query } = this.migrationContext.migration.spec.adapter;
+    const {
+      org,
+      search_type = 'code',
+      search_query,
+    } = this.migrationContext.migration.spec.adapter;
     let repoNames: string[];
 
     // list all of an orgs active repos
@@ -37,7 +41,7 @@ class GithubAdapter extends GitAdapter {
     } else {
       repoNames = await this.githubService.getActiveReposForSearchTypeAndQuery({
         search_type,
-        search_query
+        search_query,
       });
     }
 
@@ -53,7 +57,7 @@ class GithubAdapter extends GitAdapter {
 
     return {
       ...repo,
-      defaultBranch
+      defaultBranch,
     };
   }
 
@@ -88,9 +92,13 @@ class GithubAdapter extends GitAdapter {
     if (!force) {
       const safetyStatus = await this.checkActionSafety(repo);
       if (safetyStatus === SafetyStatus.PullRequestExisted) {
-        throw new Error('Remote branch did not exist, but a pull request does or did; try with --force-reset-branch?');
+        throw new Error(
+          'Remote branch did not exist, but a pull request does or did; try with --force-reset-branch?'
+        );
       } else if (safetyStatus === SafetyStatus.NonShepherdCommits) {
-        throw new Error('Found non-Shepherd commits on remote branch; try with --force-reset-branch?');
+        throw new Error(
+          'Found non-Shepherd commits on remote branch; try with --force-reset-branch?'
+        );
       }
     }
 
@@ -108,7 +116,9 @@ class GithubAdapter extends GitAdapter {
     if (!force) {
       const safetyStatus = await this.checkActionSafety(repo);
       if (safetyStatus === SafetyStatus.PullRequestExisted) {
-        throw new Error('Remote branch did not exist, but a pull request does or did; try with --force?');
+        throw new Error(
+          'Remote branch did not exist, but a pull request does or did; try with --force?'
+        );
       } else if (safetyStatus === SafetyStatus.NonShepherdCommits) {
         throw new Error('Found non-Shepherd commits on remote branch; try with --force?');
       }
@@ -121,7 +131,9 @@ class GithubAdapter extends GitAdapter {
   }
 
   public async createPullRequest(repo: IRepo, message: string): Promise<void> {
-    const { migration: { spec } } = this.migrationContext;
+    const {
+      migration: { spec },
+    } = this.migrationContext;
     const { owner, name, defaultBranch } = repo;
 
     // Let's check if a PR already exists
@@ -201,7 +213,8 @@ class GithubAdapter extends GitAdapter {
         const anyPending = statuses.some((s: any) => s.state === 'pending');
         const anyFailing = statuses.some((s: any) => s.state === 'error' || s.state === 'failure');
 
-        const recordStatus = (s: any) => status.push(`${s.context} ${chalk.dim(`- ${s.description}`)}`);
+        const recordStatus = (s: any) =>
+          status.push(`${s.context} ${chalk.dim(`- ${s.description}`)}`);
 
         if (anyPending) {
           status.push(chalk.underline.yellow('Pending status checks'));
@@ -245,11 +258,21 @@ class GithubAdapter extends GitAdapter {
   }
 
   public getRepoDir(repo: IRepo): string {
-    return path.join(this.migrationContext.migration.workingDirectory, 'repos', repo.owner, repo.name);
+    return path.join(
+      this.migrationContext.migration.workingDirectory,
+      'repos',
+      repo.owner,
+      repo.name
+    );
   }
 
   public getDataDir(repo: IRepo): string {
-    return path.join(this.migrationContext.migration.workingDirectory, 'data', repo.owner, repo.name);
+    return path.join(
+      this.migrationContext.migration.workingDirectory,
+      'data',
+      repo.owner,
+      repo.name
+    );
   }
 
   public getBaseBranch(repo: IRepo): string {

@@ -10,5 +10,5 @@ interface INetrcData {
 }
 
 declare module 'netrc' {
-  export default function(): INetrcData;
+  export default function (): INetrcData;
 }

@@ -19,13 +19,11 @@ export default async (
   context: IMigrationContext,
   repo: IRepo,
   phase: string,
-  showOutput = true,
+  showOutput = true
 ): Promise<IStepsResults> => {
   const {
     migration: {
-      spec: {
-        hooks,
-      },
+      spec: { hooks },
     },
     logger,
   } = context;

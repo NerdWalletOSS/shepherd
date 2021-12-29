@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import simpleGit, { SimpleGit } from 'simple-git/promise';
 
 import { IMigrationContext } from '../migration-context';
-import IRepoAdapter, {IEnvironmentVariables, IRepo, RetryMethod} from './base';
+import IRepoAdapter, { IEnvironmentVariables, IRepo, RetryMethod } from './base';
 
 abstract class GitAdapter implements IRepoAdapter {
   protected migrationContext: IMigrationContext;
@@ -33,7 +33,7 @@ abstract class GitAdapter implements IRepoAdapter {
     const repoPath = this.getRepositoryUrl(repo);
     const localPath = this.getRepoDir(repo);
 
-    if (await fs.pathExists(localPath) && await this.git(repo).checkIsRepo()) {
+    if ((await fs.pathExists(localPath)) && (await this.git(repo).checkIsRepo())) {
       // Repo already exists; just fetch
       await this.git(repo).fetch('origin');
     } else {
@@ -43,9 +43,7 @@ abstract class GitAdapter implements IRepoAdapter {
 
     // We'll immediately create and switch to a new branch
     try {
-      await this.git(repo).checkout(
-        ['-b', this.branchName, `origin/${this.branchName}`],
-      );
+      await this.git(repo).checkout(['-b', this.branchName, `origin/${this.branchName}`]);
     } catch (e) {
       try {
         await this.git(repo).checkoutLocalBranch(this.branchName);
@@ -58,7 +56,9 @@ abstract class GitAdapter implements IRepoAdapter {
   }
 
   public async commitRepo(repo: IRepo): Promise<void> {
-    const { migration: { spec } } = this.migrationContext;
+    const {
+      migration: { spec },
+    } = this.migrationContext;
     await this.git(repo).add('.');
     await this.git(repo).commit(`${spec.title} [shepherd]`);
   }

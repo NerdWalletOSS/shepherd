@@ -60,7 +60,9 @@ export function validateSpec(spec: any) {
     title: Joi.string().required(),
     adapter: Joi.object({
       type: Joi.string().valid('github').required(),
-    }).unknown(true).required(),
+    })
+      .unknown(true)
+      .required(),
     hooks: Joi.object({
       should_migrate: hookSchema,
       post_checkout: hookSchema,
