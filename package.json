@@ -52,7 +52,7 @@
     "@types/js-yaml": "^3.12.6",
     "chalk": "^4.1.0",
     "child-process-promise": "^2.2.1",
-    "commander": "^6.2.1",
+    "commander": "^8.0.0",
     "fs-extra": "^9.1.0",
     "joi": "^17.4.0",
     "js-yaml": "^3.14.1",
