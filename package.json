@@ -61,7 +61,7 @@
     "netrc": "^0.1.4",
     "ora": "^5.3.0",
     "preferences": "^2.0.2",
-    "simple-git": "^2.36.1"
+    "simple-git": "^3.0.0"
   },
   "devDependencies": {
     "@octokit/plugin-rest-endpoint-methods": "^5.0.0",
