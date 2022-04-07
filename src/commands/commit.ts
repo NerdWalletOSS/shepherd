@@ -8,6 +8,7 @@ export default async (context: IMigrationContext, options: any) => {
     const spinner = logger.spinner('Committing changes');
     try {
       await adapter.commitRepo(repo, options.noVerify);
+      
       spinner.succeed('Changes committed');
     } catch (e) {
       logger.error(e);
