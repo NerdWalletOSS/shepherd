@@ -1,25 +1,27 @@
-import execa from 'execa';
+import { createBinTester } from '@scalvert/bin-tester';
 import { createMigration, MigrationProject } from './__utils__/migration-project';
 
-const ROOT = process.cwd();
+const { setupProject, teardownProject, runBin } = createBinTester({
+  binPath: require.resolve('../lib/cli.js'),
+  createProject: async () => createMigration('shepherd-migration'),
+});
 
 describe('cli', () => {
   let project: MigrationProject;
 
-  beforeEach(function () {
-    project = createMigration('shepherd-migration');
+  beforeEach(async function () {
+    project = await setupProject();
 
-    project.writeSync();
+    await project.write();
   });
 
   afterEach(function () {
-    process.chdir(ROOT);
-    project.dispose();
+    teardownProject();
   });
 
   describe('--help', () => {
     it('can show help for shepherd', async () => {
-      let result = await shepherd(['--help']);
+      const result = await runBin('--help');
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -52,7 +54,7 @@ Commands:
     });
 
     it('can show help for checkout command', async () => {
-      let result = await shepherd(['checkout', '--help']);
+      const result = await runBin('checkout', '--help');
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -67,7 +69,7 @@ Options:
     });
 
     it('can show help for apply command', async () => {
-      let result = await shepherd(['apply', '--help']);
+      const result = await runBin('apply', '--help');
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -87,7 +89,7 @@ Options:
     });
 
     it('can show help for commit command', async () => {
-      let result = await shepherd(['commit', '--help']);
+      const result = await runBin('commit', '--help');
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -102,7 +104,7 @@ Options:
     });
 
     it('can show help for reset command', async () => {
-      let result = await shepherd(['reset', '--help']);
+      const result = await runBin('reset', '--help');
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -117,7 +119,7 @@ Options:
     });
 
     it('can show help for push command', async () => {
-      let result = await shepherd(['push', '--help']);
+      const result = await runBin('push', '--help');
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -133,7 +135,7 @@ Options:
     });
 
     it('can show help for pr-preview command', async () => {
-      let result = await shepherd(['pr-preview', '--help']);
+      const result = await runBin('pr-preview', '--help');
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -148,7 +150,7 @@ Options:
     });
 
     it('can show help for pr command', async () => {
-      let result = await shepherd(['pr', '--help']);
+      const result = await runBin('pr', '--help');
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -163,7 +165,7 @@ Options:
     });
 
     it('can show help for pr-status command', async () => {
-      let result = await shepherd(['pr-status', '--help']);
+      const result = await runBin('pr-status', '--help');
 
       expect(result.exitCode).toEqual(0);
       expect(result.stdout).toMatchInlineSnapshot(`
@@ -177,34 +179,4 @@ Options:
 `);
     });
   });
-
-  function shepherd(argsOrOptions?: string[] | execa.Options, options?: execa.Options) {
-    if (arguments.length > 0) {
-      if (arguments.length === 1) {
-        if (Array.isArray(argsOrOptions)) {
-          options = {};
-        } else {
-          options = argsOrOptions as execa.Options;
-          argsOrOptions = [];
-        }
-      }
-    } else {
-      argsOrOptions = [];
-      options = {};
-    }
-
-    const mergedOptions = Object.assign(
-      {
-        reject: false,
-        cwd: project.baseDir,
-      },
-      options
-    );
-
-    return execa(
-      process.execPath,
-      [require.resolve('../lib/cli.js'), ...(argsOrOptions as string[])],
-      mergedOptions
-    );
-  }
 });

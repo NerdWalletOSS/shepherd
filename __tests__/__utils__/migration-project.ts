@@ -1,33 +1,30 @@
 import path from 'path';
 import yaml from 'js-yaml';
 import { Project } from 'fixturify-project';
-import ShepherdProject from './shepherd-project';
 import type { IMigrationSpec } from '../../src/util/migration-spec';
+import { BinTesterProject } from '@scalvert/bin-tester';
 
 export function createMigration(
-  name: string = 'shepherd-project',
-  version: string = '0.0.1',
+  name = 'shepherd-project',
+  version = '0.0.1',
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   cb: (project: Project) => void = () => {}
 ) {
-  return new ShepherdMigrationProject(name, version, cb);
+  return new ShepherdProject(name, version, cb);
 }
 
-export type MigrationProject = InstanceType<typeof ShepherdMigrationProject>;
+export type MigrationProject = InstanceType<typeof ShepherdProject>;
 
-class ShepherdMigrationProject extends ShepherdProject {
-  shepherdDir: string = '';
+class ShepherdProject extends BinTesterProject {
+  private _shepherdDir = '';
 
-  constructor(name: string, version: string, cb: (project: Project) => void) {
-    super(name, version, cb);
-
-    // calling writeSync is required in order to generate a baseDir
-    this.writeSync();
-
-    this.shepherdDir = path.join(this.baseDir, '.shepherd');
+  get shepherdDir() {
+    return this._shepherdDir ?? (this._shepherdDir = path.join(this.baseDir, '.shepherd'));
   }
 
-  addShepherdSpec(spec: IMigrationSpec) {
-    this.files['shepherd.yml'] = yaml.dump(spec);
-    this.writeSync();
+  async addShepherdSpec(spec: IMigrationSpec) {
+    await this.write({
+      'shepherd.yml': yaml.dump(spec),
+    });
   }
 }
