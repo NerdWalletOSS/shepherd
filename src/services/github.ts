@@ -39,7 +39,7 @@ export default class GithubService {
             context.logger.warn(`Retrying in ${retryAfter} second(s)`);
             return options.request.retryCount < 5;
           },
-          onAbuseLimit: (retryAfter: number, options: any) => {
+          onSecondaryRateLimit: (retryAfter: number, options: any) => {
             context.logger.warn(`Hit abuse limit for ${options.method} ${options.url}`);
             context.logger.warn(`Retrying in ${retryAfter} second(s)`);
             return options.request.retryCount < 5;
