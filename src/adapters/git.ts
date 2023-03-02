@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import fs from 'fs-extra';
-import simpleGit, { SimpleGit } from 'simple-git/promise';
+// eslint-disable-next-line import/named
+import simpleGit, { SimpleGit } from 'simple-git';
 
 import { IMigrationContext } from '../migration-context';
 import IRepoAdapter, { IEnvironmentVariables, IRepo, RetryMethod } from './base';

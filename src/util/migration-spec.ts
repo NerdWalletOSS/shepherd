@@ -26,7 +26,7 @@ export interface IMigrationSpec {
 
 export function loadSpec(directory: string): IMigrationSpec {
   const docPath = path.join(directory, 'shepherd.yml');
-  const spec = yaml.safeLoad(fs.readFileSync(docPath, 'utf8'));
+  const spec = yaml.load(fs.readFileSync(docPath, 'utf8'));
   const normalizedSpec = normalizeSpec(spec);
   const validationResult = validateSpec(normalizedSpec);
   if (validationResult.error) {
