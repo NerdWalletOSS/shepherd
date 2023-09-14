@@ -13,7 +13,7 @@ const mockMigrationContext = () =>
         title: 'Test migration',
       },
     },
-  } as IMigrationContext);
+  }) as IMigrationContext;
 
 describe('GithubAdapter', () => {
   describe('reposEqual', () => {
