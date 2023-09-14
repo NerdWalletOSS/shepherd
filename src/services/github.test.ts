@@ -2,7 +2,7 @@ import type { Octokit } from '@octokit/rest';
 import { IMigrationContext } from '../migration-context';
 import GithubService from './github';
 
-const mockMigrationContext = () => ({} as IMigrationContext);
+const mockMigrationContext = () => ({}) as IMigrationContext;
 
 describe('GithubService', () => {
   describe('getDefaultBranchForRepo', () => {

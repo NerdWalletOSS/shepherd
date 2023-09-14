@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import fs from 'fs-extra';
-import simpleGit, { SimpleGit } from 'simple-git/promise';
+import { simpleGit } from 'simple-git';
 
 import { IMigrationContext } from '../migration-context';
 import IRepoAdapter, { IEnvironmentVariables, IRepo, RetryMethod } from './base';
@@ -90,7 +90,7 @@ abstract class GitAdapter implements IRepoAdapter {
 
   protected abstract getRepositoryUrl(repo: IRepo): string;
 
-  protected git(repo: IRepo): SimpleGit {
+  protected git(repo: IRepo): any {
     return simpleGit(this.getRepoDir(repo));
   }
 

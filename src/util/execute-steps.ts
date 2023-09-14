@@ -50,7 +50,7 @@ export default async (
         stdout: childProcessResult.stdout,
         stderr: childProcessResult.stderr,
       });
-    } catch (e) {
+    } catch (e: any) {
       // This could either be an error from the process itself (which will have an exit code)
       // or an error from JavaScript world (e.g. the script wasn't executable)
       if (e.code !== undefined) {

@@ -245,7 +245,7 @@ class GithubAdapter extends GitAdapter {
           branch: this.branchName,
         });
         status.push('No PR exists');
-      } catch (e) {
+      } catch (e: any) {
         if (e.code === 404) {
           status.push('No branch or PR exists');
         } else {
@@ -323,7 +323,9 @@ class GithubAdapter extends GitAdapter {
       // master.
       const upstreamBranch = `remotes/origin/${this.branchName}`;
       const commits = await this.git(repo).log([`HEAD..${upstreamBranch}`]);
-      const allShepherd = commits.all.every(({ message }) => this.isShepherdCommitMessage(message));
+      const allShepherd = commits.all.every(({ message }: any) =>
+        this.isShepherdCommitMessage(message)
+      );
       if (!allShepherd) {
         // RIP.
         return SafetyStatus.NonShepherdCommits;
