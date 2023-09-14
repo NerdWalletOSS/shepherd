@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import fs from 'fs';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import { cloneDeep, mapValues } from 'lodash';
 import path from 'path';
 
@@ -26,7 +26,7 @@ export interface IMigrationSpec {
 
 export function loadSpec(directory: string): IMigrationSpec {
   const docPath = path.join(directory, 'shepherd.yml');
-  const spec = yaml.safeLoad(fs.readFileSync(docPath, 'utf8'));
+  const spec = yaml.load(fs.readFileSync(docPath, 'utf8'));
   const normalizedSpec = normalizeSpec(spec);
   const validationResult = validateSpec(normalizedSpec);
   if (validationResult.error) {

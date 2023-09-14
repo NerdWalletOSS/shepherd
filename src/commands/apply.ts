@@ -10,7 +10,7 @@ export default async (context: IMigrationContext, options: any): Promise<void> =
     try {
       await adapter.resetChangedFiles(repo);
       resetSpinner.succeed('Successfully reset repo');
-    } catch (e) {
+    } catch (e: any) {
       logger.error(e);
       resetSpinner.fail('Failed to remove changes; not applying migration');
       return;
@@ -23,7 +23,7 @@ export default async (context: IMigrationContext, options: any): Promise<void> =
       try {
         await adapter.resetRepoBeforeApply(repo, options.forceResetBranch);
         resetBranchSpinner.succeed('Successfully reset branch');
-      } catch (e) {
+      } catch (e: any) {
         logger.error(e);
         resetBranchSpinner.fail('Failed to reset branch; not applying migration');
         return;
@@ -45,7 +45,7 @@ export default async (context: IMigrationContext, options: any): Promise<void> =
       try {
         await adapter.resetChangedFiles(repo);
         spinner.succeed('Successfully reset repo');
-      } catch (e) {
+      } catch (e: any) {
         logger.error(e);
         spinner.fail('Failed to reset repo');
       }
