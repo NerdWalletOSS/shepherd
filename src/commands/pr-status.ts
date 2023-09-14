@@ -10,7 +10,7 @@ export default async (context: IMigrationContext) => {
       const status = await adapter.getPullRequestStatus(repo);
       spinner.destroy();
       status.forEach((s) => logger.info(s));
-    } catch (e: any) {
+    } catch (e) {
       logger.error(e);
       spinner.fail('Failed to determine PR status');
     }
