@@ -78,7 +78,7 @@ const handleCommand =
       migrationContext.migration.repos = await loadRepoList(migrationContext);
 
       await handler(migrationContext, options);
-    } catch (e: any) {
+    } catch (e) {
       logger.error(e);
       process.exit(1);
     }

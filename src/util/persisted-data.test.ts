@@ -16,7 +16,7 @@ const makeContext = (workingDirectory: string) =>
     adapter: {
       reposEqual: (r1: IRepo, r2: IRepo) => isEqual(r1, r2),
     },
-  }) as IMigrationContext;
+  } as IMigrationContext);
 
 describe('persisted-data', () => {
   it('loads repo list from a file', async () => {

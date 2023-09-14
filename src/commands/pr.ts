@@ -33,7 +33,7 @@ export default async (context: IMigrationContext) => {
     try {
       await context.adapter.createPullRequest(repo, message);
       prSpinner.succeed('Pull request created');
-    } catch (e: any) {
+    } catch (e) {
       logger.error(e);
       prSpinner.fail('Failed to create pull request');
     }
