@@ -1,9 +1,8 @@
 ## [1.16.1](https://github.com/NerdWalletOSS/shepherd/compare/v1.16.0...v1.16.1) (2023-09-25)
 
-
 ### Reverts
 
-* Revert "BREAKING CHANGE: substantial dep mgmt effort - drop support for Node v12, 14, 16" (#608) ([58b9b1c](https://github.com/NerdWalletOSS/shepherd/commit/58b9b1c2a4a936c6b67409a1981201704fb4d5ae)), closes [#608](https://github.com/NerdWalletOSS/shepherd/issues/608)
+- Revert "BREAKING CHANGE: substantial dep mgmt effort - drop support for Node v12, 14, 16" (#608) ([58b9b1c](https://github.com/NerdWalletOSS/shepherd/commit/58b9b1c2a4a936c6b67409a1981201704fb4d5ae)), closes [#608](https://github.com/NerdWalletOSS/shepherd/issues/608)
 
 # [1.16.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.5...v1.16.0) (2021-12-03)
 

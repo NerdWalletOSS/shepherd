@@ -10,7 +10,7 @@ export default async (context: IMigrationContext) => {
       await adapter.resetChangedFiles(repo);
       spinner.succeed('Reset changes');
     } catch (e) {
-      logger.error(e);
+      logger.error(e as string);
       spinner.fail('Failed to reset changes');
     }
   });

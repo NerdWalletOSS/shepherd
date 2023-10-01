@@ -16,7 +16,7 @@ const jsonStringify = (data: any) => JSON.stringify(data, undefined, 2);
 const migrateToJsonIfNeeded = async (migrationContext: IMigrationContext) => {
   const legacyFile = getLegacyRepoListFile(migrationContext);
   if (await fs.pathExists(legacyFile)) {
-    const data = yaml.safeLoad(await fs.readFile(legacyFile, 'utf8'));
+    const data = yaml.load(await fs.readFile(legacyFile, 'utf8'));
     await fs.outputFile(getRepoListFile(migrationContext), jsonStringify(data));
     await fs.remove(legacyFile);
   }
