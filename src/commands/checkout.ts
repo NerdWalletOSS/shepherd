@@ -44,7 +44,7 @@ export default async (context: IMigrationContext) => {
     try {
       await adapter.checkoutRepo(repo);
       spinner.succeed('Checked out repo');
-    } catch (e) {
+    } catch (e: any) {
       logger.error(e);
       spinner.fail('Failed to check out repo; skipping');
       return;

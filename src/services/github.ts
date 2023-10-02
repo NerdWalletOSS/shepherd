@@ -34,13 +34,9 @@ export default class GithubService {
       this.octokit = new RetryableThrottledOctokit({
         auth: token,
         throttle: {
+          enabled: false,
           onRateLimit: (retryAfter: number, options: any) => {
             context.logger.warn(`Hit rate limit for ${options.method} ${options.url}`);
-            context.logger.warn(`Retrying in ${retryAfter} second(s)`);
-            return options.request.retryCount < 5;
-          },
-          onAbuseLimit: (retryAfter: number, options: any) => {
-            context.logger.warn(`Hit abuse limit for ${options.method} ${options.url}`);
             context.logger.warn(`Retrying in ${retryAfter} second(s)`);
             return options.request.retryCount < 5;
           },

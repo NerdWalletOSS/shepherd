@@ -1,6 +1,6 @@
 {
   "name": "@nerdwallet/shepherd",
-  "version": "1.16.0",
+  "version": "2.0.0",
   "description": "A utility for applying code changes across many repositories",
   "keywords": [
     "codemod",
@@ -17,11 +17,12 @@
   },
   "license": "Apache-2.0",
   "author": "Nathan Walters",
+  "main": "./lib/cli.js",
   "bin": {
     "shepherd": "./lib/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.cjs.json",
     "build:watch": "yarn build --watch",
     "fix-lint": "eslint src/**/*.ts --fix && prettier --write .",
     "lint": "eslint src/**/*.ts && prettier --check .",
@@ -39,51 +40,56 @@
     ],
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "transform": {
-      "^.+\\.tsx?$": "ts-jest"
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "tsconfig": "tsconfig.cjs.json"
+        }
+      ]
     }
   },
   "files": [
     "lib"
   ],
   "dependencies": {
-    "@octokit/plugin-retry": "^3.0.9",
-    "@octokit/plugin-throttling": "^3.5.2",
-    "@octokit/rest": "^18.12.0",
-    "@types/js-yaml": "^3.12.6",
-    "chalk": "^4.1.0",
+    "@octokit/core": "^5.0.0",
+    "@octokit/plugin-retry": "^6.0.0",
+    "@octokit/plugin-throttling": "^7.0.0",
+    "@octokit/rest": "^20.0.1",
+    "@types/js-yaml": "^4.0.5",
+    "chalk": "^4.1.2",
     "child-process-promise": "^2.2.1",
     "commander": "^6.2.1",
-    "fs-extra": "^9.1.0",
-    "joi": "^17.4.0",
-    "js-yaml": "^3.14.1",
-    "lodash": "^4.17.19",
-    "log-symbols": "^4.0.0",
+    "fs-extra": "^11.1.1",
+    "joi": "^17.10.1",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
+    "log-symbols": "^4.1.0",
     "netrc": "^0.1.4",
-    "ora": "^5.3.0",
+    "ora": "^5.4.1",
     "preferences": "^2.0.2",
-    "simple-git": "^2.36.1"
+    "simple-git": "^3.19.1"
   },
   "devDependencies": {
-    "@octokit/plugin-rest-endpoint-methods": "^5.0.0",
-    "@octokit/types": "^6.8.3",
-    "@semantic-release/changelog": "^5.0.1",
-    "@semantic-release/git": "^9.0.0",
-    "@types/fs-extra": "^9.0.6",
-    "@types/jest": "^27.0.0",
-    "@types/lodash": "^4.14.167",
-    "@types/log-symbols": "^2.0.0",
-    "@types/node": "^16.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.15.0",
-    "@typescript-eslint/parser": "^4.15.0",
-    "eslint": "^7.19.0",
+    "@octokit/plugin-rest-endpoint-methods": "^9.0.0",
+    "@octokit/types": "^11.1.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@types/fs-extra": "^11.0.1",
+    "@types/jest": "^29.5.4",
+    "@types/lodash": "^4.14.198",
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "eslint": "^8.49.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-prefer-arrow": "^1.2.3",
-    "jest": "^27.0.0",
-    "prettier": "2.5.1",
-    "semantic-release": "^17.3.8",
-    "ts-jest": "^27.0.0",
-    "typescript": "^3.9.9"
+    "jest": "^29.6.4",
+    "prettier": "^3.0.3",
+    "semantic-release": "^21.1.1",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
   },
   "publishConfig": {
     "access": "public"
