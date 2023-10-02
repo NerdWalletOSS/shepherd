@@ -1,3 +1,20 @@
+# [2.0.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.16.0...v2.0.0) (2023-10-02)
+
+
+### Bug Fixes
+
+* **token:** update token name. ([#614](https://github.com/NerdWalletOSS/shepherd/issues/614)) ([70a52cd](https://github.com/NerdWalletOSS/shepherd/commit/70a52cd17571656001e45f681a45f145cb6565f5))
+
+
+* BREAKING CHANGE: substantial dep mgmt effort - drop support for EOL Node versions (#613) ([4329f31](https://github.com/NerdWalletOSS/shepherd/commit/4329f316a6809e4b40ab6b0ba0344ee99f6b7d93)), closes [#613](https://github.com/NerdWalletOSS/shepherd/issues/613)
+
+
+### BREAKING CHANGES
+
+* substantial dep mgmt effort - drop support for Node v12, 14, 16
+
+* 2.0.0
+
 # [1.16.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.15.5...v1.16.0) (2021-12-03)
 
 ### Bug Fixes
