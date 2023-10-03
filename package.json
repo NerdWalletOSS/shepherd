@@ -1,6 +1,6 @@
 {
   "name": "@nerdwallet/shepherd",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A utility for applying code changes across many repositories",
   "keywords": [
     "codemod",

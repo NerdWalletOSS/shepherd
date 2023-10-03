@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.0.0...v2.0.1) (2023-10-03)
+
+
+### Bug Fixes
+
+* **lockfiles:** add lock files. ([#619](https://github.com/NerdWalletOSS/shepherd/issues/619)) ([ea27c42](https://github.com/NerdWalletOSS/shepherd/commit/ea27c4204d82ea07ece587f021c81dd65d1f5166))
+
 # [2.0.0](https://github.com/NerdWalletOSS/shepherd/compare/v1.16.0...v2.0.0) (2023-10-02)
 
 ### Bug Fixes
