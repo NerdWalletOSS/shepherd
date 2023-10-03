@@ -54,7 +54,7 @@
   "dependencies": {
     "@octokit/core": "^5.0.0",
     "@octokit/plugin-retry": "^6.0.0",
-    "@octokit/plugin-throttling": "^7.0.0",
+    "@octokit/plugin-throttling": "^8.0.0",
     "@octokit/rest": "^20.0.1",
     "@types/js-yaml": "^4.0.5",
     "chalk": "^4.1.2",
@@ -71,8 +71,8 @@
     "simple-git": "^3.19.1"
   },
   "devDependencies": {
-    "@octokit/plugin-rest-endpoint-methods": "^9.0.0",
-    "@octokit/types": "^11.1.0",
+    "@octokit/plugin-rest-endpoint-methods": "^10.0.0",
+    "@octokit/types": "^12.0.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@types/fs-extra": "^11.0.1",
