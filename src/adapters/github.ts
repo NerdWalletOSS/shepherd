@@ -130,11 +130,21 @@ class GithubAdapter extends GitAdapter {
     await super.pushRepo(repo, force || shouldForce);
   }
 
-  public async createPullRequest(repo: IRepo, message: string): Promise<void> {
+  public async createPullRequest(
+    repo: IRepo,
+    message: string,
+    upstreamOwner: string
+  ): Promise<void> {
     const {
       migration: { spec },
     } = this.migrationContext;
     const { owner, name, defaultBranch } = repo;
+
+    let baseOwner = owner;
+
+    if (upstreamOwner) {
+      baseOwner = upstreamOwner;
+    }
 
     // Let's check if a PR already exists
     const pullRequests = await this.githubService.listPullRequests({
@@ -149,7 +159,7 @@ class GithubAdapter extends GitAdapter {
       if (pullRequest.state === 'open') {
         // A pull request exists and is open, let's update it
         await this.githubService.updatePullRequest({
-          owner,
+          owner: baseOwner,
           repo: name,
           pull_number: pullRequest.number,
           title: spec.title,
@@ -162,10 +172,11 @@ class GithubAdapter extends GitAdapter {
       }
     } else {
       // No PR yet - we have to create it
+
       await this.githubService.createPullRequest({
-        owner,
+        owner: baseOwner,
         repo: name,
-        head: this.branchName,
+        head: `${owner}:${this.branchName}`,
         base: defaultBranch,
         title: spec.title,
         body: message,
@@ -273,6 +284,10 @@ class GithubAdapter extends GitAdapter {
       repo.owner,
       repo.name
     );
+  }
+
+  public getOwnerName(owner: string): string {
+    return owner;
   }
 
   public getBaseBranch(repo: IRepo): string {
