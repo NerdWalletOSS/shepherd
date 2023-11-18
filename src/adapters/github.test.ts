@@ -199,7 +199,7 @@ describe('GithubAdapter', () => {
       service.listPullRequests.mockResolvedValue([]);
       const adapter = new GithubAdapter(context, service);
 
-      await adapter.createPullRequest(REPO, 'Test PR message');
+      await adapter.createPullRequest(REPO, 'Test PR message', 'NerdWallet');
 
       expect(service.listPullRequests).toBeCalledWith({
         owner: 'NerdWallet',
@@ -227,7 +227,7 @@ describe('GithubAdapter', () => {
         },
       ]);
       const adapter = new GithubAdapter(context, service);
-      await adapter.createPullRequest(REPO, 'Test PR message, part 2');
+      await adapter.createPullRequest(REPO, 'Test PR message, part 2', 'NerdWallet');
 
       expect(service.updatePullRequest).toBeCalledWith({
         owner: 'NerdWallet',
@@ -249,7 +249,7 @@ describe('GithubAdapter', () => {
         },
       ]);
       const adapter = new GithubAdapter(context, service);
-      await expect(adapter.createPullRequest(REPO, 'Test PR message, part 2')).rejects.toThrow();
+      await expect(adapter.createPullRequest(REPO, 'Test PR message, part 2', 'NerdWallet')).rejects.toThrow();
       expect(service.updatePullRequest).not.toBeCalled();
     });
   });
