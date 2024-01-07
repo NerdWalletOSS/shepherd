@@ -8,6 +8,10 @@ import netrc from 'netrc';
 
 import { IMigrationContext } from '../migration-context';
 
+const { SHEPHERD_GITHUB_ENTERPRISE_URL } = process.env;
+
+const shepherdGitHubEnterpriseUrl = SHEPHERD_GITHUB_ENTERPRISE_URL || 'api.github.com';
+
 const RetryableThrottledOctokit = Octokit.plugin(throttling, retry);
 
 interface SearchTypeAndQueryParams {
@@ -33,6 +37,7 @@ export default class GithubService {
 
       this.octokit = new RetryableThrottledOctokit({
         auth: token,
+        baseUrl: `https://${shepherdGitHubEnterpriseUrl}/api/v3`,
         throttle: {
           enabled: false,
           onRateLimit: (retryAfter: number, options: any) => {

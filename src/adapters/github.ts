@@ -8,6 +8,10 @@ import { IEnvironmentVariables, IRepo } from './base';
 import GitAdapter from './git';
 import GithubService from '../services/github';
 
+const { SHEPHERD_GITHUB_ENTERPRISE_URL } = process.env;
+
+const shepherdGitHubEnterpriseUrl = SHEPHERD_GITHUB_ENTERPRISE_URL || 'api.github.com';
+
 enum SafetyStatus {
   Success,
   PullRequestExisted,
@@ -290,7 +294,7 @@ class GithubAdapter extends GitAdapter {
   }
 
   protected getRepositoryUrl(repo: IRepo): string {
-    return `git@github.com:${repo.owner}/${repo.name}.git`;
+    return `git@${shepherdGitHubEnterpriseUrl}:${repo.owner}/${repo.name}.git`;
   }
 
   private async checkActionSafety(repo: IRepo): Promise<SafetyStatus> {

@@ -1,9 +1,8 @@
 # [2.1.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.0.1...v2.1.0) (2023-10-03)
 
-
 ### Features
 
-* **workflow:** use semantic-pr-check in favor of semantic pull request app ([#622](https://github.com/NerdWalletOSS/shepherd/issues/622)) ([e780137](https://github.com/NerdWalletOSS/shepherd/commit/e780137e184172d540066b196e1fdec25e999042))
+- **workflow:** use semantic-pr-check in favor of semantic pull request app ([#622](https://github.com/NerdWalletOSS/shepherd/issues/622)) ([e780137](https://github.com/NerdWalletOSS/shepherd/commit/e780137e184172d540066b196e1fdec25e999042))
 
 ## [2.0.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.0.0...v2.0.1) (2023-10-03)
 
