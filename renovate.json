@@ -20,7 +20,7 @@
   "masterIssueAutoclose": true,
   "node": {
     "supportPolicy": [10, 12, 14],
-    "semanticCommitScope": "travis",
+    "semanticCommitScope": "github",
     "automerge": true
   },
   "packageRules": [
