@@ -22,6 +22,18 @@ Install the Shepherd CLI:
 npm install -g @nerdwallet/shepherd
 ```
 
+If using GitHub Enterprise, ensure the following environment variable is exported:
+
+```
+export SHEPHERD_GITHUB_ENTERPRISE_URL={company_github_enterprise_url} # e.g., github.test.com
+```
+
+If using ssh, ensure that your GITHUB_TOKEN is exported:
+
+```
+export GITHUB_TOKEN=<PAT>
+```
+
 Shepherd will now be available as the `shepherd` command in your shell:
 
 ```sh
