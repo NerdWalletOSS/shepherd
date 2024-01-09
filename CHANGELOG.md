@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.1.0...v2.2.0) (2024-01-09)
+
+
+### Features
+
+* **gh-enterprise:** Add support for github enterprise servers ([#631](https://github.com/NerdWalletOSS/shepherd/issues/631)) ([509fe75](https://github.com/NerdWalletOSS/shepherd/commit/509fe75d4e41a2a8b47c89964e8cb2933fb3d077))
+
 # [2.1.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.0.1...v2.1.0) (2023-10-03)
 
 ### Features
