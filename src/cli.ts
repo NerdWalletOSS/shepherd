@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import program from 'commander';
+import { Command } from 'commander';
 import fs from 'fs-extra';
 import { homedir } from 'os';
 import path from 'path';
@@ -24,6 +24,8 @@ import reset from './commands/reset';
 import version from './commands/version';
 
 import ConsoleLogger from './logger';
+
+const program = new Command();
 
 const { SHEPHERD_DOT_DIRECTORY } = process.env;
 
@@ -88,7 +90,7 @@ const buildCommand = (name: string, description: string) => {
   return program.command(`${name} <migration>`).description(description);
 };
 
-const addReposOption = (command: program.Command) => {
+const addReposOption = (command: Command) => {
   return command.option('--repos <repos>', 'Comma-separated list of repos to operate on', (val) =>
     val.split(',')
   );
