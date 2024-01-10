@@ -1,3 +1,10 @@
+## [2.2.2](https://github.com/NerdWalletOSS/shepherd/compare/v2.2.1...v2.2.2) (2024-01-10)
+
+
+### Bug Fixes
+
+* **prettier:** ignore CHANGELOG.md file when running prettier ([#638](https://github.com/NerdWalletOSS/shepherd/issues/638)) ([fb30ff7](https://github.com/NerdWalletOSS/shepherd/commit/fb30ff7b8dc94cdecc4aa9c7779a68f790e211da))
+
 ## [2.2.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.2.0...v2.2.1) (2024-01-10)
 
 
