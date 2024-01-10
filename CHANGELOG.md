@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.2.0...v2.2.1) (2024-01-10)
+
+
+### Bug Fixes
+
+* **lint:** ignore linting on CHANGELOG.md file ([#637](https://github.com/NerdWalletOSS/shepherd/issues/637)) ([bac588f](https://github.com/NerdWalletOSS/shepherd/commit/bac588fb2f82c4fc6afaeef0e694b08201760d45))
+
 # [2.2.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.1.0...v2.2.0) (2024-01-09)
 
 ### Features
