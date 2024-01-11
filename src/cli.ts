@@ -47,6 +47,7 @@ type CommandHandler = (context: IMigrationContext, options: any) => Promise<void
 
 interface ICliOptions {
   repos?: string[];
+  upstreamOwner: string;
 }
 
 const handleCommand =
@@ -78,6 +79,7 @@ const handleCommand =
 
       // The list of repos will be null if migration hasn't started yet
       migrationContext.migration.repos = await loadRepoList(migrationContext);
+      migrationContext.migration.upstreamOwner = options.upstreamOwner;
 
       await handler(migrationContext, options);
     } catch (e: any) {
@@ -96,10 +98,18 @@ const addReposOption = (command: Command) => {
   );
 };
 
+const addUpstreamOwnerOption = (command: Command) => {
+  return command.option(
+    '--upstreamOwner <upstreamOwner>',
+    'Upstream Owner can be passed incase of trying to raise PR from fork to upstream'
+  );
+};
+
 const addCommand = (name: string, description: string, repos: boolean, handler: CommandHandler) => {
   const subprogram = buildCommand(name, description);
   if (repos) {
     addReposOption(subprogram);
+    addUpstreamOwnerOption(subprogram);
   }
   subprogram.action(handleCommand(handler));
 };

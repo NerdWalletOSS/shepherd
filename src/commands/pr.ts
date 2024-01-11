@@ -5,7 +5,7 @@ import { generatePrMessageWithFooter } from '../util/generate-pr-message';
 
 export default async (context: IMigrationContext) => {
   const {
-    migration: { spec },
+    migration: { spec, upstreamOwner },
     logger,
   } = context;
 
@@ -31,7 +31,7 @@ export default async (context: IMigrationContext) => {
 
     const prSpinner = logger.spinner('Creating pull request');
     try {
-      await context.adapter.createPullRequest(repo, message);
+      await context.adapter.createPullRequest(repo, message, upstreamOwner);
       prSpinner.succeed('Pull request created');
     } catch (e: any) {
       logger.error(e);
