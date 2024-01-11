@@ -78,7 +78,7 @@ export default async (context: IMigrationContext) => {
   logger.info('');
   logger.info(`Checked out ${checkedOutRepos.length} out of ${repos.length} repos`);
 
-  const mappedCheckedOutRepos = [];
+  const mappedCheckedOutRepos: IRepo[] = [];
   for (const repo of checkedOutRepos) {
     mappedCheckedOutRepos.push(await adapter.mapRepoAfterCheckout(repo));
   }

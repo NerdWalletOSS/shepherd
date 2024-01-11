@@ -98,7 +98,7 @@ const addReposOption = (command: Command) => {
   );
 };
 
-const addUpstreamOwnerOption = (command: program.Command) => {
+const addUpstreamOwnerOption = (command: Command) => {
   return command.option(
     '--upstreamOwner <upstreamOwner>',
     'Upstream Owner can be passed incase of trying to raise PR from fork to upstream'

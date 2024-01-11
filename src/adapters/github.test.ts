@@ -209,7 +209,7 @@ describe('GithubAdapter', () => {
       expect(service.createPullRequest).toBeCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
-        head: 'test-migration',
+        head: 'NerdWallet:test-migration',
         base: 'master',
         title: 'Test migration',
         body: 'Test PR message',
