@@ -134,15 +134,19 @@ class GithubAdapter extends GitAdapter {
     await super.pushRepo(repo, force || shouldForce);
   }
 
-  public async createPullRequest(repo: IRepo, message: string, upstreamOwner: string): Promise<void> {
+  public async createPullRequest(
+    repo: IRepo,
+    message: string,
+    upstreamOwner: string
+  ): Promise<void> {
     const {
       migration: { spec },
     } = this.migrationContext;
     const { owner, name, defaultBranch } = repo;
 
     let baseOwner = owner;
-    
-    if(upstreamOwner) {
+
+    if (upstreamOwner) {
       baseOwner = upstreamOwner;
     }
 
@@ -172,7 +176,7 @@ class GithubAdapter extends GitAdapter {
       }
     } else {
       // No PR yet - we have to create it
-  
+
       await this.githubService.createPullRequest({
         owner: baseOwner,
         repo: name,

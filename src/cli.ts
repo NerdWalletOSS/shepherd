@@ -97,8 +97,11 @@ const addReposOption = (command: program.Command) => {
 };
 
 const addUpstreamOwnerOption = (command: program.Command) => {
-  return command.option('--upstreamOwner <upstreamOwner>', 'Upstream Owner can be passed incase of trying to raise PR from fork to upstream');
-}
+  return command.option(
+    '--upstreamOwner <upstreamOwner>',
+    'Upstream Owner can be passed incase of trying to raise PR from fork to upstream'
+  );
+};
 
 const addCommand = (name: string, description: string, repos: boolean, handler: CommandHandler) => {
   const subprogram = buildCommand(name, description);

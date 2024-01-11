@@ -5,7 +5,7 @@ import { generatePrMessageWithFooter } from '../util/generate-pr-message';
 
 export default async (context: IMigrationContext) => {
   const {
-    migration: { spec , upstreamOwner },
+    migration: { spec, upstreamOwner },
     logger,
   } = context;
 

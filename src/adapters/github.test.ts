@@ -249,7 +249,9 @@ describe('GithubAdapter', () => {
         },
       ]);
       const adapter = new GithubAdapter(context, service);
-      await expect(adapter.createPullRequest(REPO, 'Test PR message, part 2', 'NerdWallet')).rejects.toThrow();
+      await expect(
+        adapter.createPullRequest(REPO, 'Test PR message, part 2', 'NerdWallet')
+      ).rejects.toThrow();
       expect(service.updatePullRequest).not.toBeCalled();
     });
   });
