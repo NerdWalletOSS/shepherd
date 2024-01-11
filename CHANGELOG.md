@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.2.2...v2.3.0) (2024-01-11)
+
+
+### Features
+
+* added options to create pr from fork to upstream ([#633](https://github.com/NerdWalletOSS/shepherd/issues/633)) ([e4bfe64](https://github.com/NerdWalletOSS/shepherd/commit/e4bfe641030f998d5bd6c9f41e0b841c01ad96cc))
+
 ## [2.2.2](https://github.com/NerdWalletOSS/shepherd/compare/v2.2.1...v2.2.2) (2024-01-10)
 
 
