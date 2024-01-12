@@ -3,6 +3,7 @@
 <img alt="Illustration of a sheep" width=320 align=right src="https://user-images.githubusercontent.com/332258/46430732-c7bf5c80-c6fe-11e8-9cc8-2abc4e68dce2.jpg">
 
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/NerdWalletOSS/shepherd/release.yml?style=flat-square)](https://github.com/NerdWalletOSS/shepherd/actions)
+[![semantic-release: conventionalcommits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 ![npm version](https://img.shields.io/npm/v/@nerdwallet/shepherd.svg?style=flat-square)
 ![GitHub issues](https://img.shields.io/github/issues/NerdWalletOSS/shepherd.svg?style=flat-square)
 
