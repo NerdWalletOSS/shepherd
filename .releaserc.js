@@ -10,39 +10,16 @@ plugin options and overides used see:
 - @semantic-release/github: https://github.com/semantic-release/github
 */
 
-function compileReleaseRules(listOfTypes, release = 'patch') {
-  return listOfTypes.map((type) => ({
-    type,
-    release,
-  }));
-}
-
-const typesForPatch = ['docs', 'style', 'refactor', 'perf'];
-const typesForMinor = ['feat'];
-const parserOpts = {
-  noteKeywords: ['BREAKING CHANGE', 'BREAKING CHANGES', 'BREAKING'],
-};
-
 const releaseConfig = {
   branches: ['master'],
   plugins: [
     [
       '@semantic-release/commit-analyzer',
       {
-        releaseRules: [
-          ...compileReleaseRules(typesForPatch),
-          ...compileReleaseRules(typesForMinor, 'minor'),
-        ],
-        parserOpts,
+        preset: 'conventionalcommits',
       },
     ],
-    [
-      '@semantic-release/release-notes-generator',
-      {
-        parserOpts,
-      },
-    ],
-    '@semantic-release/npm',
+    '@semantic-release/release-notes-generator',
     '@semantic-release/changelog',
     [
       '@semantic-release/git',
@@ -51,6 +28,7 @@ const releaseConfig = {
         message: 'chore(release): ${nextRelease.version} \n\n${nextRelease.notes}',
       },
     ],
+    '@semantic-release/npm',
     '@semantic-release/github',
   ],
 };
