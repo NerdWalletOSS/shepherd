@@ -1,3 +1,10 @@
+## [2.3.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.3.0...v2.3.1) (2024-01-12)
+
+
+### Bug Fixes
+
+* **semantic-release,docs:** add commit-analyzer conventionalcommmits preset module ([#647](https://github.com/NerdWalletOSS/shepherd/issues/647)) ([967471f](https://github.com/NerdWalletOSS/shepherd/commit/967471f51411b928265884b4323afc28e50c090e))
+
 # [2.3.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.2.2...v2.3.0) (2024-01-11)
 
 
