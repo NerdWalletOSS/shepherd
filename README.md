@@ -1,6 +1,6 @@
 # Shepherd
 
-<img alt="Illustration of a sheep" width=320 align=right src="https://user-images.githubusercontent.com/332258/46430732-c7bf5c80-c6fe-11e8-9cc8-2abc4e68dce2.jpg">
+<img alt="Illustration of a sheep" width=160 align=right src="images/Shepard Logo No BG PNGs/160x160 No BG.png">
 
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/NerdWalletOSS/shepherd/release.yml?style=flat-square)](https://github.com/NerdWalletOSS/shepherd/actions)
 [![semantic-release: conventionalcommits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
@@ -156,3 +156,7 @@ cd ../my-other-project
 Shepherd currently has minimal test coverage, but we're aiming to improve that with each new PR. Tests are written with Jest and should be named in a `*.test.ts` alongside the file under test. To run the test suite, run `yarn test`.
 
 We use [ESLint](https://eslint.org/) to ensure a consistent coding style and to help prevent certain classes of problems. Run `yarn lint` to run the linter, and `yarn fix-lint` to automatically fix applicable problems.
+
+### Credits
+
+1. Logo designed by Christopher Wharton.
