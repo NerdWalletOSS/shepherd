@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.3.2...v2.4.0) (2024-01-17)
+
+
+### Features
+
+* **logo:** update shepherd logo ([#654](https://github.com/NerdWalletOSS/shepherd/issues/654)) ([d24bec2](https://github.com/NerdWalletOSS/shepherd/commit/d24bec2470d4dc686c1a3bceb8aba93b9fc3d5e6))
+
 ## [2.3.2](https://github.com/NerdWalletOSS/shepherd/compare/v2.3.1...v2.3.2) (2024-01-14)
 
 
