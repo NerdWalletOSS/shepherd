@@ -25,7 +25,7 @@ describe('persisted-data', () => {
       '../../fixtures/artifacts/.shepherd/load-repo-from-file/'
     );
     const repos = await loadRepoList(makeContext(workingDirectory));
-    expect(repos).toEqual([{ defaultBranch: 'master', name: 'shepherd', owner: 'NerdWalletOSS' }]);
+    expect(repos).toEqual([{ defaultBranch: 'main', name: 'shepherd', owner: 'NerdWalletOSS' }]);
   });
 
   it('returns null if the file does not exist', async () => {
@@ -47,7 +47,7 @@ describe('persisted-data', () => {
     fs.copyFileSync(source, destination);
     const repos = await loadRepoList(makeContext(workingDirectory));
     fs.unlinkSync(path.join(workingDirectory, 'repos.json'));
-    expect(repos).toEqual([{ defaultBranch: 'master', name: 'shepherd', owner: 'NerdWalletOSS' }]);
+    expect(repos).toEqual([{ defaultBranch: 'main', name: 'shepherd', owner: 'NerdWalletOSS' }]);
   });
 
   it('creates a new repos file if one does not exist', async () => {

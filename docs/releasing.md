@@ -2,7 +2,7 @@
 
 Shepherd uses [semantic-release](https://github.com/semantic-release/semantic-release), GitHub workflows, and [GitHub Actions](https://docs.github.com/en/actions) to fully automate releases.
 
-Every merge to master triggers a GitHub workflow which culminates in a new tag. Every new tag triggers a GitHub Action job which culminates in the new tagged version of Shepherd being published to npm.
+Every merge to main triggers a GitHub workflow which culminates in a new tag. Every new tag triggers a GitHub Action job which culminates in the new tagged version of Shepherd being published to npm.
 
 ## semantic-release
 

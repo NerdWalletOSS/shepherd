@@ -11,7 +11,7 @@ describe('GithubService', () => {
         repos: {
           get: jest.fn().mockResolvedValue({
             data: {
-              default_branch: 'master',
+              default_branch: 'main',
             },
           }),
         },
@@ -24,7 +24,7 @@ describe('GithubService', () => {
       const result = await service.getDefaultBranchForRepo(searchCriteria);
 
       expect(mocktokit.repos.get).toBeCalledWith(searchCriteria);
-      expect(result).toEqual('master');
+      expect(result).toEqual('main');
     });
   });
 
@@ -53,7 +53,7 @@ describe('GithubService', () => {
           },
           get: jest.fn().mockResolvedValue({
             data: {
-              default_branch: 'master',
+              default_branch: 'main',
             },
           }),
         },
@@ -150,7 +150,7 @@ describe('GithubService', () => {
         owner: 'testOrg',
         repo: 'test-repo',
         head: 'shepherd-1',
-        base: 'master',
+        base: 'main',
         title: 'feat: some feature',
         body: 'This is the best PR ever',
       };

@@ -337,9 +337,9 @@ class GithubAdapter extends GitAdapter {
       }
     } else {
       // The remote branch exists!
-      // We'll get the list of all commits not on master and check if they're
+      // We'll get the list of all commits not on main and check if they're
       // all from Shepherd. If they are, it's safe to reset the branch to
-      // master.
+      // main.
       const upstreamBranch = `remotes/origin/${this.branchName}`;
       const commits = await this.git(repo).log([`HEAD..${upstreamBranch}`]);
       const allShepherd = commits.all.every(({ message }: any) =>
