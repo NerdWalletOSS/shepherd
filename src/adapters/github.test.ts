@@ -30,7 +30,7 @@ describe('GithubAdapter', () => {
 
     it('recognizes two repos as equal if one is missing a default branch', () => {
       const mocktokit = {} as any as Octokit;
-      const repo1 = { owner: 'NerdWallet', name: 'shepherd', defaultBranch: 'master' };
+      const repo1 = { owner: 'NerdWallet', name: 'shepherd', defaultBranch: 'main' };
       const repo2 = { owner: 'NerdWallet', name: 'shepherd' };
 
       const context = mockMigrationContext();
@@ -189,7 +189,7 @@ describe('GithubAdapter', () => {
     const REPO = {
       owner: 'NerdWallet',
       name: 'shepherd',
-      defaultBranch: 'master',
+      defaultBranch: 'main',
     };
 
     it('creates a new PR if one does not exist', async () => {
@@ -210,7 +210,7 @@ describe('GithubAdapter', () => {
         owner: 'NerdWallet',
         repo: 'shepherd',
         head: 'NerdWallet:test-migration',
-        base: 'master',
+        base: 'main',
         title: 'Test migration',
         body: 'Test PR message',
       });
