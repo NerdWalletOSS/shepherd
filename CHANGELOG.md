@@ -1,3 +1,10 @@
+## [2.4.2](https://github.com/NerdWalletOSS/shepherd/compare/v2.4.1...v2.4.2) (2024-01-20)
+
+
+### Bug Fixes
+
+* **release:** update release branch ([#662](https://github.com/NerdWalletOSS/shepherd/issues/662)) ([c8febc1](https://github.com/NerdWalletOSS/shepherd/commit/c8febc1dc7f38c0e9d44ab31e161546bca941e09))
+
 ## [2.4.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.4.0...v2.4.1) (2024-01-17)
 
 
