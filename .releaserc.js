@@ -11,7 +11,7 @@ plugin options and overides used see:
 */
 
 const releaseConfig = {
-  branches: ['master'],
+  branches: ['main'],
   plugins: [
     [
       '@semantic-release/commit-analyzer',
