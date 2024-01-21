@@ -61,7 +61,9 @@ Moving away from monorepos and monolithic applications has generally been a good
 
 Shepherd aims to help shift responsibility for the first three steps to the person actually making the change to the library. Since they have the best understanding of their change, they can write a code migration to automate that change and then user Shepherd to automate the process of applying that change to all relevant repos. Then the owners of the affected repos (who have the best understanding of their own code) can review and merge the changes. This process is especially efficient for teams who rely on continuous integration: automated tests can help repository owners have confidence that the code changes are working as expected.
 
-## Writing migrations
+## Migration Configuration Schema
+
+### Example
 
 A migration is declaratively specified with a `shepherd.yml` file called a spec. Here's an example of a migration spec that renames `.eslintrc` to `.eslintrc.json` in all NerdWallet repositories that have been modified in 2018:
 
@@ -81,38 +83,68 @@ hooks:
   pr_message: echo 'Hey! This PR renames `.eslintrc` to `.eslintrc.json`'
 ```
 
-Let's go through this line-by-line:
+### Fields
 
-- `id` specifies a unique identifier for this migration. It will be used as a branch name for this migration, and will be used internally by Shepherd to track state about the migration.
-- `title` specifies a human-readable title for the migration that will be used as the commit message.
-- `adapter` specifies what version control adapter should be used for performing operations on repos, as well as extra options for that adapter. Currently Shepherd only has a GitHub adapter, but you could create a Bitbucket or GitLab adapter if you don't use GitHub. Note that `search_query` is specific to the GitHub adapter: it uses GitHub's [code search qualifiers](https://help.github.com/articles/searching-code/) to identify repositories that are candidates for a migration. If a repository contains a file matching the search, it will be considered a candidate for this migration. As an alternative to `search_query`, GitHub adapter can be configured with `org: YOURGITHUBORGANIZATION`. When using `org`, every repo in the organization that is visible will be considered as a candidate for this migration.
-  - `search_type` (optional): specifies search type - either 'code' or 'repositories'. If repositories is specified, it does a [Github repository search](https://docs.github.com/en/free-pro-team@latest/github/searching-for-information-on-github/searching-for-repositories). Defaults to code search if not specified.
+- `id`:
 
-The options under `hooks` specify the meat of a migration. They tell Shepherd how to determine if a repo should be migrated, how to actually perform the migration, how to generate a pull request message for each repository, and more. Each hook consists of one or more standard executables that Shepherd will execute in sequence.
+  - **Description**: Specifies a unique identifier for this migration.
+  - **Usage**: Used as a branch name for the migration and internally by Shepherd to track migration state.
 
-- `should_migrate` is a sequence of commands to execute to determine if a repo actually requires a migration. If any of them exit with a non-zero value, that signifies to Shepherd that the repo should not be migrated. For instance, the second step in the above `should_migrate` hook would fail if the repo was last modified in 2017, since `grep` would exit with a non-zero value.
-- `post_checkout` is a sequence of commands to be executed once a repo has been checked out and passed any `should_migrate` checks. This is a convenient place to do anything that will only need to be done once per repo, such as installing any dependencies.
-- `apply` is a sequence of commands that will actually execute the migration. This example is very simple: we're just using `mv` to rename a file. However, this hook could contain arbitrarily many, potentially complex commands, depending on the requirements of your particular migration.
-- `pr_message` is a sequence of commands that will be used to generate a pull request message for a repository. In the simplest case, this can just be a static message, but you could also programmatically generate a message that calls out particular things that might need human attention. Anything written to `stdout` will be used for the message. If multiple commands are specified, the output from each one will be concatenated together.
+- `title`:
 
-`should_migrate` and `post_checkout` are optional; `apply` and `pr_message` are required.
+  - **Description**: A title for the migration.
+  - **Usage**: Used as the commit message.
 
-Each of these commands will be executed with the working directory set to the target repository. Shepherd exposes some context to each command via specific environment variables. Some additional enviornment variables are exposed when using the `git` or `github` adapters.
+- `adapter`:
+  - **Description**: Specifies the version control adapter for repo operations.
+  - **Details**: Currently supports only GitHub, but can be extended for Bitbucket or GitLab. Configuration differs based on the adapter.
+    - **GitHub Specific**:
+      - `search_query`: Utilizes GitHub's [code search qualifiers](https://help.github.com/articles/searching-code/) to identify candidate repositories.
+      - `org`: Specify `YOURGITHUBORGANIZATION` to consider every visible repo in the organization.
+      - `search_type` (optional): Either 'code' or 'repositories'. Defaults to code search. For repositories, use [Github repository search](https://docs.github.com/en/free-pro-team@latest/github/searching-for-information-on-github/searching-for-repositories).
 
-- `SHEPHERD_REPO_DIR` is the absolute path to the repository being operated on. This will be the working directory when commands are executed.
-- `SHEPHERD_DATA_DIR` is the absolute path to a special directory that can be used to persist state between steps. This would be useful if, for instance, a `jscodeshift` codemod in your `apply` hook generates a list of files that need human attention and you want to use that list in your `pr_message` hook.
-- `SHEPHERD_BASE_BRANCH` is the name of the branch Shepherd will set up a pull-request against. This will often, _but not always_, be master. Only available for `apply` and later steps.
-- `SHEPHERD_MIGRATION_DIR` is the absolute path to the directory containing your migration's `shepherd.yml` file. This is useful if you want to include a script with your migration spec and need to reference that command in a hook. For instance, if I have a script `pr.sh` that will generate a PR message: my `pr_message` hook might look something like this:
+### Hooks
 
-  ```yml
-  pr_message: $SHEPHERD_MIGRATION_DIR/pr.sh
-  ```
+Hooks define the core functionality of a migration in Shepherd.
 
-- `SHEPHERD_GIT_REVISION` (`git` and `github` adapters) is the current revision of the repository being operated on.
-- `SHEPHERD_GITHUB_REPO_OWNER` (`github` adapter) is the owner of the repository being operated on. For example, if operating on the repository `https://github.com/NerdWalletOSS/shepherd`, this would be `NerdWalletOSS`.
-- `SHEPHERD_GITHUB_REPO_NAME` (`github` adapter) is the name of the repository being operated on. For example, if operating on the repository `https://github.com/NerdWalletOSS/shepherd`, this would be `shepherd`.
+- `should_migrate`:
 
-Commands follow standard Unix conventions: an exit code of 0 indicates a command succeeded, a non-zero exit code indicates failure.
+  - **Description**: Commands to determine if a repo requires migration.
+  - **Behavior**: Non-zero exit values indicate the repo should not be migrated.
+
+- `post_checkout`:
+
+  - **Description**: Commands executed after a repo passes `should_migrate` checks.
+  - **Usage**: Ideal for one-time setup actions per repo, like installing dependencies.
+
+- `apply`:
+
+  - **Description**: Commands that perform the actual migration.
+  - **Note**: This can range from simple to complex sequences, depending on migration needs.
+
+- `pr_message`:
+  - **Description**: Commands to generate a pull request message.
+  - **Output**: Anything written to `stdout` is used for the message. Multiple commands will have their outputs concatenated.
+
+### Requirements
+
+- Optional: `should_migrate`, `post_checkout`
+- Required: `apply`, `pr_message`
+
+### Environment Variables
+
+Shepherd exposes some context to each command via specific environment variables. Some additional enviornment variables are exposed when using the `git` or `github` adapters.
+
+| Environment Variable             | Description                                                                                                                                                                                                                                                                                                                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHEPHERD_REPO_DIR`              | is the absolute path to the repository being operated on. This will be the working directory when commands are executed.                                                                                                                                                                                                                                                                 |
+| `SHEPHERD_DATA_DIR`              | is the absolute path to a special directory that can be used to persist state between steps. This would be useful if, for instance, a `jscodeshift` codemod in your `apply` hook generates a list of files that need human attention and you want to use that list in your `pr_message` hook.                                                                                            |
+| `SHEPHERD_BASE_BRANCH`           | is the name of the branch Shepherd will set up a pull-request against. This will often, _but not always_, be master. Only available for `apply` and later steps.                                                                                                                                                                                                                         |
+| `SHEPHERD_MIGRATION_DIR`         | is the absolute path to the directory containing your migration's `shepherd.yml` file. This is useful if you want to include a script with your migration spec and need to reference that command in a hook. For instance, if I have a script `pr.sh` that will generate a PR message: my `pr_message` hook might look something like this: ` pr_message: $SHEPHERD_MIGRATION_DIR/pr.sh` |
+| `SHEPHERD_GIT_REVISION`          | (`git` and `github` adapters) is the current revision of the repository being operated on.                                                                                                                                                                                                                                                                                               |
+| `SHEPHERD_GITHUB_REPO_OWNER`     | (`github` adapter) is the owner of the repository being operated on. For example, if operating on the repository `https://github.com/NerdWalletOSS/shepherd`, this would be `NerdWalletOSS`.                                                                                                                                                                                             |
+| `SHEPHERD_GITHUB_REPO_NAME`      | (`github` adapter) is the name of the repository being operated on. For example, if operating on the repository `https://github.com/NerdWalletOSS/shepherd`, this would be `shepherd`.                                                                                                                                                                                                   |
+| `SHEPHERD_GITHUB_ENTERPRISE_URL` | For GitHub Enterprise, export this variable contraining the company's GitHub Enterprise url.                                                                                                                                                                                                                                                                                             |
 
 ### Usage
 
