@@ -37,7 +37,7 @@ export default class GithubService {
 
       this.octokit = new RetryableThrottledOctokit({
         auth: token,
-        baseUrl: `https://${shepherdGitHubEnterpriseUrl}/api/v3`,
+        baseUrl: `https://${shepherdGitHubEnterpriseUrl}`,
         throttle: {
           enabled: false,
           onRateLimit: (retryAfter: number, options: any) => {
