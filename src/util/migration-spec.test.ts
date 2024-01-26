@@ -45,6 +45,8 @@ describe('normalizeSpec', () => {
         post_checkout: 'echo 2',
         apply: 'echo 3',
         pr_message: 'echo 4',
+        issue_message: 'echo 4',
+        issue_labels: ['enhancements', 'bug'],
       },
     };
     expect(normalizeSpec(spec)).toEqual({
@@ -58,6 +60,8 @@ describe('normalizeSpec', () => {
         post_checkout: ['echo 2'],
         apply: ['echo 3'],
         pr_message: ['echo 4'],
+        issue_message: ['echo 4'],
+        issue_labels: ['enhancements', 'bug'],
       },
     });
   });

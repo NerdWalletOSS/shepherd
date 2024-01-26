@@ -9,6 +9,10 @@ export interface IMigrationHooks {
   post_checkout?: string[];
   apply?: string[];
   pr_message?: string[];
+  issue_message: string[];
+  issue_labels: string[];
+  state_reason: string[];
+  state: string[];
   [name: string]: string[] | undefined;
 }
 
@@ -68,6 +72,10 @@ export function validateSpec(spec: any) {
       post_checkout: hookSchema,
       apply: hookSchema,
       pr_message: hookSchema,
+      issue_message: hookSchema,
+      issue_labels: hookSchema,
+      state_reason: hookSchema,
+      state: hookSchema,
     }),
   });
 

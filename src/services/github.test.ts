@@ -131,6 +131,67 @@ describe('GithubService', () => {
     });
   });
 
+  describe('createIssue', () => {
+    it('calls issue.create with provided criteria & returns results', async () => {
+      const createIssueResponse = {
+        url: 'https://api.github.com/repos/testOrg/test-repo/issues',
+        id: 1,
+        html_url: 'https://github.com/testOrg/test-repo/issues',
+      };
+
+      const mocktokit = {
+        issues: {
+          create: jest.fn().mockResolvedValue(createIssueResponse),
+        },
+      } as any as Octokit;
+
+      const service = new GithubService(mockMigrationContext(), mocktokit);
+      const createIssueParams = {
+        owner: 'testOrg',
+        repo: 'test-repo',
+        title: 'open an issue',
+        body: 'This is the issue',
+        labels: ['bug'],
+      };
+      const result = await service.createIssue(createIssueParams);
+
+      expect(mocktokit.issues.create).toBeCalledWith(createIssueParams);
+      expect(result).toEqual(createIssueResponse);
+    });
+  });
+
+  describe('updateIssue', () => {
+    it('calls issue.update with provided criteria & returns results', async () => {
+      const updateIssueResponse = {
+        url: 'https://api.github.com/repos/testOrg/test-repo/issues',
+        id: 1,
+        html_url: 'https://github.com/testOrg/test-repo/issues',
+      };
+
+      const mocktokit = {
+        issues: {
+          update: jest.fn().mockResolvedValue(updateIssueResponse),
+        },
+      } as any as Octokit;
+
+      const service = new GithubService(mockMigrationContext(), mocktokit);
+      const updateIssueParams = {
+        owner: 'testOrg',
+        repo: 'test-repo',
+        title: 'open an issue',
+        body: 'This is the issue',
+        labels: ['bug'],
+        issue_number: 2,
+        state: 'closed',
+        state_reason: 'completed',
+      };
+      const result = await service.updateIssue(updateIssueParams);
+
+      expect(mocktokit.issues.update).toBeCalledWith(updateIssueParams);
+      expect(result).toEqual(updateIssueResponse);
+    });
+  });
+
   describe('createPullRequest', () => {
     it('calls pulls.create with provided criteria & returns results', async () => {
       const prCreateResponse = {

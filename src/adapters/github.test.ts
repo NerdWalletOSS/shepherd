@@ -11,6 +11,10 @@ const mockMigrationContext = () =>
       spec: {
         id: 'test-migration',
         title: 'Test migration',
+        hooks: {
+          issue_message: ['this is the issue'],
+          issue_labels: ['bug'],
+        },
       },
     },
   }) as IMigrationContext;
@@ -181,6 +185,66 @@ describe('GithubAdapter', () => {
       expect(mappedRepo).toEqual({
         ...repo,
         defaultBranch: 'develop',
+      });
+    });
+  });
+
+  describe('createIssue', () => {
+    const REPO = {
+      owner: 'NerdWallet',
+      name: 'shepherd',
+      defaultBranch: 'main',
+    };
+
+    it('create an issue', async () => {
+      const context = mockMigrationContext();
+      const octokit = {} as any as Octokit;
+      const service: any = new GithubService(context, octokit);
+      service.createIssue.mockResolvedValue([]);
+      const adapter = new GithubAdapter(context, service);
+
+      await adapter.createIssue(REPO);
+
+      expect(service.createAndGetIssueNumber).toBeCalledWith({
+        owner: 'NerdWallet',
+        repo: 'shepherd',
+        title: 'Test migration',
+        body: 'this is the issue',
+        labels: ['bug'],
+      });
+      expect(service.createAndGetIssueNumber).toBeCalledWith({
+        owner: 'NerdWallet',
+        repo: 'shepherd',
+        title: 'Test migration',
+        body: 'this is the issue',
+        labels: ['bug'],
+      });
+    });
+
+    it('update an issue', async () => {
+      const context = mockMigrationContext();
+      const octokit = {} as any as Octokit;
+      const service: any = new GithubService(context, octokit);
+      service.updateIssue.mockResolvedValue([]);
+      const adapter = new GithubAdapter(context, service);
+
+      await adapter.updateIssue(REPO, 2);
+
+      expect(service.updateIssue).toBeCalledWith({
+        owner: 'NerdWallet',
+        repo: 'shepherd',
+        title: 'Test migration',
+        issue_number: 2,
+        body: 'this is the issue',
+        labels: ['bug'],
+      });
+      expect(service.updateIssue).toBeCalledWith({
+        owner: 'NerdWallet',
+        repo: 'shepherd',
+        title: 'Test migration',
+        issue_number: 2,
+        body: 'this is the issue',
+        labels: ['bug'],
       });
     });
   });

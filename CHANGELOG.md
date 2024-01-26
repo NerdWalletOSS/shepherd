@@ -1,58 +1,50 @@
 ## [2.4.2](https://github.com/NerdWalletOSS/shepherd/compare/v2.4.1...v2.4.2) (2024-01-20)
 
-
 ### Bug Fixes
 
-* **release:** update release branch ([#662](https://github.com/NerdWalletOSS/shepherd/issues/662)) ([c8febc1](https://github.com/NerdWalletOSS/shepherd/commit/c8febc1dc7f38c0e9d44ab31e161546bca941e09))
+- **release:** update release branch ([#662](https://github.com/NerdWalletOSS/shepherd/issues/662)) ([c8febc1](https://github.com/NerdWalletOSS/shepherd/commit/c8febc1dc7f38c0e9d44ab31e161546bca941e09))
 
 ## [2.4.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.4.0...v2.4.1) (2024-01-17)
 
-
 ### Bug Fixes
 
-* **logo:** path ([#655](https://github.com/NerdWalletOSS/shepherd/issues/655)) ([b48192f](https://github.com/NerdWalletOSS/shepherd/commit/b48192f74f48a562d8cdc3e31007d41c76a38e7b))
+- **logo:** path ([#655](https://github.com/NerdWalletOSS/shepherd/issues/655)) ([b48192f](https://github.com/NerdWalletOSS/shepherd/commit/b48192f74f48a562d8cdc3e31007d41c76a38e7b))
 
 # [2.4.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.3.2...v2.4.0) (2024-01-17)
 
-
 ### Features
 
-* **logo:** update shepherd logo ([#654](https://github.com/NerdWalletOSS/shepherd/issues/654)) ([d24bec2](https://github.com/NerdWalletOSS/shepherd/commit/d24bec2470d4dc686c1a3bceb8aba93b9fc3d5e6))
+- **logo:** update shepherd logo ([#654](https://github.com/NerdWalletOSS/shepherd/issues/654)) ([d24bec2](https://github.com/NerdWalletOSS/shepherd/commit/d24bec2470d4dc686c1a3bceb8aba93b9fc3d5e6))
 
 ## [2.3.2](https://github.com/NerdWalletOSS/shepherd/compare/v2.3.1...v2.3.2) (2024-01-14)
 
-
 ### Bug Fixes
 
-* **yarn:** update yarn lock file ([#650](https://github.com/NerdWalletOSS/shepherd/issues/650)) ([07058ce](https://github.com/NerdWalletOSS/shepherd/commit/07058ce31c103136a471ffb3213f7d13023e0fbd))
+- **yarn:** update yarn lock file ([#650](https://github.com/NerdWalletOSS/shepherd/issues/650)) ([07058ce](https://github.com/NerdWalletOSS/shepherd/commit/07058ce31c103136a471ffb3213f7d13023e0fbd))
 
 ## [2.3.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.3.0...v2.3.1) (2024-01-12)
 
-
 ### Bug Fixes
 
-* **semantic-release,docs:** add commit-analyzer conventionalcommmits preset module ([#647](https://github.com/NerdWalletOSS/shepherd/issues/647)) ([967471f](https://github.com/NerdWalletOSS/shepherd/commit/967471f51411b928265884b4323afc28e50c090e))
+- **semantic-release,docs:** add commit-analyzer conventionalcommmits preset module ([#647](https://github.com/NerdWalletOSS/shepherd/issues/647)) ([967471f](https://github.com/NerdWalletOSS/shepherd/commit/967471f51411b928265884b4323afc28e50c090e))
 
 # [2.3.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.2.2...v2.3.0) (2024-01-11)
 
-
 ### Features
 
-* added options to create pr from fork to upstream ([#633](https://github.com/NerdWalletOSS/shepherd/issues/633)) ([e4bfe64](https://github.com/NerdWalletOSS/shepherd/commit/e4bfe641030f998d5bd6c9f41e0b841c01ad96cc))
+- added options to create pr from fork to upstream ([#633](https://github.com/NerdWalletOSS/shepherd/issues/633)) ([e4bfe64](https://github.com/NerdWalletOSS/shepherd/commit/e4bfe641030f998d5bd6c9f41e0b841c01ad96cc))
 
 ## [2.2.2](https://github.com/NerdWalletOSS/shepherd/compare/v2.2.1...v2.2.2) (2024-01-10)
 
-
 ### Bug Fixes
 
-* **prettier:** ignore CHANGELOG.md file when running prettier ([#638](https://github.com/NerdWalletOSS/shepherd/issues/638)) ([fb30ff7](https://github.com/NerdWalletOSS/shepherd/commit/fb30ff7b8dc94cdecc4aa9c7779a68f790e211da))
+- **prettier:** ignore CHANGELOG.md file when running prettier ([#638](https://github.com/NerdWalletOSS/shepherd/issues/638)) ([fb30ff7](https://github.com/NerdWalletOSS/shepherd/commit/fb30ff7b8dc94cdecc4aa9c7779a68f790e211da))
 
 ## [2.2.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.2.0...v2.2.1) (2024-01-10)
 
-
 ### Bug Fixes
 
-* **lint:** ignore linting on CHANGELOG.md file ([#637](https://github.com/NerdWalletOSS/shepherd/issues/637)) ([bac588f](https://github.com/NerdWalletOSS/shepherd/commit/bac588fb2f82c4fc6afaeef0e694b08201760d45))
+- **lint:** ignore linting on CHANGELOG.md file ([#637](https://github.com/NerdWalletOSS/shepherd/issues/637)) ([bac588f](https://github.com/NerdWalletOSS/shepherd/commit/bac588fb2f82c4fc6afaeef0e694b08201760d45))
 
 # [2.2.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.1.0...v2.2.0) (2024-01-09)
 
