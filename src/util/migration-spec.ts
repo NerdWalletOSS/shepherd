@@ -3,18 +3,24 @@ import fs from 'fs';
 import * as yaml from 'js-yaml';
 import { cloneDeep, mapValues } from 'lodash';
 import path from 'path';
+import { state, state_reason } from '../migration-context';
 
 export interface IMigrationHooks {
   should_migrate?: string[];
   post_checkout?: string[];
-  apply?: string[];
+  ply?: string[];
   pr_message?: string[];
-  issue_message: string[];
-  issue_labels: string[];
-  state_reason: string[];
-  state: string[];
   [name: string]: string[] | undefined;
 }
+
+export interface IMigrationIssues {
+  title: string;
+  description: string;
+  labels?: string[];
+  state?: state;
+  state_reason?: state_reason;
+}
+
 
 export type MigrationPhase = [keyof IMigrationHooks];
 
@@ -26,6 +32,7 @@ export interface IMigrationSpec {
     [key: string]: any;
   };
   hooks: IMigrationHooks;
+  issues: IMigrationIssues,
 }
 
 export function loadSpec(directory: string): IMigrationSpec {
@@ -72,11 +79,14 @@ export function validateSpec(spec: any) {
       post_checkout: hookSchema,
       apply: hookSchema,
       pr_message: hookSchema,
-      issue_message: hookSchema,
-      issue_labels: hookSchema,
+    }),
+    issues: Joi.object({
+      title: hookSchema,
+      description: hookSchema,
       state_reason: hookSchema,
       state: hookSchema,
-    }),
+      labels: hookSchema
+    })
   });
 
   return schema.validate(spec);

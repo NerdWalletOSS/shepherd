@@ -83,6 +83,9 @@ export default async (context: IMigrationContext) => {
     mappedCheckedOutRepos.push(await adapter.mapRepoAfterCheckout(repo));
   }
 
+  logger.info(`Checked sdsdsdsdsd ${checkedOutRepos.length} out of ${repos.length} repos`);
+
+
   // We'll persist this list of repos for use in future steps
   await updateRepoList(context, mappedCheckedOutRepos, discardedRepos);
 };

@@ -11,13 +11,14 @@ const mockMigrationContext = () =>
       spec: {
         id: 'test-migration',
         title: 'Test migration',
-        hooks: {
-          issue_message: ['this is the issue'],
-          issue_labels: ['bug'],
+        issues: {
+          description: ['this is the issue'],
+          labels: ['bug'],
+          title: "this is the issue title"
         },
       },
     },
-  }) as IMigrationContext;
+  }) as unknown as IMigrationContext;
 
 describe('GithubAdapter', () => {
   describe('reposEqual', () => {
@@ -208,14 +209,14 @@ describe('GithubAdapter', () => {
       expect(service.createAndGetIssueNumber).toBeCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
-        title: 'Test migration',
+        title: 'this is the issue title',
         body: 'this is the issue',
         labels: ['bug'],
       });
       expect(service.createAndGetIssueNumber).toBeCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
-        title: 'Test migration',
+        title: 'this is the issue title',
         body: 'this is the issue',
         labels: ['bug'],
       });
@@ -233,17 +234,17 @@ describe('GithubAdapter', () => {
       expect(service.updateIssue).toBeCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
-        title: 'Test migration',
+        title: 'this is the issue title',
         issue_number: 2,
-        body: 'this is the issue',
+        body: ['this is the issue'],
         labels: ['bug'],
       });
       expect(service.updateIssue).toBeCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
-        title: 'Test migration',
+        title: 'this is the issue title',
         issue_number: 2,
-        body: 'this is the issue',
+        body: ['this is the issue'],
         labels: ['bug'],
       });
     });

@@ -11,12 +11,15 @@ export default async (context: IMigrationContext) => {
   await forEachRepo(context, async (repo) => {
     const spinner = logger.spinner('Posting an issue');
     try {
+      logger.info("the issue"+repo.name);
+
       const issueNumber = await getIssueNumberForRepo(context, repo.name);
 
       if (issueNumber?.toString()) {
         await context.adapter.updateIssue(repo, issueNumber);
         spinner.succeed(`Issue updated issueNumber# ${issueNumber} for repo ${repo.name}`);
       } else {
+        logger.info("the issue"+repo.name);
         const issueNumber: any = await context.adapter.createIssue(repo);
         issuesList.push({
           issueNumber,

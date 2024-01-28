@@ -149,7 +149,7 @@ export default class GithubService {
     repo: any;
     title: string;
     body: string;
-    labels: string[];
+    labels: any;
     state: any;
     state_reason: any;
   }): Promise<RestEndpointMethodTypes['issues']['update']['response']> {

@@ -322,9 +322,9 @@ class GithubAdapter extends GitAdapter {
     return await this.githubService.createAndGetIssueNumber({
       owner,
       repo: name,
-      title: spec.title,
-      body: spec.hooks.issue_message?.toString(),
-      labels: spec.hooks.issue_labels,
+      title: spec.issues?.title,
+      body: spec.issues?.description?.toString(),
+      labels: spec.issues?.labels,
     });
   };
 
@@ -338,12 +338,12 @@ class GithubAdapter extends GitAdapter {
     await this.githubService.updateIssue({
       owner,
       repo: name,
-      title: spec.title,
+      title: spec.issues?.title,
       issue_number: issueNumber,
-      body: spec.hooks.issue_message?.toString(),
-      labels: spec.hooks.issue_labels,
-      state: spec.hooks.state?.toString(),
-      state_reason: spec.hooks.state_reason?.toString(),
+      body: spec.issues?.description,
+      labels: spec.issues?.labels,
+      state: spec.issues?.state,
+      state_reason: spec.issues?.state_reason,
     });
   };
 
