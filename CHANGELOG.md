@@ -1,3 +1,10 @@
+## [2.4.3](https://github.com/NerdWalletOSS/shepherd/compare/v2.4.2...v2.4.3) (2024-01-30)
+
+
+### Bug Fixes
+
+* **ci/cd:** sync tag and package version ([#680](https://github.com/NerdWalletOSS/shepherd/issues/680)) ([87cce90](https://github.com/NerdWalletOSS/shepherd/commit/87cce90082af7034c2eeebca2266e62cb591d6f4))
+
 ## [2.4.2](https://github.com/NerdWalletOSS/shepherd/compare/v2.4.1...v2.4.2) (2024-01-20)
 
 
