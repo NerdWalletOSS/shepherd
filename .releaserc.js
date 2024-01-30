@@ -21,6 +21,7 @@ const releaseConfig = {
     ],
     '@semantic-release/release-notes-generator',
     '@semantic-release/changelog',
+    '@semantic-release/npm',
     [
       '@semantic-release/git',
       {
@@ -28,7 +29,6 @@ const releaseConfig = {
         message: 'chore(release): ${nextRelease.version} \n\n${nextRelease.notes}',
       },
     ],
-    '@semantic-release/npm',
     '@semantic-release/github',
   ],
 };
