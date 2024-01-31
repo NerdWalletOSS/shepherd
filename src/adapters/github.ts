@@ -309,7 +309,10 @@ class GithubAdapter extends GitAdapter {
   }
 
   protected getRepositoryUrl(repo: IRepo): string {
-    return `git@${shepherdGitHubEnterpriseUrl}:${repo.owner}/${repo.name}.git`;
+    return (
+        `git@${shepherdGitHubEnterpriseUrl}:${repo.owner}/${repo.name}.git`
+            .replace('api.', '')
+    );
   }
 
   private async checkActionSafety(repo: IRepo): Promise<SafetyStatus> {
