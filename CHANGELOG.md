@@ -1,3 +1,10 @@
+## [2.4.4](https://github.com/NerdWalletOSS/shepherd/compare/v2.4.3...v2.4.4) (2024-02-03)
+
+
+### Bug Fixes
+
+* **github-enterprise:** configure gh enterprise full url via env var ([#683](https://github.com/NerdWalletOSS/shepherd/issues/683)) ([6be3fe3](https://github.com/NerdWalletOSS/shepherd/commit/6be3fe3115b3a1f136918cc2a25f75e9d9abf3d2))
+
 ## [2.4.3](https://github.com/NerdWalletOSS/shepherd/compare/v2.4.2...v2.4.3) (2024-01-30)
 
 
