@@ -6,7 +6,9 @@ import { throttling } from '@octokit/plugin-throttling';
 import _ from 'lodash';
 import netrc from 'netrc';
 
-import { IMigrationContext } from '../migration-context';
+import { IMigrationContext } from '../migration-context.js';
+// import path from 'path';
+// import os from 'os';
 
 const { SHEPHERD_GITHUB_ENTERPRISE_URL } = process.env;
 
@@ -26,6 +28,9 @@ export default class GithubService {
     if (octokit) {
       this.octokit = octokit;
     } else {
+      // need a path to the .netrc file from home directory
+
+      // const netrcFilePath = path.join(os.homedir(), '.netrc');
       const netrcAuth = netrc();
       const token =
         process.env.GITHUB_TOKEN || _.get(netrcAuth['api.github.com'], 'password', undefined);

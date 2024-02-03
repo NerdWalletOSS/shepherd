@@ -1,6 +1,6 @@
 import type { Octokit } from '@octokit/rest';
-import { IMigrationContext } from '../migration-context';
-import GithubService from './github';
+import { IMigrationContext } from '../migration-context.js';
+import GithubService from './github.js';
 
 const mockMigrationContext = () => ({}) as IMigrationContext;
 
