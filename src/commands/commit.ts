@@ -1,5 +1,5 @@
-import { IMigrationContext } from '../migration-context';
-import forEachRepo from '../util/for-each-repo';
+import { IMigrationContext } from '../migration-context.js';
+import forEachRepo from '../util/for-each-repo.js';
 
 export default async (context: IMigrationContext) => {
   const { adapter, logger } = context;

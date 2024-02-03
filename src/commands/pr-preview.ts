@@ -1,7 +1,7 @@
-import { IMigrationContext } from '../migration-context';
-import executeSteps from '../util/execute-steps';
-import forEachRepo from '../util/for-each-repo';
-import { generatePrMessageWithFooter } from '../util/generate-pr-message';
+import { IMigrationContext } from '../migration-context.js';
+import executeSteps from '../util/execute-steps.js';
+import forEachRepo from '../util/for-each-repo.js';
+import { generatePrMessageWithFooter } from '../util/generate-pr-message.js';
 
 export default async (context: IMigrationContext) => {
   const {
