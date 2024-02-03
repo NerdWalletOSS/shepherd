@@ -10,7 +10,7 @@ import { IMigrationContext } from '../migration-context';
 
 const { SHEPHERD_GITHUB_ENTERPRISE_URL } = process.env;
 
-const shepherdGitHubEnterpriseUrl = SHEPHERD_GITHUB_ENTERPRISE_URL || 'api.github.com';
+const gitHubEnterpriseUrl = SHEPHERD_GITHUB_ENTERPRISE_URL || 'api.github.com';
 
 const RetryableThrottledOctokit = Octokit.plugin(throttling, retry);
 
@@ -37,7 +37,7 @@ export default class GithubService {
 
       this.octokit = new RetryableThrottledOctokit({
         auth: token,
-        baseUrl: `https://${shepherdGitHubEnterpriseUrl}`,
+        baseUrl: `https://${gitHubEnterpriseUrl}`,
         throttle: {
           enabled: false,
           onRateLimit: (retryAfter: number, options: any) => {
