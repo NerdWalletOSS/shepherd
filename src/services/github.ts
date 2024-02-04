@@ -26,6 +26,9 @@ export default class GithubService {
     if (octokit) {
       this.octokit = octokit;
     } else {
+      // need a path to the .netrc file from home directory
+
+      // const netrcFilePath = path.join(os.homedir(), '.netrc');
       const netrcAuth = netrc();
       const token =
         process.env.GITHUB_TOKEN || _.get(netrcAuth['api.github.com'], 'password', undefined);
@@ -135,6 +138,32 @@ export default class GithubService {
     criteria: RestEndpointMethodTypes['repos']['getBranch']['parameters']
   ): Promise<RestEndpointMethodTypes['repos']['getBranch']['response']> {
     return this.octokit.repos.getBranch(criteria);
+  }
+
+  public createIssue(
+    criteria: RestEndpointMethodTypes['issues']['create']['parameters']
+  ): Promise<RestEndpointMethodTypes['issues']['create']['response']> {
+    return this.octokit.issues.create(criteria);
+  }
+
+  public updateIssue(criteria: {
+    owner: any;
+    issue_number: number;
+    repo: any;
+    title: any;
+    body: any;
+    labels: any;
+    state: any;
+    state_reason: any;
+  }): Promise<RestEndpointMethodTypes['issues']['update']['response']> {
+    return this.octokit.issues.update(criteria);
+  }
+
+  public async createAndGetIssueNumber(
+    criteria: RestEndpointMethodTypes['issues']['create']['parameters']
+  ): Promise<string> {
+    const { data } = await this.createIssue(criteria);
+    return data.number.toString();
   }
 
   public async getActiveReposForSearchTypeAndQuery({
