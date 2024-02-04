@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.4.4...v2.5.0) (2024-02-04)
+
+
+### Features
+
+* **install:** migrate from yarn to npm ([#692](https://github.com/NerdWalletOSS/shepherd/issues/692)) ([dc6e2be](https://github.com/NerdWalletOSS/shepherd/commit/dc6e2bebae06aa842ae53289358d14e4be11d922))
+
 ## [2.4.4](https://github.com/NerdWalletOSS/shepherd/compare/v2.4.3...v2.4.4) (2024-02-03)
 
 
