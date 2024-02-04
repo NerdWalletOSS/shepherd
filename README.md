@@ -82,6 +82,12 @@ hooks:
   post_checkout: npm install
   apply: mv .eslintrc .eslintrc.json
   pr_message: echo 'Hey! This PR renames `.eslintrc` to `.eslintrc.json`'
+issues:
+  title: "this is my first updated issue"
+  description: "this is my first updated issue"
+  labels: ['ENHANCEMENT', 'BUG']
+  state: closed
+  state_reason: completed
 ```
 
 ### Fields
@@ -126,6 +132,16 @@ Hooks define the core functionality of a migration in Shepherd.
 - `pr_message`:
   - **Description**: Commands to generate a pull request message.
   - **Output**: Anything written to `stdout` is used for the message. Multiple commands will have their outputs concatenated.
+
+- `issue`:
+  - **Description**: Command to create, update, or close issues.
+  - **Output**: Depending on the details provided in migration scripts, the issues will be created, updated or closed.
+
+- `list-issues`:
+  - **Description**: Commands to list all issues associated with a migration.
+  - **Output**: All the posted issues are listed in the table format.
+  
+
 
 ### Requirements
 
@@ -180,6 +196,8 @@ There are a number of commands that must be run to execute a migration:
 - `pr-preview`: Prints the commit message that would be used for each repository without actually creating a PR; uses the `pr_message` hook.
 - `pr`: Creates a PR for each repo with the message generated from the `pr_message` hook.
 - `version`: Prints Shepherd version
+- `issue`: Create, update, or close issues across multiple repository.
+- `list-issues`: List all issues associated with a migration.
 
 By default, `checkout` will use the adapter to figure out which repositories to check out, and the remaining commands will operate on all checked-out repos. To only checkout a specific repo or to operate on only a subset of the checked-out repos, you can use the `--repos` flag, which specifies a comma-separated list of repos:
 
