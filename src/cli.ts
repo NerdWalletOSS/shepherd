@@ -16,6 +16,8 @@ import apply from './commands/apply.js';
 import checkout from './commands/checkout.js';
 import commit from './commands/commit.js';
 import list from './commands/list.js';
+import issue from './commands/issue.js';
+import listIssues from './commands/list-issues.js';
 import pr from './commands/pr.js';
 import prPreview from './commands/pr-preview.js';
 import prStatus from './commands/pr-status.js';
@@ -151,6 +153,10 @@ addCommand('pr-status', 'Check the status of all PRs for the specified migration
 
 // These commands don't take --repos arguments
 addCommand('list', 'List all checked out repositories for the given migration', false, list);
+
+addCommand('issue', 'open an issue for the specified repos', true, issue);
+
+addCommand('list-issues', 'List all opened issues using migration', true, listIssues);
 
 program
   .command('version')

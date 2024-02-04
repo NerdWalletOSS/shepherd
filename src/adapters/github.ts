@@ -312,6 +312,43 @@ class GithubAdapter extends GitAdapter {
     return `git@${gitHubEnterpriseBaseUrl}:${repo.owner}/${repo.name}.git`;
   }
 
+  public createIssue = async (repo: IRepo): Promise<string> => {
+    const {
+      migration: { spec },
+    } = this.migrationContext;
+    const { owner, name } = repo;
+    const { issues } = spec;
+
+    //Create an issue with the title , issue message and labels
+    return await this.githubService.createAndGetIssueNumber({
+      owner,
+      repo: name,
+      title: issues?.title?.toString(),
+      body: issues?.description,
+      labels: issues?.labels,
+    });
+  };
+
+  public updateIssue = async (repo: IRepo, issueNumber: number): Promise<void> => {
+    const {
+      migration: { spec },
+    } = this.migrationContext;
+    const { owner, name } = repo;
+    const { issues } = spec;
+
+    //Update an issue's title , issue message and labels
+    await this.githubService.updateIssue({
+      owner,
+      repo: name,
+      title: issues?.title?.toString(),
+      issue_number: issueNumber,
+      body: issues?.description,
+      labels: issues?.labels,
+      state: issues?.state,
+      state_reason: issues?.state_reason,
+    });
+  };
+
   private async checkActionSafety(repo: IRepo): Promise<SafetyStatus> {
     const { owner, name } = repo;
 
