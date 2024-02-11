@@ -30,6 +30,9 @@
     "test": "jest --coverage src/"
   },
   "jest": {
+    "coveragePathIgnorePatterns": [
+      "\\.mock\\.ts$"
+    ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
