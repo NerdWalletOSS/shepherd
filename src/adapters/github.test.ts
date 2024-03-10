@@ -72,7 +72,7 @@ describe('GithubAdapter', () => {
       const adapter = new GithubAdapter(context, service);
 
       const result = await adapter.getCandidateRepos();
-      expect(service.getActiveReposForOrg).toBeCalledWith({ org: 'testOrg' });
+      expect(service.getActiveReposForOrg).toHaveBeenCalledWith({ org: 'testOrg' });
       expect(result).toStrictEqual([{ owner: 'testOrg', name: 'test-repo' }]);
     });
 
@@ -91,7 +91,7 @@ describe('GithubAdapter', () => {
       const adapter = new GithubAdapter(context, service);
 
       const result = await adapter.getCandidateRepos();
-      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledWith({
+      expect(service.getActiveReposForSearchTypeAndQuery).toHaveBeenCalledWith({
         search_type: 'repositories',
         search_query: 'topics:test',
       });
@@ -113,8 +113,8 @@ describe('GithubAdapter', () => {
 
       const result = await adapter.getCandidateRepos();
 
-      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledTimes(1);
-      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledWith({
+      expect(service.getActiveReposForSearchTypeAndQuery).toHaveBeenCalledTimes(1);
+      expect(service.getActiveReposForSearchTypeAndQuery).toHaveBeenCalledWith({
         search_type: 'code',
         search_query: 'path:/ filename:package.json in:path',
       });
@@ -135,8 +135,8 @@ describe('GithubAdapter', () => {
 
       const result = await adapter.getCandidateRepos();
 
-      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledTimes(1);
-      expect(service.getActiveReposForSearchTypeAndQuery).toBeCalledWith({
+      expect(service.getActiveReposForSearchTypeAndQuery).toHaveBeenCalledTimes(1);
+      expect(service.getActiveReposForSearchTypeAndQuery).toHaveBeenCalledWith({
         search_type: 'code',
         search_query: 'path:/ filename:package.json in:path',
       });
@@ -173,8 +173,8 @@ describe('GithubAdapter', () => {
       const adapter = new GithubAdapter(context, service);
 
       const mappedRepo = await adapter.mapRepoAfterCheckout(repo);
-      expect(service.getDefaultBranchForRepo).toBeCalledTimes(1);
-      expect(service.getDefaultBranchForRepo).toBeCalledWith({
+      expect(service.getDefaultBranchForRepo).toHaveBeenCalledTimes(1);
+      expect(service.getDefaultBranchForRepo).toHaveBeenCalledWith({
         owner: repo.owner,
         repo: repo.name,
       });
@@ -201,12 +201,12 @@ describe('GithubAdapter', () => {
 
       await adapter.createPullRequest(REPO, 'Test PR message', 'NerdWallet');
 
-      expect(service.listPullRequests).toBeCalledWith({
+      expect(service.listPullRequests).toHaveBeenCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
         head: 'NerdWallet:test-migration',
       });
-      expect(service.createPullRequest).toBeCalledWith({
+      expect(service.createPullRequest).toHaveBeenCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
         head: 'NerdWallet:test-migration',
@@ -229,7 +229,7 @@ describe('GithubAdapter', () => {
       const adapter = new GithubAdapter(context, service);
       await adapter.createPullRequest(REPO, 'Test PR message, part 2', 'NerdWallet');
 
-      expect(service.updatePullRequest).toBeCalledWith({
+      expect(service.updatePullRequest).toHaveBeenCalledWith({
         owner: 'NerdWallet',
         repo: 'shepherd',
         title: 'Test migration',

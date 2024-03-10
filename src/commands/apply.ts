@@ -3,9 +3,8 @@ import executeSteps from '../util/execute-steps.js';
 import forEachRepo from '../util/for-each-repo.js';
 
 export default async (context: IMigrationContext, options: any): Promise<void> => {
-  const { adapter, logger } = context;
-
   await forEachRepo(context, async (repo) => {
+    const { adapter, logger } = context;
     const resetSpinner = logger.spinner('Removing uncommitted changes');
     try {
       await adapter.resetChangedFiles(repo);
