@@ -9,31 +9,32 @@ jest.mock('../util/execute-steps');
 jest.mock('../util/generate-pr-message');
 
 describe('pr-preview command', () => {
-  const mockContext: IMigrationContext = {
-    shepherd: {
-      workingDirectory: 'workingDirectory',
-    },
-    migration: {
-      migrationDirectory: 'migrationDirectory',
-      spec: {
-        id: 'id',
-        title: 'title',
-        adapter: {
-          type: 'adapter',
-        },
-        hooks: {},
-      },
-      workingDirectory: 'workingDirectory',
-      selectedRepos: [{ name: 'selectedRepos' }],
-      repos: [{ name: 'selectedRepos' }],
-      upstreamOwner: 'upstreamOwner',
-    },
-    adapter: mockAdapter,
-    logger: mockLogger,
-  };
+  let mockContext: IMigrationContext;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockContext = {
+      shepherd: {
+        workingDirectory: 'workingDirectory',
+      },
+      migration: {
+        migrationDirectory: 'migrationDirectory',
+        spec: {
+          id: 'id',
+          title: 'title',
+          adapter: {
+            type: 'adapter',
+          },
+          hooks: {},
+        },
+        workingDirectory: 'workingDirectory',
+        selectedRepos: [{ name: 'selectedRepos' }],
+        repos: [{ name: 'selectedRepos' }],
+        upstreamOwner: 'upstreamOwner',
+      },
+      adapter: mockAdapter,
+      logger: mockLogger,
+    };
   });
 
   it('handles case when no pr_message hook is not specified', async () => {

@@ -23,7 +23,7 @@ describe('GithubService', () => {
       };
       const result = await service.getDefaultBranchForRepo(searchCriteria);
 
-      expect(mocktokit.repos.get).toBeCalledWith(searchCriteria);
+      expect(mocktokit.repos.get).toHaveBeenCalledWith(searchCriteria);
       expect(result).toEqual('main');
     });
   });
@@ -63,7 +63,7 @@ describe('GithubService', () => {
       const searchCriteria = { org: 'testOrg' };
       const result = await service.getActiveReposForOrg(searchCriteria);
 
-      expect(mocktokit.paginate).toBeCalledWith(mocktokit.repos.listForOrg, searchCriteria);
+      expect(mocktokit.paginate).toHaveBeenCalledWith(mocktokit.repos.listForOrg, searchCriteria);
       expect(result).toEqual(['testOrg/active-repo', 'testOrg/very-active-repo']);
     });
   });
@@ -94,7 +94,7 @@ describe('GithubService', () => {
       };
       const result = await service.getPullRequest(searchCriteria);
 
-      expect(mocktokit.pulls.get).toBeCalledWith(searchCriteria);
+      expect(mocktokit.pulls.get).toHaveBeenCalledWith(searchCriteria);
       expect(result).toEqual(samplePRResponse);
     });
   });
@@ -126,7 +126,7 @@ describe('GithubService', () => {
       };
       const result = await service.listPullRequests(searchCriteria);
 
-      expect(mocktokit.paginate).toBeCalledWith(mocktokit.pulls.list, searchCriteria);
+      expect(mocktokit.paginate).toHaveBeenCalledWith(mocktokit.pulls.list, searchCriteria);
       expect(result).toEqual(samplePRsResponse);
     });
   });
@@ -156,7 +156,7 @@ describe('GithubService', () => {
       };
       const result = await service.createPullRequest(prCreateParams);
 
-      expect(mocktokit.pulls.create).toBeCalledWith(prCreateParams);
+      expect(mocktokit.pulls.create).toHaveBeenCalledWith(prCreateParams);
       expect(result).toEqual(prCreateResponse);
     });
   });
@@ -185,7 +185,7 @@ describe('GithubService', () => {
       };
       const result = await service.updatePullRequest(prUpdateParams);
 
-      expect(mocktokit.pulls.update).toBeCalledWith(prUpdateParams);
+      expect(mocktokit.pulls.update).toHaveBeenCalledWith(prUpdateParams);
       expect(result).toEqual(prUpdateResponse);
     });
   });
@@ -215,7 +215,7 @@ describe('GithubService', () => {
       };
       const result = await service.getCombinedRefStatus(criteria);
 
-      expect(mocktokit.repos.getCombinedStatusForRef).toBeCalledWith(criteria);
+      expect(mocktokit.repos.getCombinedStatusForRef).toHaveBeenCalledWith(criteria);
       expect(result).toEqual(combinedRefStatusResponse);
     });
   });
@@ -243,7 +243,7 @@ describe('GithubService', () => {
       };
       const result = await service.getBranch(criteria);
 
-      expect(mocktokit.repos.getBranch).toBeCalledWith(criteria);
+      expect(mocktokit.repos.getBranch).toHaveBeenCalledWith(criteria);
       expect(result).toEqual(branchResponse);
     });
   });
@@ -297,7 +297,7 @@ describe('GithubService', () => {
         search_query: SEARCH_QUERY,
       });
 
-      expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.repos, { q: SEARCH_QUERY });
+      expect(mocktokit.paginate).toHaveBeenCalledWith(mocktokit.search.repos, { q: SEARCH_QUERY });
       expect(result).toEqual(repoSearchResponse.map((o) => o.full_name));
     });
 
@@ -348,7 +348,7 @@ describe('GithubService', () => {
         search_query: SEARCH_QUERY,
       });
 
-      expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.code, { q: SEARCH_QUERY });
+      expect(mocktokit.paginate).toHaveBeenCalledWith(mocktokit.search.code, { q: SEARCH_QUERY });
       expect(result).toEqual(['testOrg/repo1', 'testOrg/repo2']);
     });
 
@@ -409,7 +409,7 @@ describe('GithubService', () => {
         search_query: SEARCH_QUERY,
       });
 
-      expect(mocktokit.paginate).toBeCalledWith(mocktokit.search.code, { q: SEARCH_QUERY });
+      expect(mocktokit.paginate).toHaveBeenCalledWith(mocktokit.search.code, { q: SEARCH_QUERY });
       expect(result).toEqual(['testOrg/repo1']);
     });
   });
