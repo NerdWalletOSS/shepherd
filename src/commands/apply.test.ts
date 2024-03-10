@@ -34,10 +34,7 @@ describe('apply commmand', () => {
       adapter: mockAdapter,
       logger: mockLogger,
     };
-
-    options = {
-      // mock the necessary options
-    };
+    options = {};
   });
 
   it('should reset changes and reset branch before applying migration', async () => {
@@ -47,7 +44,6 @@ describe('apply commmand', () => {
     });
     await apply(mockContext, options);
 
-    // Assert
     expect(mockContext.adapter.resetChangedFiles).toHaveBeenCalled();
     expect(mockContext.adapter.resetRepoBeforeApply).toHaveBeenCalled();
   });
@@ -60,7 +56,6 @@ describe('apply commmand', () => {
     options.skipResetBranch = true;
     await apply(mockContext, options);
 
-    // Assert
     expect(mockContext.adapter.resetChangedFiles).toHaveBeenCalled();
     expect(mockContext.adapter.resetRepoBeforeApply).not.toHaveBeenCalled();
   });
@@ -72,7 +67,6 @@ describe('apply commmand', () => {
     });
     await apply(mockContext, options);
 
-    // Assert
     expect(mockContext.adapter.resetChangedFiles).toHaveBeenCalled();
   });
 
