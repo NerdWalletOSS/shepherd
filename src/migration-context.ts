@@ -1,6 +1,6 @@
-import IRepoAdapter, { IRepo } from './adapters/base';
-import { ILogger } from './logger';
-import { IMigrationSpec } from './util/migration-spec';
+import IRepoAdapter, { IRepo } from './adapters/base.js';
+import { ILogger } from './logger/index.js';
+import { IMigrationSpec } from './util/migration-spec.js';
 
 export interface IShepherdInfo {
   workingDirectory: string;

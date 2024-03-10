@@ -6,24 +6,24 @@ import { homedir } from 'os';
 import path from 'path';
 import Preferences from 'preferences';
 
-import { adapterForName } from './adapters';
-import { IMigrationContext } from './migration-context';
-import { loadSpec } from './util/migration-spec';
-import { loadRepoList } from './util/persisted-data';
+import { adapterForName } from './adapters/index.js';
+import { IMigrationContext } from './migration-context.js';
+import { loadSpec } from './util/migration-spec.js';
+import { loadRepoList } from './util/persisted-data.js';
 
 // Commands
-import apply from './commands/apply';
-import checkout from './commands/checkout';
-import commit from './commands/commit';
-import list from './commands/list';
-import pr from './commands/pr';
-import prPreview from './commands/pr-preview';
-import prStatus from './commands/pr-status';
-import push from './commands/push';
-import reset from './commands/reset';
-import version from './commands/version';
+import apply from './commands/apply.js';
+import checkout from './commands/checkout.js';
+import commit from './commands/commit.js';
+import list from './commands/list.js';
+import pr from './commands/pr.js';
+import prPreview from './commands/pr-preview.js';
+import prStatus from './commands/pr-status.js';
+import push from './commands/push.js';
+import reset from './commands/reset.js';
+import version from './commands/version.js';
 
-import ConsoleLogger from './logger';
+import ConsoleLogger from './logger/index.js';
 
 const program = new Command();
 

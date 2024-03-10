@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
-    "module": "CommonJS",
+    "target": "ESNext",
+    "module": "NodeNext",
     "allowJs": false,
     "declaration": true,
     "sourceMap": true,
@@ -11,6 +11,7 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "moduleResolution": "NodeNext",
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true

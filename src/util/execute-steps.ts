@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import { IRepo } from '../adapters/base';
-import { IMigrationContext } from '../migration-context';
-import execInRepo from '../util/exec-in-repo';
+import { IRepo } from '../adapters/base.js';
+import { IMigrationContext } from '../migration-context.js';
+import execInRepo from '../util/exec-in-repo.js';
 
 interface IStepResult {
   step: string;

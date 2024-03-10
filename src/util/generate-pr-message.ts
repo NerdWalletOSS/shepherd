@@ -1,4 +1,4 @@
-import { IStepsResults } from './execute-steps';
+import { IStepsResults } from './execute-steps.js';
 
 const generate = (results: IStepsResults): string => {
   return results.stepResults

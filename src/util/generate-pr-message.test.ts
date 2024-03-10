@@ -1,5 +1,5 @@
-import { IStepsResults } from './execute-steps';
-import generatePrMessage from './generate-pr-message';
+import { IStepsResults } from './execute-steps.js';
+import generatePrMessage from './generate-pr-message.js';
 
 const specs = [
   {

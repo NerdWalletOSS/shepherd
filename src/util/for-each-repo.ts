@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import fs from 'fs-extra';
-import { IRepo } from '../adapters/base';
-import { IMigrationContext } from '../migration-context';
+import { IRepo } from '../adapters/base.js';
+import { IMigrationContext } from '../migration-context.js';
 
 type RepoHandler = (repo: IRepo) => Promise<void>;
 

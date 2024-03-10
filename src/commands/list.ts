@@ -1,4 +1,4 @@
-import { IMigrationContext } from '../migration-context';
+import { IMigrationContext } from '../migration-context.js';
 
 export default async (context: IMigrationContext) => {
   const {

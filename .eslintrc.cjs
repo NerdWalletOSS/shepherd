@@ -9,7 +9,8 @@ module.exports = {
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:import/errors',
     'plugin:import/warnings',
-    'prettier',
+    'plugin:prettier/recommended',
+    'eslint-config-prettier',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -30,19 +31,19 @@ module.exports = {
     '@typescript-eslint/require-await': 0,
     'no-useless-escape': 0,
   },
-  plugins: ['@typescript-eslint', 'import', 'prefer-arrow'],
+  plugins: ['@typescript-eslint', 'import', 'prefer-arrow', 'prettier'],
   settings: {
     'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
+      "typescript": {
+        "alwaysTryTypes": true
+      }
     },
   },
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
       parserOptions: {
-        project: ['tsconfig.cjs.json'],
+        project: ['tsconfig.esm.json'],
       },
     },
   ],

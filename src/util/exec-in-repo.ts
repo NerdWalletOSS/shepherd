@@ -1,10 +1,14 @@
-import { ChildProcessPromise, spawn } from 'child-process-promise';
+import { spawn } from 'child-process-promise';
 import { ChildProcess } from 'child_process';
-import { IRepo } from '../adapters/base';
-import { IMigrationContext } from '../migration-context';
+import { IRepo } from '../adapters/base.js';
+import { IMigrationContext } from '../migration-context.js';
+
+interface PromiseWithChildProcess<T> extends Promise<T> {
+  childProcess: ChildProcess;
+}
 
 interface IExecRepoResult {
-  promise: ChildProcessPromise;
+  promise: PromiseWithChildProcess<any>;
   childProcess: ChildProcess;
 }
 
@@ -32,7 +36,7 @@ export default async (
     shell: true,
     capture: ['stdout', 'stderr'],
   };
-  const promise = spawn(command, [], execOptions);
+  const promise = spawn(command, [], execOptions) as PromiseWithChildProcess<any>;
   return {
     promise,
     childProcess: promise.childProcess,

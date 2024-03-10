@@ -1,12 +1,18 @@
 /* eslint-env jest */
 import fs from 'fs-extra';
 
-import { isEqual } from 'lodash';
+import _ from 'lodash';
 import path from 'path';
 
-import { IRepo } from '../adapters/base';
-import { IMigrationContext } from '../migration-context';
-import { loadRepoList, updateRepoList } from './persisted-data';
+import { IRepo } from '../adapters/base.js';
+import { IMigrationContext } from '../migration-context.js';
+import { loadRepoList, updateRepoList } from './persisted-data.js';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const { isEqual } = _;
 
 const makeContext = (workingDirectory: string) =>
   ({

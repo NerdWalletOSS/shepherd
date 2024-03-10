@@ -1,8 +1,8 @@
 import type { Octokit } from '@octokit/rest';
 
-import { IMigrationContext } from '../migration-context';
-import GithubService from '../services/github';
-import GithubAdapter from './github';
+import { IMigrationContext } from '../migration-context.js';
+import GithubService from '../services/github.js';
+import GithubAdapter from './github.js';
 jest.mock('../services/github');
 
 const mockMigrationContext = () =>
