@@ -3,7 +3,7 @@ import yaml from 'js-yaml';
 import { differenceWith, unionWith } from 'lodash';
 import path from 'path';
 
-import { IRepo } from '../adapters/base';
+import { IRepo, IssueTracker } from '../adapters/base';
 import { IMigrationContext } from '../migration-context';
 
 const jsonStringify = (data: any) => JSON.stringify(data, undefined, 2);
@@ -24,6 +24,19 @@ const migrateToJsonIfNeeded = async (migrationContext: IMigrationContext) => {
 
 const getRepoListFile = (migrationContext: IMigrationContext) => {
   return path.join(migrationContext.migration.workingDirectory, 'repos.json');
+};
+
+const getIssueTrackerFile = (migrationContext: IMigrationContext) => {
+  return path.join(migrationContext.migration.workingDirectory, 'issue_tracker.json');
+};
+
+const getIssueListsFromTracker = async (migrationContext: IMigrationContext) => {
+  const issueTrackerFile = getIssueTrackerFile(migrationContext);
+
+  if (await fs.pathExists(issueTrackerFile)) {
+    return JSON.parse(await fs.readFile(issueTrackerFile, 'utf8'));
+  }
+  return [];
 };
 
 const getLegacyRepoListFile = (migrationContext: IMigrationContext) => {
@@ -66,4 +79,35 @@ const updateRepoList = async (
   return repos;
 };
 
-export { updateRepoList, loadRepoList };
+const updatePostedIssuesLists = async (
+  migrationContext: IMigrationContext,
+  issuePostedRepos: IssueTracker[]
+): Promise<void> => {
+  const issueTrackerFile = getIssueTrackerFile(migrationContext);
+  //write all posted issues with issue number in the issue_tracker.json
+  return await fs.outputFile(issueTrackerFile, JSON.stringify(issuePostedRepos));
+};
+
+const getIssueNumberForRepo = async (
+  migrationContext: IMigrationContext,
+  repo: string
+): Promise<any> => {
+  const issueTrackerFile = getIssueTrackerFile(migrationContext);
+  if (!(await fs.pathExists(issueTrackerFile))) {
+    return null;
+  }
+  const issueTracker: IssueTracker[] = JSON.parse(await fs.readFile(issueTrackerFile, 'utf8'));
+  // read the issue number from the issue tracker for each repo
+  return issueTracker
+    .filter((issue) => issue.repo === repo)
+    .map((specificRepo) => specificRepo.issueNumber);
+};
+
+export {
+  updateRepoList,
+  loadRepoList,
+  updatePostedIssuesLists,
+  getIssueTrackerFile,
+  getIssueListsFromTracker,
+  getIssueNumberForRepo,
+};

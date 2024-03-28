@@ -21,6 +21,8 @@ const mockAdapter: IRepoAdapter = {
   getDataDir: jest.fn() as unknown as (repo: IRepo) => string,
   getBaseBranch: jest.fn() as unknown as (repo: IRepo) => string,
   getEnvironmentVariables: jest.fn() as unknown as (repo: IRepo) => Promise<IEnvironmentVariables>,
+  createIssue: jest.fn() as unknown as (repo: IRepo) => Promise<string>,
+  updateIssue: jest.fn() as unknown as (repo: IRepo) => Promise<void>,
 };
 
 export default mockAdapter;

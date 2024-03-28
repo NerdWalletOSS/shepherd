@@ -12,6 +12,14 @@ export interface IMigrationHooks {
   [name: string]: string[] | undefined;
 }
 
+export interface IMigrationIssues {
+  title?: string | number;
+  description?: string;
+  labels?: string[];
+  state?: 'open' | 'closed';
+  state_reason?: 'completed' | 'not_planned' | 'reopened' | null;
+}
+
 export type MigrationPhase = [keyof IMigrationHooks];
 
 export interface IMigrationSpec {
@@ -22,6 +30,7 @@ export interface IMigrationSpec {
     [key: string]: any;
   };
   hooks: IMigrationHooks;
+  issues?: IMigrationIssues;
 }
 
 export function loadSpec(directory: string): IMigrationSpec {
@@ -69,6 +78,13 @@ export function validateSpec(spec: any) {
       apply: hookSchema,
       pr_message: hookSchema,
     }),
+    issues: Joi.object({
+      title: Joi.any().required(),
+      description: Joi.string().required(),
+      state: Joi.string().optional(),
+      state_reason: Joi.string().optional(),
+      labels: hookSchema.optional(),
+    }).optional(),
   });
 
   return schema.validate(spec);
