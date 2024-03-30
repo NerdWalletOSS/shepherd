@@ -17,7 +17,13 @@ For more high level context, this [blog post](https://www.nerdwallet.com/blog/en
 
 ## Getting started
 
-Install the Shepherd CLI:
+Install `ts-node` globally:
+
+```sh
+npm install ts-node
+```
+
+Install Shepherd CLI:
 
 ```sh
 npm install -g @nerdwallet/shepherd
