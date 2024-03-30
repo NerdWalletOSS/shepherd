@@ -9,11 +9,13 @@
     "rootDir": "./src",
     "removeComments": false,
     "strict": true,
+    "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noEmit": true
   },
   "include": ["src/**/*"]
 }

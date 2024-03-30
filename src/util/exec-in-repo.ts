@@ -1,3 +1,4 @@
+//@ts-ignore
 import { ChildProcessPromise, spawn } from 'child-process-promise';
 import { ChildProcess } from 'child_process';
 import { IRepo } from '../adapters/base';

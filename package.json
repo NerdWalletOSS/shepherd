@@ -19,10 +19,10 @@
   "author": "Nathan Walters",
   "main": "./lib/cli.js",
   "bin": {
-    "shepherd": "./lib/cli.js"
+    "shepherd": "./src/cli.ts"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.cjs.json",
+    "build": "tsc -p tsconfig.json",
     "build:watch": "yarn build --watch",
     "fix-lint": "eslint src/**/*.ts --fix && prettier --write .",
     "lint": "eslint src/**/*.ts && prettier --check .",
@@ -46,7 +46,7 @@
       "^.+\\.tsx?$": [
         "ts-jest",
         {
-          "tsconfig": "tsconfig.cjs.json"
+          "tsconfig": "tsconfig.json"
         }
       ]
     }
@@ -71,7 +71,8 @@
     "netrc": "^0.1.4",
     "ora": "^5.4.1",
     "preferences": "^2.0.2",
-    "simple-git": "^3.22.0"
+    "simple-git": "^3.22.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@octokit/plugin-rest-endpoint-methods": "^10.2.0",

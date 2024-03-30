@@ -4,6 +4,7 @@ import { retry } from '@octokit/plugin-retry';
 import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods';
 import { throttling } from '@octokit/plugin-throttling';
 import _ from 'lodash';
+//@ts-ignore
 import netrc from 'netrc';
 
 import { IMigrationContext } from '../migration-context';
