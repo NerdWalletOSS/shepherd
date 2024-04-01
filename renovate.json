@@ -19,19 +19,18 @@
   "masterIssue": true,
   "masterIssueAutoclose": true,
   "node": {
-    "supportPolicy": [10, 12, 14],
+    "supportPolicy": [18, 20],
     "semanticCommitScope": "github",
     "automerge": true
   },
   "packageRules": [
     {
-      "description": "Auto update dev dependencies",
-      "depTypeList": ["devDependencies"],
-      "automerge": true
+      "description": "Do not auto update major types dependencies",
+      "updateTypes": ["major"],
+      "automerge": false
     },
     {
-      "description": "Auto update non-major types dev dependencies",
-      "packagePatterns": ["^@types/"],
+      "description": "Auto update non-major types dependencies",
       "updateTypes": ["minor", "patch"],
       "stabilityDays": 0
     }

@@ -13,6 +13,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
+      - name: Setup ts-node
+        run: npm install -g ts-node
       - name: Get Npm cache directory path
         id: npm-cache-dir-path
         run: echo "::set-output name=dir::$(npm config get cache)"

@@ -1,19 +1,19 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
-    "module": "CommonJS",
+    "target": "ESNext",
+    "module": "NodeNext",
     "allowJs": false,
     "declaration": true,
-    "sourceMap": true,
-    "outDir": "./lib",
     "rootDir": "./src",
     "removeComments": false,
     "strict": true,
+    "moduleResolution": "NodeNext",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noEmit": true
   },
   "include": ["src/**/*"]
 }
