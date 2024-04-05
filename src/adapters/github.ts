@@ -305,7 +305,7 @@ class GithubAdapter extends GitAdapter {
   }
 
   protected getRepositoryUrl(repo: IRepo): string {
-    const gitHubEnterpriseBaseUrl = process.env.SHEPHERD_GITHUB_ENTERPRISE_BASE_URL ?? 'api.github.com';
+    const gitHubEnterpriseBaseUrl = process.env.SHEPHERD_GITHUB_ENTERPRISE_BASE_URL ?? 'github.com';
     const githubProtocol = process.env.SHEPHERD_GITHUB_PROTOCOL ?? 'ssh';
 
     if (githubProtocol === 'ssh') {
