@@ -1,9 +1,9 @@
-import pr from './pr';
-import { IMigrationContext } from '../migration-context';
-import mockAdapter from '../adapters/adapter.mock';
-import mockLogger from '../logger/logger.mock';
-import executeSteps from '../util/execute-steps';
-import { generatePrMessageWithFooter } from '../util/generate-pr-message';
+import pr from './pr.js';
+import { IMigrationContext } from '../migration-context.js';
+import mockAdapter from '../adapters/adapter.mock.js';
+import mockLogger from '../logger/logger.mock.js';
+import executeSteps from '../util/execute-steps.js';
+import { generatePrMessageWithFooter } from '../util/generate-pr-message.js';
 
 jest.mock('../util/execute-steps');
 jest.mock('../util/generate-pr-message');

@@ -1,7 +1,7 @@
-import reset from './reset';
-import { IMigrationContext } from '../migration-context';
-import mockAdapter from '../adapters/adapter.mock';
-import mockLogger from '../logger/logger.mock';
+import reset from './reset.js';
+import { IMigrationContext } from '../migration-context.js';
+import mockAdapter from '../adapters/adapter.mock.js';
+import mockLogger from '../logger/logger.mock.js';
 
 describe('reset commmand', () => {
   let mockContext: IMigrationContext;

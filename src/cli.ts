@@ -22,6 +22,8 @@ import prStatus from './commands/pr-status.js';
 import push from './commands/push.js';
 import reset from './commands/reset.js';
 import version from './commands/version.js';
+import issue from './commands/issue.js';
+import listIssues from './commands/list-issues.js';
 
 import ConsoleLogger from './logger/index.js';
 
