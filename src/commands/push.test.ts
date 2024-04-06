@@ -1,7 +1,7 @@
-import push from './push';
-import { IMigrationContext } from '../migration-context';
-import mockAdapter from '../adapters/adapter.mock';
-import mockLogger from '../logger/logger.mock';
+import push from './push.js';
+import { IMigrationContext } from '../migration-context.js';
+import mockAdapter from '../adapters/adapter.mock.js';
+import mockLogger from '../logger/logger.mock.js';
 
 describe('push commmand', () => {
   let mockContext: IMigrationContext;
