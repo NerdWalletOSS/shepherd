@@ -26,7 +26,7 @@ npm install -g @nerdwallet/shepherd
 If using GitHub Enterprise, ensure the following environment variables are exported:
 
 ```
-export SHEPHERD_GITHUB_ENTERPRISE_BASE_URL={company_github_enterprise_base_url} # e.g., api.github.com
+export SHEPHERD_GITHUB_ENTERPRISE_BASE_URL={company_github_enterprise_base_url} # e.g., github.com
 export SHEPHERD_GITHUB_ENTERPRISE_URL={company_github_enterprise_url} # e.g., api.github.com/api/v3
 ```
 
