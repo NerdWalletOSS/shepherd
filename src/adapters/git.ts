@@ -94,6 +94,10 @@ abstract class GitAdapter implements IRepoAdapter {
 
   protected abstract getRepositoryUrl(repo: IRepo): string;
 
+  public abstract createIssue(repo: IRepo): Promise<string>;
+
+  public abstract updateIssue(repo: IRepo, issueNumber: number): Promise<void>;
+
   protected git(repo: IRepo): any {
     return simpleGit(this.getRepoDir(repo));
   }

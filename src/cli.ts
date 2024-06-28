@@ -22,7 +22,8 @@ import prStatus from './commands/pr-status';
 import push from './commands/push';
 import reset from './commands/reset';
 import version from './commands/version';
-
+import issue from './commands/issue';
+import listIssues from './commands/list-issues';
 import ConsoleLogger from './logger';
 
 const program = new Command();
@@ -151,6 +152,10 @@ addCommand('pr-status', 'Check the status of all PRs for the specified migration
 
 // These commands don't take --repos arguments
 addCommand('list', 'List all checked out repositories for the given migration', false, list);
+
+addCommand('issue', 'open an issue for the specified repos', true, issue);
+
+addCommand('list-issues', 'List all opened issues using migration', true, listIssues);
 
 program
   .command('version')
