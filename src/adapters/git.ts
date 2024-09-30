@@ -2,8 +2,8 @@
 import fs from 'fs-extra';
 import { simpleGit } from 'simple-git';
 
-import { IMigrationContext } from '../migration-context';
-import IRepoAdapter, { IEnvironmentVariables, IRepo, RetryMethod } from './base';
+import { IMigrationContext } from '../migration-context.js';
+import IRepoAdapter, { IEnvironmentVariables, IRepo, RetryMethod } from './base.js';
 
 abstract class GitAdapter implements IRepoAdapter {
   protected migrationContext: IMigrationContext;
@@ -31,6 +31,7 @@ abstract class GitAdapter implements IRepoAdapter {
 
   public async checkoutRepo(repo: IRepo): Promise<void> {
     const repoPath = this.getRepositoryUrl(repo);
+    console.log(`Checking out ${repoPath} to ${this.getRepoDir(repo)}`);
     const localPath = this.getRepoDir(repo);
 
     if ((await fs.pathExists(localPath)) && (await this.git(repo).checkIsRepo())) {

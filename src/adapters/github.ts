@@ -3,10 +3,10 @@ import chalk from 'chalk';
 import _ from 'lodash';
 import path from 'path';
 
-import { IMigrationContext } from '../migration-context';
-import { IEnvironmentVariables, IRepo } from './base';
-import GitAdapter from './git';
-import GithubService from '../services/github';
+import { IMigrationContext } from '../migration-context.js';
+import { IEnvironmentVariables, IRepo } from './base.js';
+import GitAdapter from './git.js';
+import GithubService from '../services/github.js';
 
 const { SHEPHERD_GITHUB_ENTERPRISE_BASE_URL } = process.env;
 

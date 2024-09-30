@@ -1,10 +1,11 @@
 import fs from 'fs-extra';
 import yaml from 'js-yaml';
-import { differenceWith, unionWith } from 'lodash';
+import _ from 'lodash';
+const { differenceWith, unionWith } = _;
 import path from 'path';
 
-import { IRepo } from '../adapters/base';
-import { IMigrationContext } from '../migration-context';
+import { IRepo } from '../adapters/base.js';
+import { IMigrationContext } from '../migration-context.js';
 
 const jsonStringify = (data: any) => JSON.stringify(data, undefined, 2);
 

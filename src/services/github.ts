@@ -6,7 +6,7 @@ import { throttling } from '@octokit/plugin-throttling';
 import _ from 'lodash';
 import netrc from 'netrc';
 
-import { IMigrationContext } from '../migration-context';
+import { IMigrationContext } from '../migration-context.js';
 
 const { SHEPHERD_GITHUB_ENTERPRISE_URL } = process.env;
 

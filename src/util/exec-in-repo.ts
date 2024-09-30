@@ -1,7 +1,7 @@
 import { ChildProcessPromise, spawn } from 'child-process-promise';
 import { ChildProcess } from 'child_process';
-import { IRepo } from '../adapters/base';
-import { IMigrationContext } from '../migration-context';
+import { IRepo } from '../adapters/base.js';
+import { IMigrationContext } from '../migration-context.js';
 
 interface IExecRepoResult {
   promise: ChildProcessPromise;

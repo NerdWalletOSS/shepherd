@@ -14,6 +14,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
+    ecmaVersion: 2020,
   },
   rules: {
     '@typescript-eslint/no-unsafe-assignment': 0,
@@ -34,15 +35,18 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'], // Include .js extensions
+      },
+      typescript: {
+        project: './tsconfig.cjs.json',
       },
     },
   },
   overrides: [
     {
-      files: ['*.ts', '*.tsx'],
+      files: ['*.ts', '*.tsx', '*.mts'],
       parserOptions: {
-        project: ['tsconfig.cjs.json'],
+        project: ['./tsconfig.cjs.json'], // Ensure it points to the right config
       },
     },
   ],
