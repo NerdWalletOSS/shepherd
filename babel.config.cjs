@@ -3,10 +3,10 @@ module.exports = {
     [
       '@babel/preset-env',
       {
-        targets: { node: 'current' }, // Target the current Node.js version
+        targets: { node: 'current' },
         modules: 'auto',
       },
     ],
-    '@babel/preset-typescript', // Handle TypeScript files
+    '@babel/preset-typescript',
   ],
 };

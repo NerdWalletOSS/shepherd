@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import yaml from 'js-yaml';
+import { load } from 'js-yaml';
 import _ from 'lodash';
 const { differenceWith, unionWith } = _;
 import path from 'path';
@@ -17,7 +17,7 @@ const jsonStringify = (data: any) => JSON.stringify(data, undefined, 2);
 const migrateToJsonIfNeeded = async (migrationContext: IMigrationContext) => {
   const legacyFile = getLegacyRepoListFile(migrationContext);
   if (await fs.pathExists(legacyFile)) {
-    const data = yaml.load(await fs.readFile(legacyFile, 'utf8'));
+    const data = load(await fs.readFile(legacyFile, 'utf8'));
     await fs.outputFile(getRepoListFile(migrationContext), jsonStringify(data));
     await fs.remove(legacyFile);
   }

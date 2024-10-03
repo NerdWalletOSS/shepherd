@@ -35,7 +35,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'], // Include .js extensions
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
       typescript: {
         project: './tsconfig.cjs.json',
@@ -46,7 +46,7 @@ module.exports = {
     {
       files: ['*.ts', '*.tsx', '*.mts'],
       parserOptions: {
-        project: ['./tsconfig.cjs.json'], // Ensure it points to the right config
+        project: ['./tsconfig.cjs.json'],
       },
     },
   ],
