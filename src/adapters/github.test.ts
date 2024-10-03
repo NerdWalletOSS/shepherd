@@ -283,7 +283,9 @@ describe('GithubAdapter', () => {
 
     it('throws on unexpected protocols', () => {
       process.env.SHEPHERD_GITHUB_PROTOCOL = 'not-a-protocol';
-      expect(() => adapter['getRepositoryUrl'](repo)).toThrow("Unknown protocol not-a-protocol. Valid values are 'ssh' and 'https'");
+      expect(() => adapter['getRepositoryUrl'](repo)).toThrow(
+        "Unknown protocol not-a-protocol. Valid values are 'ssh' and 'https'"
+      );
     });
   });
 });
