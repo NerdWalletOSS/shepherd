@@ -1,10 +1,11 @@
 import fs from 'fs-extra';
-import yaml from 'js-yaml';
-import { differenceWith, unionWith } from 'lodash';
+import { load } from 'js-yaml';
+import _ from 'lodash';
+const { differenceWith, unionWith } = _;
 import path from 'path';
 
-import { IRepo } from '../adapters/base';
-import { IMigrationContext } from '../migration-context';
+import { IRepo } from '../adapters/base.js';
+import { IMigrationContext } from '../migration-context.js';
 
 const jsonStringify = (data: any) => JSON.stringify(data, undefined, 2);
 
@@ -16,7 +17,7 @@ const jsonStringify = (data: any) => JSON.stringify(data, undefined, 2);
 const migrateToJsonIfNeeded = async (migrationContext: IMigrationContext) => {
   const legacyFile = getLegacyRepoListFile(migrationContext);
   if (await fs.pathExists(legacyFile)) {
-    const data = yaml.load(await fs.readFile(legacyFile, 'utf8'));
+    const data = load(await fs.readFile(legacyFile, 'utf8'));
     await fs.outputFile(getRepoListFile(migrationContext), jsonStringify(data));
     await fs.remove(legacyFile);
   }

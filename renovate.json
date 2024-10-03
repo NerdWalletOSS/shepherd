@@ -19,7 +19,7 @@
   "masterIssue": true,
   "masterIssueAutoclose": true,
   "node": {
-    "supportPolicy": [10, 12, 14],
+    "supportPolicy": [18, 20, 22],
     "semanticCommitScope": "github",
     "automerge": true
   },

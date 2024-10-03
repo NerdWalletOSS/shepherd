@@ -2,8 +2,8 @@
 import fs from 'fs-extra';
 import { simpleGit } from 'simple-git';
 
-import { IMigrationContext } from '../migration-context';
-import IRepoAdapter, { IEnvironmentVariables, IRepo, RetryMethod } from './base';
+import { IMigrationContext } from '../migration-context.js';
+import IRepoAdapter, { IEnvironmentVariables, IRepo, RetryMethod } from './base.js';
 
 abstract class GitAdapter implements IRepoAdapter {
   protected migrationContext: IMigrationContext;
@@ -31,6 +31,7 @@ abstract class GitAdapter implements IRepoAdapter {
 
   public async checkoutRepo(repo: IRepo): Promise<void> {
     const repoPath = this.getRepositoryUrl(repo);
+    console.log(`Checking out ${repoPath} to ${this.getRepoDir(repo)}`);
     const localPath = this.getRepoDir(repo);
 
     if ((await fs.pathExists(localPath)) && (await this.git(repo).checkIsRepo())) {
@@ -45,11 +46,14 @@ abstract class GitAdapter implements IRepoAdapter {
     try {
       await this.git(repo).checkout(['-b', this.branchName, `origin/${this.branchName}`]);
     } catch (e) {
+      console.log(
+        'Attempt to create and switch to a new branch failed. Switching to existing branch.',
+        e
+      );
       try {
         await this.git(repo).checkoutLocalBranch(this.branchName);
       } catch (e) {
-        // This branch probably already exists; we'll just switch to it
-        // to make sure we're on the right branch for the commit phase
+        console.log('Attempt to switch to existing branch failed. Checking out branch.', e);
         await this.git(repo).checkout(this.branchName);
       }
     }

@@ -1,7 +1,7 @@
-import { IMigrationContext } from '../migration-context';
-import IRepoAdapter from './base';
-import GithubAdapter from './github';
-import GithubService from '../services/github';
+import { IMigrationContext } from '../migration-context.js';
+import IRepoAdapter from './base.js';
+import GithubAdapter from './github.js';
+import GithubService from '../services/github.js';
 
 export function adapterForName(name: string, context: IMigrationContext): IRepoAdapter {
   switch (name) {
