@@ -8,10 +8,6 @@ import { IEnvironmentVariables, IRepo } from './base.js';
 import GitAdapter from './git.js';
 import GithubService from '../services/github.js';
 
-const { SHEPHERD_GITHUB_ENTERPRISE_BASE_URL } = process.env;
-
-const gitHubEnterpriseBaseUrl = SHEPHERD_GITHUB_ENTERPRISE_BASE_URL || 'api.github.com';
-
 enum SafetyStatus {
   Success,
   PullRequestExisted,
@@ -309,7 +305,17 @@ class GithubAdapter extends GitAdapter {
   }
 
   protected getRepositoryUrl(repo: IRepo): string {
-    return `git@${gitHubEnterpriseBaseUrl}:${repo.owner}/${repo.name}.git`;
+    const gitHubEnterpriseBaseUrl =
+      process.env.SHEPHERD_GITHUB_ENTERPRISE_BASE_URL ?? 'api.github.com';
+    const githubProtocol = process.env.SHEPHERD_GITHUB_PROTOCOL ?? 'ssh';
+
+    if (githubProtocol === 'ssh') {
+      return `git@${gitHubEnterpriseBaseUrl}:${repo.owner}/${repo.name}.git`;
+    } else if (githubProtocol === 'https') {
+      return `https://${gitHubEnterpriseBaseUrl}/${repo.owner}/${repo.name}.git`;
+    } else {
+      throw new Error(`Unknown protocol ${githubProtocol}. Valid values are 'ssh' and 'https'`);
+    }
   }
 
   private async checkActionSafety(repo: IRepo): Promise<SafetyStatus> {

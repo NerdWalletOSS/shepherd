@@ -26,7 +26,7 @@ npm install -g @nerdwallet/shepherd
 If using GitHub Enterprise, ensure the following environment variables are exported:
 
 ```
-export SHEPHERD_GITHUB_ENTERPRISE_BASE_URL={company_github_enterprise_base_url} # e.g., api.github.com
+export SHEPHERD_GITHUB_ENTERPRISE_BASE_URL={company_github_enterprise_base_url} # e.g., github.com
 export SHEPHERD_GITHUB_ENTERPRISE_URL={company_github_enterprise_url} # e.g., api.github.com/api/v3
 ```
 
@@ -145,8 +145,21 @@ Shepherd exposes some context to each command via specific environment variables
 | `SHEPHERD_GIT_REVISION`               |                        | (`git` and `github` adapters) is the current revision of the repository being operated on.                                                                                                                                                                                                                                                                                              |
 | `SHEPHERD_GITHUB_REPO_OWNER`          |                        | (`github` adapter) is the owner of the repository being operated on. For example, if operating on the repository `https://github.com/NerdWalletOSS/shepherd`, this would be `NerdWalletOSS`.                                                                                                                                                                                            |
 | `SHEPHERD_GITHUB_REPO_NAME`           |                        | (`github` adapter) is the name of the repository being operated on. For example, if operating on the repository `https://github.com/NerdWalletOSS/shepherd`, this would be `shepherd`.                                                                                                                                                                                                  |
-| `SHEPHERD_GITHUB_ENTERPRISE_URL`      | `api.github.com`       | For GitHub Enterprise, export this variable containing the company's GitHub Enterprise url (e.g., `api/github.com/api/v3`).                                                                                                                                                                                                                                                             |
+| `SHEPHERD_GITHUB_ENTERPRISE_URL`      | `api.github.com`       | For GitHub Enterprise, export this variable containing the company's GitHub Enterprise url (e.g., `api.github.com/api/v3`).                                                                                                                                                                                                                                                             |
 | `SHEPHERD_GITHUB_ENTERPRISE_BASE_URL` | `api.github.com`       | For GitHub Enterprise, export this variable contraining the company's GitHub Enterprise base url.                                                                                                                                                                                                                                                                                       |
+| `SHEPHERD_GITHUB_PROTOCOL`            | ssh                    | (github adapter) is the protocol to use when cloning repos. Can be https or ssh. https is useful when ssh is firewalled.                                                                                                                                                                                                                                                                |
+
+**Additional Context**:
+
+When working with GitHub, the API endpoints differ based on whether you are using GitHub's public cloud service, GitHub Enterprise Cloud, or GitHub Enterprise Server (on-premises). Here’s how the endpoints vary:
+
+- GitHub Public (GitHub.com): https://api.github.com/.
+- GitHub Enterprise Cloud: https://api.github.com/enterprise/[enterprise-name]
+- GitHub Enterprise Server (On-Premises): https://[hostname]/api/v3/
+
+In each case, the API functionality and how you interact with it are largely the same, but the base URL changes based on where your GitHub instance is hosted.
+
+As a result, the value of `SHEPHERD_GITHUB_ENTERPRISE_URL` is a function of the type of GitHub service and used to support git APIs except cloning which is configurable via `SHEPHERD_GITHUB_ENTERPRISE_BASE_URL`. For `SHEPHERD_GITHUB_ENTERPRISE_BASE_URL`, while `github.com` works across GitHub service types, for backwards compatibility, we default to `api.github.com`.
 
 ### Usage
 

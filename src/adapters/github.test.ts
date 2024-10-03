@@ -255,4 +255,39 @@ describe('GithubAdapter', () => {
       expect(service.updatePullRequest).not.toBeCalled();
     });
   });
+
+  describe('getRepositoryUrl', () => {
+    const context = mockMigrationContext();
+    const octokit = {} as any as Octokit;
+    const service: any = new GithubService(context, octokit);
+    const adapter = new GithubAdapter(context, service);
+    const repo = {
+      owner: 'NerdWallet',
+      name: 'shepherd',
+    };
+
+    it('returns the SSH URL, when not given a protocol', () => {
+      delete process.env.SHEPHERD_GITHUB_PROTOCOL;
+      expect(adapter['getRepositoryUrl'](repo)).toBe('git@api.github.com:NerdWallet/shepherd.git');
+    });
+
+    it('returns the SSH URL, when given protocol=ssh', () => {
+      process.env.SHEPHERD_GITHUB_PROTOCOL = 'ssh';
+      expect(adapter['getRepositoryUrl'](repo)).toBe('git@api.github.com:NerdWallet/shepherd.git');
+    });
+
+    it('returns the HTTPS URL when given protocol=https', () => {
+      process.env.SHEPHERD_GITHUB_PROTOCOL = 'https';
+      expect(adapter['getRepositoryUrl'](repo)).toBe(
+        'https://api.github.com/NerdWallet/shepherd.git'
+      );
+    });
+
+    it('throws on unexpected protocols', () => {
+      process.env.SHEPHERD_GITHUB_PROTOCOL = 'not-a-protocol';
+      expect(() => adapter['getRepositoryUrl'](repo)).toThrow(
+        "Unknown protocol not-a-protocol. Valid values are 'ssh' and 'https'"
+      );
+    });
+  });
 });
