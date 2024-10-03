@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.5.0...v2.6.0) (2024-10-03)
+
+
+### Features
+
+* **auth:** add support for https protocol ([#748](https://github.com/NerdWalletOSS/shepherd/issues/748)) ([#847](https://github.com/NerdWalletOSS/shepherd/issues/847)) ([c0e0596](https://github.com/NerdWalletOSS/shepherd/commit/c0e0596cbc74cf12351587ae471f7962f73941b6))
+
 # [2.5.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.4.4...v2.5.0) (2024-02-04)
 
 
