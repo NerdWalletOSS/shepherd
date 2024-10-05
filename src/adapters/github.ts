@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import chalk from 'chalk';
 import _ from 'lodash';
 import path from 'path';
