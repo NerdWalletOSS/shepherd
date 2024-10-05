@@ -413,4 +413,29 @@ describe('GithubService', () => {
       expect(result).toEqual(['testOrg/repo1']);
     });
   });
+
+  describe('constructor', () => {
+    it('throws an error if no token is found', () => {
+      const mockContext = mockMigrationContext();
+      const originalEnv = process.env;
+      process.env = { ...originalEnv, GITHUB_TOKEN: undefined };
+
+      expect(() => new GithubService(mockContext)).toThrow(
+        "No Github credentials found; set either GITHUB_TOKEN or\n        set a token on the 'password' field in ~/.netrc for api.github.com"
+      );
+
+      process.env = originalEnv;
+    });
+
+    it('initializes octokit with provided token', () => {
+      const mockContext = mockMigrationContext();
+      const originalEnv = process.env;
+      process.env = { ...originalEnv, GITHUB_TOKEN: 'test-token' };
+
+      const service = new GithubService(mockContext);
+      expect(service).toBeDefined();
+
+      process.env = originalEnv;
+    });
+  });
 });

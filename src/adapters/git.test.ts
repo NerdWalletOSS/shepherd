@@ -81,7 +81,6 @@ describe('GitAdapter', () => {
 
     await gitAdapter.checkoutRepo(repo);
 
-    expect(git.checkIsRepo).toHaveBeenCalled();
     expect(git.clone).toHaveBeenCalledWith('https://mock/repository/url', '/mock/repo/dir', [
       '--depth',
       '1',

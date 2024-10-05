@@ -18,6 +18,14 @@
   },
   "license": "Apache-2.0",
   "author": "Nathan Walters",
+  "contributors": [
+    {
+      "name": "Aori Nevo"
+    },
+    {
+      "name": "Kavitha Kesavalu"
+    }
+  ],
   "main": "./lib/cli.js",
   "bin": {
     "shepherd": "./lib/cli.js"

@@ -31,9 +31,9 @@ abstract class GitAdapter implements IRepoAdapter {
   public async checkoutRepo(repo: IRepo): Promise<void> {
     const repoPath = this.getRepositoryUrl(repo);
     const localPath = this.getRepoDir(repo);
-    const localPathExists = await fs.pathExists(localPath);
-    const isRepo = await this.git(repo).checkIsRepo();
-    if (localPathExists && isRepo) {
+    const localPathExistsAndIsRepo =
+      (await fs.pathExists(localPath)) && (await this.git(repo).checkIsRepo());
+    if (localPathExistsAndIsRepo) {
       // Repo already exists; just fetch
       await this.git(repo).fetch('origin');
     } else {
