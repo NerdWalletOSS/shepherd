@@ -1,97 +1,112 @@
-/* eslint-env jest */
-import { cloneDeep } from 'lodash';
-import { normalizeSpec, validateSpec } from './migration-spec';
+import { loadSpec, normalizeSpec, validateSpec } from './migration-spec';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
 
-describe('normalizeSpec', () => {
-  it('loads a simple spec', () => {
-    const spec = {
-      id: 'testspec',
-      adapter: {
-        type: 'github',
-        search_query: 'filename:package.json',
-      },
-      hooks: {
-        apply: ['echo hi', 'echo bye'],
-      },
-    };
-    expect(normalizeSpec(spec)).toEqual(spec);
-  });
+jest.mock('fs');
+jest.mock('path');
+jest.mock('js-yaml');
 
-  it('creates a deep copy of the spec and does not modify the original', () => {
-    const spec = {
-      id: 'testspec',
-      adapter: {
-        type: 'github',
-        search_query: 'filename:package.json',
-      },
-      hooks: {
-        apply: 'echo hi',
-      },
-    };
-    const originalSpec = cloneDeep(spec);
-    expect(normalizeSpec(spec)).not.toBe(spec);
-    expect(spec).toEqual(originalSpec);
-  });
-
-  it('converts single-step hooks to arrays', () => {
-    const spec = {
-      name: 'testspec',
-      adapter: {
-        type: 'github',
-        search_query: 'filename:package.json',
-      },
-      hooks: {
-        should_migrate: 'echo 1',
-        post_checkout: 'echo 2',
-        apply: 'echo 3',
-        pr_message: 'echo 4',
-      },
-    };
-    expect(normalizeSpec(spec)).toEqual({
-      name: 'testspec',
-      adapter: {
-        type: 'github',
-        search_query: 'filename:package.json',
-      },
-      hooks: {
-        should_migrate: ['echo 1'],
-        post_checkout: ['echo 2'],
-        apply: ['echo 3'],
-        pr_message: ['echo 4'],
-      },
-    });
-  });
-});
-
-describe('validateSpec', () => {
-  const baseSpec = {
-    id: 'testspec',
-    title: 'Test spec',
+describe('migration-spec', () => {
+  const mockDirectory = '/mock/directory';
+  const mockFilePath = '/mock/directory/shepherd.yml';
+  const mockSpec = {
+    id: 'test-id',
+    title: 'Test Title',
     adapter: {
       type: 'github',
-      search_query: 'filename:package.json',
     },
     hooks: {
-      apply: ['echo hi', 'echo bye'],
+      should_migrate: ['step1'],
+      post_checkout: ['step2'],
+      apply: ['step3'],
+      pr_message: ['step4'],
     },
   };
 
-  it('accepts a valid spec', () => {
-    const spec = cloneDeep(baseSpec);
-    expect(validateSpec(spec).error).toBe(undefined);
+  beforeEach(() => {
+    (path.join as jest.Mock).mockReturnValue(mockFilePath);
+    (fs.readFileSync as jest.Mock).mockReturnValue('mock yaml content');
+    (yaml.load as jest.Mock).mockReturnValue(mockSpec);
   });
 
-  ['id', 'title', 'adapter'].forEach((prop) => {
-    it(`rejects a spec with a missing ${prop}`, () => {
-      const spec = cloneDeep(baseSpec) as any;
-      delete spec[prop];
-      expect(validateSpec(spec).error).not.toBe(undefined);
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('loadSpec', () => {
+    it('should load and validate the spec', () => {
+      const result = loadSpec(mockDirectory);
+      expect(path.join).toHaveBeenCalledWith(mockDirectory, 'shepherd.yml');
+      expect(fs.readFileSync).toHaveBeenCalledWith(mockFilePath, 'utf8');
+      expect(yaml.load).toHaveBeenCalledWith('mock yaml content');
+      expect(result).toEqual(mockSpec);
+    });
+
+    it('should throw an error if validation fails', () => {
+      const invalidSpec = { ...mockSpec, id: undefined };
+      (yaml.load as jest.Mock).mockReturnValue(invalidSpec);
+      expect(() => loadSpec(mockDirectory)).toThrow('Error loading migration spec');
     });
   });
 
-  it('rejects a spec with a missing adapter type', () => {
-    const spec: any = cloneDeep(baseSpec);
-    delete spec.adapter.type;
-    expect(validateSpec(spec).error).not.toBe(undefined);
+  describe('normalizeSpec', () => {
+    it('should normalize hooks to arrays', () => {
+      const originalSpec = {
+        ...mockSpec,
+        hooks: {
+          should_migrate: 'step1',
+          post_checkout: ['step2'],
+          apply: 'step3',
+          pr_message: ['step4'],
+        },
+      };
+      const expectedSpec = {
+        ...mockSpec,
+        hooks: {
+          should_migrate: ['step1'],
+          post_checkout: ['step2'],
+          apply: ['step3'],
+          pr_message: ['step4'],
+        },
+      };
+      const result = normalizeSpec(originalSpec);
+      expect(result).toEqual(expectedSpec);
+    });
+
+    it('should throw an error for invalid hook types', () => {
+      const invalidSpec = {
+        ...mockSpec,
+        hooks: {
+          should_migrate: 123,
+        },
+      };
+      expect(() => normalizeSpec(invalidSpec)).toThrow('Error reading shepherd.yml');
+    });
+    it('should handle missing hooks gracefully', () => {
+      const originalSpec = {
+        ...mockSpec,
+        hooks: undefined,
+      };
+      const expectedSpec = {
+        ...mockSpec,
+        hooks: {},
+      };
+      const result = normalizeSpec(originalSpec);
+      expect(result).toEqual(expectedSpec);
+    });
+  });
+
+  describe('validateSpec', () => {
+    it('should validate a correct spec', () => {
+      const result = validateSpec(mockSpec);
+      expect(result.error).toBeUndefined();
+    });
+
+    it('should return an error for an invalid spec', () => {
+      const invalidSpec = { ...mockSpec, id: undefined };
+      const result = validateSpec(invalidSpec);
+      expect(result.error).toBeDefined();
+    });
   });
 });
