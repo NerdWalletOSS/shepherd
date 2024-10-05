@@ -1,3 +1,10 @@
+## [2.6.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.6.0...v2.6.1) (2024-10-05)
+
+
+### Bug Fixes
+
+* **logging:** remove excess logging ([#851](https://github.com/NerdWalletOSS/shepherd/issues/851)) ([3402417](https://github.com/NerdWalletOSS/shepherd/commit/340241729d84a2bb8527380ea8b5da012c5bca66))
+
 # [2.6.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.5.0...v2.6.0) (2024-10-03)
 
 
