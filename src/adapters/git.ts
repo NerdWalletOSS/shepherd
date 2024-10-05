@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import fs from 'fs-extra';
 import { simpleGit } from 'simple-git';
 
