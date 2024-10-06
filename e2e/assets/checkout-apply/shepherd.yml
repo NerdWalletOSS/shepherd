@@ -1,0 +1,10 @@
+id: 2024.10.06-test-migration
+title: |
+  feat: test migration
+adapter:
+  type: github
+  search_query: repo:NerdWalletOSS/shepherd path:/
+hooks:
+  apply: 'touch $SHEPHERD_REPO_DIR/testfile.js && echo "some content" > $SHEPHERD_REPO_DIR/testfile.js'
+  pr_message: |
+    echo "e2e test suite"

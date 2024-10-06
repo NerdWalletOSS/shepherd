@@ -36,7 +36,8 @@
     "fix-lint": "eslint src/**/*.ts --fix && prettier --write .",
     "lint": "eslint src/**/*.ts && prettier --check .",
     "prepublishOnly": "yarn test && yarn build",
-    "test": "jest --coverage src/"
+    "test": "jest --coverage src/",
+    "e2e-test": "npm run build && jest --config=jest.e2e.config.cjs e2e/"
   },
   "files": [
     "lib"

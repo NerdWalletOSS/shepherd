@@ -12,8 +12,8 @@ module.exports = {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1', // Map ".js" to ".ts" in imports
   },
-  // Explicitly transform the ES module dependencies
   transformIgnorePatterns: [
     '/node_modules/(?!(@octokit|before-after-hook|universal-user-agent|bottleneck|@octokit/core|@octokit/plugin-retry|@octokit/plugin-rest-endpoint-methods|@octokit/plugin-throttling|chalk)/)', // Ensure these node_modules are transformed
   ],
+  collectCoverageFrom: ['src/**/*.{ts,tsx,js,jsx}'], // Collect coverage from src directory
 };
