@@ -1,12 +1,10 @@
-id: 2018.08.15-eslintrc-yml
-title: Rename all .eslintrc files to .eslintrc.yml
+id: 2024.10.06-test-migration
+title: |
+  feat: test migration
 adapter:
   type: github
-  search_query: repo:NerdWalletOSS/shepherd-demo path:/ filename:.eslintrc
+  search_query: repo:NerdWalletOSS/shepherd path:/
 hooks:
-  should_migrate:
-    - ls .eslintrc
-  apply:
-    - mv .eslintrc .eslintrc.yml
-  pr_message:
-    - echo "Hey! This PR renames `.eslintrc` to `.eslintrc.yml`"
+  apply: 'touch $SHEPHERD_REPO_DIR/testfile.js && echo "some content" > $SHEPHERD_REPO_DIR/testfile.js'
+  pr_message: |
+    echo "e2e test suite"
