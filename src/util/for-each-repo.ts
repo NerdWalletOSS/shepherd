@@ -3,12 +3,52 @@ import fs from 'fs-extra';
 import { IRepo } from '../adapters/base.js';
 import { IMigrationContext } from '../migration-context.js';
 
-type RepoHandler = (repo: IRepo) => Promise<void>;
+type RepoHandler = (repo: IRepo, header: string) => Promise<void>;
 
 interface IOptions {
   warnMissingDirectory?: boolean;
 }
 
+const getRepos = (migrationRepos: IRepo[], selectedRepos: IRepo[], adapter: any): IRepo[] => {
+  if (selectedRepos && selectedRepos.length) {
+    return selectedRepos.map((r) => {
+      const existingRepo = migrationRepos.find((repo) => adapter.reposEqual(r, repo));
+      return existingRepo || r;
+    });
+  }
+  return migrationRepos || [];
+};
+
+const logRepoInfo = (repo: IRepo, index: number, total: number, adapter: any) => {
+  const indexString = chalk.dim(`${index}/${total}`);
+  return chalk.bold(`\n[${adapter.stringifyRepo(repo)}] ${indexString}`);
+};
+
+const checkRepoDirectory = async (repoDir: string, warnMissingDirectory: boolean) => {
+  if (warnMissingDirectory && !(await fs.pathExists(repoDir))) {
+    return `Directory ${repoDir} does not exist`;
+  }
+  return '';
+};
+
+/**
+ * Processes each repository in the migration context using the provided handler.
+ *
+ * @param context - The migration context containing repositories, logger, and adapter.
+ * @param param1 - Either a repository handler function or options for processing.
+ * @param param2 - Optional repository handler function if `param1` is options.
+ *
+ * @returns A promise that resolves when all repositories have been processed.
+ *
+ * The function extracts repositories from the migration context and applies the provided handler
+ * to each repository. It logs warnings for missing directories and errors encountered during processing.
+ *
+ * @example
+ * ```typescript
+ * await forEachRepo(context, handler);
+ * await forEachRepo(context, options, handler);
+ * ```
+ */
 export default async (
   context: IMigrationContext,
   param1: RepoHandler | IOptions,
@@ -20,47 +60,34 @@ export default async (
     adapter,
   } = context;
 
-  let handler: RepoHandler;
-  let options: IOptions;
-  if (typeof param1 === 'function') {
-    // No options were provided
-    options = {};
-    handler = param1;
-  } else {
-    // We got options!
-    options = param1;
-    handler = param2 as RepoHandler;
-  }
+  const { handler, options } =
+    typeof param1 === 'function'
+      ? { handler: param1, options: {} as IOptions }
+      : { handler: param2 as RepoHandler, options: param1 };
 
-  // We want to show these warnings by default and allow opt-out of them
   const { warnMissingDirectory = true } = options;
+  const repos = getRepos(migrationRepos || [], selectedRepos || [], adapter);
 
-  // If `selectedRepos` is specified, we should use that instead of the full repo list
-  let repos;
-  if (selectedRepos && selectedRepos.length) {
-    // If this repo was already checked out, it may have additional metadata
-    // associated with it that came from the adapter's mapRepoAfterCheckout
-    // Let's rely on the migrations from the list on disk if at all possible
-    repos = selectedRepos.map((r) => {
-      const existingRepo = (migrationRepos || []).find((repo) => adapter.reposEqual(r, repo));
-      return existingRepo || r;
-    });
-  } else {
-    repos = migrationRepos || [];
-  }
-
-  let index = 0;
-  for (const repo of repos) {
-    index += 1;
-    const indexString = chalk.dim(`${index}/${repos.length}`);
-    logger.info(chalk.bold(`\n[${adapter.stringifyRepo(repo)}] ${indexString}`));
-
-    // Quick sanity check in case we're working from user-selected repos
+  const _handler = async function (repo: IRepo, index: number, repos: IRepo[]) {
     const repoDir = adapter.getRepoDir(repo);
-    if (warnMissingDirectory && !(await fs.pathExists(repoDir))) {
-      logger.error(`Directory ${repoDir} does not exist`);
+    const dirCheckMessage = await checkRepoDirectory(repoDir, warnMissingDirectory);
+    if (dirCheckMessage) {
+      logger.warn(dirCheckMessage);
     }
 
-    await handler(repo);
-  }
+    try {
+      const header = logRepoInfo(repo, index + 1, repos.length, adapter);
+      await handler(repo, header);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        logger.error(`Error processing repo ${adapter.stringifyRepo(repo)}: ${error.message}`);
+      } else {
+        logger.error(`Error processing repo ${adapter.stringifyRepo(repo)}: ${String(error)}`);
+      }
+    }
+  };
+
+  const repoListWithHandlersApplied = repos.map(_handler);
+
+  await Promise.all(repoListWithHandlersApplied);
 };
