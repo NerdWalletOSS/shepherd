@@ -1,7 +1,7 @@
-import prStatus from './pr-status';
-import { IMigrationContext } from '../migration-context';
-import mockAdapter from '../adapters/adapter.mock';
-import mockLogger from '../logger/logger.mock';
+import prStatus from './pr-status.js';
+import { IMigrationContext } from '../migration-context.js';
+import mockAdapter from '../adapters/adapter.mock.js';
+import mockLogger from '../logger/logger.mock.js';
 
 describe('pr-status commmand', () => {
   let mockContext: IMigrationContext;
