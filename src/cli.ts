@@ -22,6 +22,8 @@ import prStatus from './commands/pr-status.js';
 import push from './commands/push.js';
 import reset from './commands/reset.js';
 import version from './commands/version.js';
+import issue from './commands/issue.js';
+import listIssues from './commands/list-issues.js';
 
 import ConsoleLogger from './logger/index.js';
 
@@ -151,6 +153,10 @@ addCommand('pr-status', 'Check the status of all PRs for the specified migration
 
 // These commands don't take --repos arguments
 addCommand('list', 'List all checked out repositories for the given migration', false, list);
+
+addCommand('issue', 'open an issue for the specified repos', true, issue);
+
+addCommand('list-issues', 'List all opened issues using migration', true, listIssues);
 
 program
   .command('version')
