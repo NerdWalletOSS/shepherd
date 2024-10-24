@@ -79,9 +79,17 @@ hooks:
   should_migrate:
     - ls .eslintrc # Check that this file actually exists in the repo
     - git log -1 --format=%cd | grep 2018 --silent # Only migrate things that have seen commits in 2018
+  should_create_issue:
+    - node $SHEPHERD_MIGRATION_DIR/should_create_issue.js
   post_checkout: npm install
   apply: mv .eslintrc .eslintrc.json
   pr_message: echo 'Hey! This PR renames `.eslintrc` to `.eslintrc.json`'
+issues:
+  title: 'this is my first updated issue'
+  description: 'this is my first updated issue'
+  labels: ['ENHANCEMENT', 'BUG']
+  state: closed
+  state_reason: completed
 ```
 
 ### Fields
@@ -113,6 +121,11 @@ Hooks define the core functionality of a migration in Shepherd.
   - **Description**: Commands to determine if a repo requires migration.
   - **Behavior**: Non-zero exit values indicate the repo should not be migrated.
 
+- `should_create_issue`:
+
+  - **Description**: Commands to determine if issue needs to be posted in the repo.
+  - **Behavior**: Non-zero exit values indicate the issue should not be posted to repo.
+
 - `post_checkout`:
 
   - **Description**: Commands executed after a repo passes `should_migrate` checks.
@@ -124,12 +137,22 @@ Hooks define the core functionality of a migration in Shepherd.
   - **Note**: This can range from simple to complex sequences, depending on migration needs.
 
 - `pr_message`:
+
   - **Description**: Commands to generate a pull request message.
   - **Output**: Anything written to `stdout` is used for the message. Multiple commands will have their outputs concatenated.
 
+- `issue`:
+
+  - **Description**: Command to create, update, or close issues.
+  - **Output**: Depending on the details provided in migration scripts, the issues will be created, updated or closed.
+
+- `list-issues`:
+  - **Description**: Commands to list all issues associated with a migration.
+  - **Output**: All the posted issues are listed in the table format.
+
 ### Requirements
 
-- Optional: `should_migrate`, `post_checkout`
+- Optional: `should_migrate`, `post_checkout`, `should_create_issue`
 - Required: `apply`, `pr_message`
 
 ### Environment Variables
@@ -180,6 +203,8 @@ There are a number of commands that must be run to execute a migration:
 - `pr-preview`: Prints the commit message that would be used for each repository without actually creating a PR; uses the `pr_message` hook.
 - `pr`: Creates a PR for each repo with the message generated from the `pr_message` hook.
 - `version`: Prints Shepherd version
+- `issue`: Create, update, or close issues across multiple repository.
+- `list-issues`: List all issues associated with a migration.
 
 By default, `checkout` will use the adapter to figure out which repositories to check out, and the remaining commands will operate on all checked-out repos. To only checkout a specific repo or to operate on only a subset of the checked-out repos, you can use the `--repos` flag, which specifies a comma-separated list of repos:
 
