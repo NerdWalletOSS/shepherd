@@ -1,82 +1,168 @@
-import mockAdapter from '../adapters/adapter.mock';
-import { IRepo } from '../adapters/base';
-import mockLogger from '../logger/logger.mock';
-import { IMigrationContext } from '../migration-context';
 import executeSteps, { IStepsResults } from './execute-steps';
-import * as execInRepo from './exec-in-repo';
+import { IMigrationContext } from '../migration-context';
+import { IRepo } from '../adapters/base';
+import execInRepo from '../util/exec-in-repo';
+
+jest.mock('../util/exec-in-repo');
 
 describe('executeSteps', () => {
-  let mockContext: IMigrationContext;
-  let mockRepo: IRepo;
+  let context: IMigrationContext;
+  let repo: IRepo;
 
   beforeEach(() => {
-    jest.resetAllMocks();
-    mockContext = {
-      shepherd: {
-        workingDirectory: 'workingDirectory',
-      },
+    context = {
       migration: {
-        migrationDirectory: 'migrationDirectory',
         spec: {
-          id: 'id',
-          title: 'title',
-          adapter: {
-            type: 'adapter',
+          hooks: {
+            preDeploy: ['echo "preDeploy step 1"', 'echo "preDeploy step 2"'],
+            postDeploy: ['echo "postDeploy step 1"'],
           },
-          hooks: {},
         },
-        workingDirectory: 'workingDirectory',
-        selectedRepos: [{ name: 'selectedRepos' }],
-        repos: [{ name: 'selectedRepos' }],
-        upstreamOwner: 'upstreamOwner',
       },
-      adapter: mockAdapter,
-      logger: mockLogger,
-    };
+      logger: {
+        info: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+      },
+    } as unknown as IMigrationContext;
 
-    mockRepo = {
-      // Mock implementation of IRepo
-    };
+    repo = {} as IRepo;
+
+    (execInRepo as jest.Mock).mockReset();
   });
 
-  it('handles non-empty hooks', async () => {
-    mockContext.migration.spec.hooks = {
-      pre: ['echo "pre hook"'],
-      post: ['echo "post hook"'],
-    };
+  it('should execute all steps successfully', async () => {
+    // @ts-ignore
+    (execInRepo as jest.Mock).mockImplementation((context, repo, step) => {
+      return {
+        promise: Promise.resolve({ stdout: 'output', stderr: '' }),
+        childProcess: {
+          stdout: {
+            on: jest.fn(),
+          },
+          stderr: {
+            on: jest.fn(),
+          },
+        },
+      };
+    });
 
-    const result: IStepsResults = await executeSteps(mockContext, mockRepo, 'pre');
-    expect(result.succeeded).toBe(true);
-    expect(result.stepResults).toHaveLength(1);
+    const results: IStepsResults = await executeSteps(context, repo, 'preDeploy');
+
+    expect(results.succeeded).toBe(true);
+    expect(results.stepResults).toHaveLength(2);
+    expect(results.stepResults[0].succeeded).toBe(true);
+    expect(results.stepResults[1].succeeded).toBe(true);
   });
 
-  it('handles execInRepo errors with error code', async () => {
-    mockContext.migration.spec.hooks = {
-      pre: ['echo "pre hook"'],
-      post: ['echo "post hook"'],
-    };
+  it('should handle step failure', async () => {
+    // @ts-ignore
+    (execInRepo as jest.Mock).mockImplementation((context, repo, step) => {
+      if (step === 'echo "preDeploy step 2"') {
+        return {
+          promise: Promise.reject({ code: 1, stdout: '', stderr: 'error' }),
+          childProcess: {
+            stdout: {
+              on: jest.fn(),
+            },
+            stderr: {
+              on: jest.fn(),
+            },
+          },
+        };
+      }
+      return {
+        promise: Promise.resolve({ stdout: 'output', stderr: '' }),
+        childProcess: {
+          stdout: {
+            on: jest.fn(),
+          },
+          stderr: {
+            on: jest.fn(),
+          },
+        },
+      };
+    });
 
-    jest
-      .spyOn(execInRepo, 'default')
-      .mockRejectedValue(Object.assign(new Error('execInRepo error'), { code: 1 }));
+    const results: IStepsResults = await executeSteps(context, repo, 'preDeploy');
 
-    const result: IStepsResults = await executeSteps(mockContext, mockRepo, 'pre');
-    expect(result.succeeded).toBe(false);
-    expect(result.stepResults).toHaveLength(1);
-    expect(result.stepResults[0].succeeded).toBe(false);
+    expect(results.succeeded).toBe(false);
+    expect(results.stepResults).toHaveLength(2);
+    expect(results.stepResults[0].succeeded).toBe(true);
+    expect(results.stepResults[1].succeeded).toBe(false);
   });
 
-  it('handles execInRepo errors without error code', async () => {
-    mockContext.migration.spec.hooks = {
-      pre: ['echo "pre hook"'],
-      post: ['echo "post hook"'],
-    };
+  it('should handle no steps', async () => {
+    const results: IStepsResults = await executeSteps(context, repo, 'nonExistentPhase');
 
-    jest.spyOn(execInRepo, 'default').mockRejectedValue(new Error('execInRepo error'));
+    expect(results.succeeded).toBe(true);
+    expect(results.stepResults).toHaveLength(0);
+  });
 
-    const result: IStepsResults = await executeSteps(mockContext, mockRepo, 'pre');
-    expect(result.succeeded).toBe(false);
-    expect(result.stepResults).toHaveLength(1);
-    expect(result.stepResults[0].succeeded).toBe(false);
+  it('should log stdout and stderr output', async () => {
+    const mockStdoutOn = jest.fn((event, callback) => {
+      if (event === 'data') {
+        callback('stdout data');
+      }
+    });
+    const mockStderrOn = jest.fn((event, callback) => {
+      if (event === 'data') {
+        callback('stderr data');
+      }
+    });
+    // @ts-ignore
+    (execInRepo as jest.Mock).mockImplementation((context, repo, step) => {
+      return {
+        promise: Promise.resolve({ stdout: 'output', stderr: '' }),
+        childProcess: {
+          stdout: {
+            on: mockStdoutOn,
+          },
+          stderr: {
+            on: mockStderrOn,
+          },
+        },
+      };
+    });
+
+    await executeSteps(context, repo, 'preDeploy');
+
+    expect(context.logger.info).toHaveBeenCalledWith('stdout data');
+    expect(context.logger.info).toHaveBeenCalledWith('stderr data');
+  });
+
+  it('should handle JavaScript errors', async () => {
+    (execInRepo as jest.Mock).mockImplementation(() => {
+      throw new Error('JavaScript error');
+    });
+
+    const results: IStepsResults = await executeSteps(context, repo, 'preDeploy');
+
+    expect(results.succeeded).toBe(false);
+    expect(results.stepResults).toHaveLength(1);
+    expect(results.stepResults[0].succeeded).toBe(false);
+    expect(context.logger.error).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  it('should not log output if showOutput is false', async () => {
+    // @ts-ignore
+    (execInRepo as jest.Mock).mockImplementation((context, repo, step) => {
+      return {
+        promise: Promise.resolve({ stdout: 'output', stderr: '' }),
+        childProcess: {
+          stdout: {
+            on: jest.fn(),
+          },
+          stderr: {
+            on: jest.fn(),
+          },
+        },
+      };
+    });
+
+    await executeSteps(context, repo, 'preDeploy', false);
+
+    expect(context.logger.info).not.toHaveBeenCalledWith('stdout data');
+    expect(context.logger.info).not.toHaveBeenCalledWith('stderr data');
   });
 });

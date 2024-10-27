@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import { Octokit } from '@octokit/rest';
 import { retry } from '@octokit/plugin-retry';
 import type { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods';

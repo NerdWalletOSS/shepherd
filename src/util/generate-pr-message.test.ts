@@ -1,51 +1,128 @@
+import generate, { generatePrMessageWithFooter } from './generate-pr-message';
 import { IStepsResults } from './execute-steps';
-import generatePrMessage from './generate-pr-message';
 
-const specs = [
-  {
-    name: 'handles empty results',
-    stepOutput: [],
-    expected: '',
-  },
-  {
-    name: 'handles a single step',
-    stepOutput: ['hello, world!'],
-    expected: 'hello, world!',
-  },
-  {
-    name: 'strips trailing newlines from single step',
-    stepOutput: ['hello, world!\n\n'],
-    expected: 'hello, world!',
-  },
-  {
-    name: 'handles multiple steps',
-    stepOutput: ['hello, world!\n', 'goodbye, world.'],
-    expected: 'hello, world!\ngoodbye, world.',
-  },
-  {
-    name: 'maintains newlines between steps',
-    stepOutput: ['hello, world!\n\n\n', 'goodbye, world.'],
-    expected: 'hello, world!\n\n\ngoodbye, world.',
-  },
-  {
-    name: 'excludes empty steps',
-    stepOutput: ['hello, world!\n', '', undefined, 'goodbye, world.'],
-    expected: 'hello, world!\ngoodbye, world.',
-  },
-];
+describe('generate', () => {
+  it('should concatenate stdout of stepResults and trim the result', () => {
+    const results: IStepsResults = {
+      stepResults: [
+        {
+          stdout: 'First step output ',
+          step: '',
+          succeeded: false,
+        },
+        {
+          stdout: 'Second step output ',
+          step: '',
+          succeeded: false,
+        },
+        {
+          stdout: 'Third step output',
+          step: '',
+          succeeded: false,
+        },
+      ],
+      succeeded: false,
+    };
 
-describe('generate-pr-message', () => {
-  specs.forEach((spec) => {
-    it(spec.name, async () => {
-      const results: IStepsResults = {
-        succeeded: true,
-        stepResults: spec.stepOutput.map((s) => ({
-          step: 'test',
-          succeeded: true,
-          stdout: s,
-        })),
-      };
-      expect(generatePrMessage(results)).toEqual(spec.expected);
-    });
+    const message = generate(results);
+    expect(message).toBe('First step output Second step output Third step output');
+  });
+
+  it('should return an empty string if all stepResults are empty', () => {
+    const results: IStepsResults = {
+      stepResults: [
+        {
+          stdout: '',
+          step: '',
+          succeeded: false,
+        },
+        {
+          stdout: '',
+          step: '',
+          succeeded: false,
+        },
+        {
+          stdout: '',
+          step: '',
+          succeeded: false,
+        },
+      ],
+      succeeded: false,
+    };
+
+    const message = generate(results);
+    expect(message).toBe('');
+  });
+
+  it('should filter out empty stdout and concatenate non-empty stdout', () => {
+    const results: IStepsResults = {
+      stepResults: [
+        {
+          stdout: 'First step output ',
+          step: '',
+          succeeded: false,
+        },
+        {
+          stdout: '',
+          step: '',
+          succeeded: false,
+        },
+        {
+          stdout: 'Third step output',
+          step: '',
+          succeeded: false,
+        },
+      ],
+      succeeded: false,
+    };
+
+    const message = generate(results);
+    expect(message).toBe('First step output Third step output');
+  });
+});
+
+describe('generatePrMessageWithFooter', () => {
+  it('should append a footer to the generated message', () => {
+    const results: IStepsResults = {
+      succeeded: false,
+      stepResults: [
+        { stdout: 'First step output ', step: '', succeeded: false },
+        { stdout: 'Second step output ', step: '', succeeded: false },
+        { stdout: 'Third step output', step: '', succeeded: false },
+      ],
+    };
+
+    const message = generatePrMessageWithFooter(results);
+    expect(message).toBe(
+      'First step output Second step output Third step output\n\n---\n\n*This change was executed automatically with [Shepherd](https://github.com/NerdWalletOSS/shepherd).* 💚🤖'
+    );
+  });
+
+  it('should handle empty stepResults and still append a footer', () => {
+    const results: IStepsResults = {
+      stepResults: [
+        {
+          stdout: '',
+          step: '',
+          succeeded: false,
+        },
+        {
+          stdout: '',
+          step: '',
+          succeeded: false,
+        },
+        {
+          stdout: '',
+          step: '',
+          succeeded: false,
+        },
+      ],
+      succeeded: false,
+    };
+
+    const message = generatePrMessageWithFooter(results);
+    expect(message).toBe(
+      '\n\n---\n\n*This change was executed automatically with [Shepherd](https://github.com/NerdWalletOSS/shepherd).* 💚🤖'
+    );
   });
 });
