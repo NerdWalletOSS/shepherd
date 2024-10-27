@@ -1,18 +1,8 @@
-import { ChildProcessPromise, spawn } from 'child-process-promise';
-import { ChildProcess } from 'child_process';
+import { spawn } from 'child-process-promise';
 import { IRepo } from '../adapters/base.js';
 import { IMigrationContext } from '../migration-context.js';
 
-interface IExecRepoResult {
-  promise: ChildProcessPromise;
-  childProcess: ChildProcess;
-}
-
-export default async (
-  context: IMigrationContext,
-  repo: IRepo,
-  command: string
-): Promise<IExecRepoResult> => {
+export default async (context: IMigrationContext, repo: IRepo, command: string): Promise<any> => {
   const repoDir = context.adapter.getRepoDir(repo);
   const dataDir = context.adapter.getDataDir(repo);
   const baseBranch = context.adapter.getBaseBranch(repo);
@@ -32,9 +22,5 @@ export default async (
     shell: true,
     capture: ['stdout', 'stderr'],
   };
-  const promise = spawn(command, [], execOptions);
-  return {
-    promise,
-    childProcess: promise.childProcess,
-  };
+  return spawn(command, [], execOptions);
 };

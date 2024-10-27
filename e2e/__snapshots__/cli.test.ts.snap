@@ -29,52 +29,19 @@ Commands:
 "
 `;
 
-exports[`CLI End-to-End Tests should successfully checkout using repos flag 1`] = `
-"Using 2 selected repos
+exports[`CLI End-to-End Tests should successfully run apply on a migration 1`] = `""`;
 
-[aorinevo/shepherd-test-repo-1] 1/2
-> Running should_migrate steps
-✔ Completed all should_migrate steps successfully
-> Running post_checkout steps
-✔ Completed all post_checkout steps successfully
+exports[`CLI End-to-End Tests should successfully run checkout on a migration targeting a single repo 1`] = `
+"Loading candidate repos
+Loaded 1 repos
+Checking out repos
 
-[aorinevo/shepherd-test-repo-2] 2/2
-> Running should_migrate steps
-✔ Completed all should_migrate steps successfully
-> Running post_checkout steps
-✔ Completed all post_checkout steps successfully
-
-Checked out 2 out of 2 repos
-"
-`;
-
-exports[`CLI End-to-End Tests should successfully run apply on a migration 1`] = `
-"
 [NerdWalletOSS/shepherd] 1/1
-ℹ Running apply steps
-$ touch $SHEPHERD_REPO_DIR/testfile.js && echo "some content" > $SHEPHERD_REPO_DIR/testfile.js
-Step "touch $SHEPHERD_REPO_DIR/testfile.js && echo "some content" > $SHEPHERD_REPO_DIR/testfile.js" exited with 0
-✔ Completed all apply steps successfully
-"
-`;
-
-exports[`CLI End-to-End Tests should successfully run apply on a migration 2`] = `
-"On branch 2024.10.06-test-migration
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	testfile.js
-
-nothing added to commit but untracked files present (use "git add" to track)
-"
-`;
-
-exports[`CLI End-to-End Tests should successfully run checkout on a migration 1`] = `
-"
-[NerdWalletOSS/shepherd] 1/1
+Checked out repo
 > Running should_migrate steps
-✔ Completed all should_migrate steps successfully
+Completed all should_migrate steps successfully
 > Running post_checkout steps
-✔ Completed all post_checkout steps successfully
+Completed all post_checkout steps successfully
 
 Checked out 1 out of 1 repos
 "
