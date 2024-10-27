@@ -17,6 +17,11 @@ describe('CLI End-to-End Tests', () => {
     );
   });
 
+  afterAll(() => {
+    const testMigrationDir = path.resolve(os.homedir(), '.shepherd', '2024.10.06-test-migration');
+    fs.rmSync(testMigrationDir, { recursive: true });
+  });
+
   const cliPath = path.resolve(__dirname, '../lib/cli.js');
 
   const runCLI = (args: string) => {
@@ -33,22 +38,26 @@ describe('CLI End-to-End Tests', () => {
     expect(output.split('.').length).toEqual(3);
   });
 
-  it('should successfully run checkout on a migration', async () => {
+  it('should successfully run checkout on a migration targeting a single repo', async () => {
     const output = runCLI(`checkout ${path.join(__dirname, './assets/checkout-apply')}`);
     expect(output).toMatchSnapshot();
   });
 
-  it('should successfully run apply on a migration', async () => {
-    const output = runCLI(`apply ${path.join(__dirname, './assets/checkout-apply')}`);
-    expect(output).toMatchSnapshot();
-    const gitDiffOutput = execSync(`cd ${shepherdRepoDir} && git status`, { encoding: 'utf-8' });
-    expect(gitDiffOutput).toMatchSnapshot();
+  it('should successfully run checkout on a migration targeting multiple repos', async () => {
+    const output = runCLI(
+      `checkout ${path.join(__dirname, './assets/checkout-apply')} --repos="aorinevo/shepherd-test-repo-1,aorinevo/shepherd-test-repo-2"`
+    );
+    expect(output).toContain('shepherd-test-repo-1');
+    expect(output).toContain('shepherd-test-repo-2');
   });
 
-  it('should successfully checkout using repos flag', async () => {
-    const output = runCLI(
-      `checkout --repos "aorinevo/shepherd-test-repo-1,aorinevo/shepherd-test-repo-2" ${path.join(__dirname, './assets/checkout-apply')}`
-    );
-    expect(output).toMatchSnapshot();
+  it('should successfully run apply on a migration', async () => {
+    const output = runCLI(`apply ${path.join(__dirname, './assets/checkout-apply')}`);
+    expect(output).toContain('shepherd-test-repo-1');
+    expect(output).toContain('shepherd-test-repo-2');
+    expect(output).toContain('NerdWalletOSS/shepherd');
+    const repoDir = path.resolve(shepherdRepoDir, '../../aorinevo/shepherd-test-repo-1');
+    const gitDiffOutput = execSync(`cd ${repoDir} && git diff`, { encoding: 'utf-8' });
+    expect(gitDiffOutput).toMatchSnapshot();
   });
 });

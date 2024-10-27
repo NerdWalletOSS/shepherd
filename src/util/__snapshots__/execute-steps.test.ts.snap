@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`executeStep should handle step failure 1`] = `
+[
+  "$ echo "postDeploy step 1"",
+  "Step "echo "postDeploy step 1"" exited with 1",
+]
+`;
