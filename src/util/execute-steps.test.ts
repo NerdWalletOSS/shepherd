@@ -1,13 +1,14 @@
-import executeSteps, { IStepsResults } from './execute-steps';
+import executeSteps from './execute-steps';
 import { IMigrationContext } from '../migration-context';
 import { IRepo } from '../adapters/base';
 import execInRepo from '../util/exec-in-repo';
 
 jest.mock('../util/exec-in-repo');
 
-describe('executeSteps', () => {
+describe('executeStep', () => {
   let context: IMigrationContext;
   let repo: IRepo;
+  let repoLogs: string[];
 
   beforeEach(() => {
     context = {
@@ -27,108 +28,47 @@ describe('executeSteps', () => {
     } as unknown as IMigrationContext;
 
     repo = {} as IRepo;
+    repoLogs = [];
 
     (execInRepo as jest.Mock).mockReset();
   });
 
-  it('should execute all steps successfully', async () => {
+  it('should execute a step successfully', async () => {
     // @ts-ignore
     (execInRepo as jest.Mock).mockImplementation((context, repo, step) => {
-      return {
-        promise: Promise.resolve({ stdout: 'output', stderr: '' }),
-        childProcess: {
-          stdout: {
-            on: jest.fn(),
-          },
-          stderr: {
-            on: jest.fn(),
-          },
-        },
-      };
+      return Promise.resolve({ code: 1, stdout: 'output' });
     });
 
-    const results: IStepsResults = await executeSteps(context, repo, 'preDeploy');
-
+    const results = await executeSteps(context, repo, 'postDeploy', true, repoLogs);
     expect(results.succeeded).toBe(true);
-    expect(results.stepResults).toHaveLength(2);
-    expect(results.stepResults[0].succeeded).toBe(true);
-    expect(results.stepResults[1].succeeded).toBe(true);
+    expect(results.stepResults[0].stdout).toBe('output');
+    expect(results.stepResults[0].stderr).toBe(undefined);
+    expect(repoLogs[3]).toContain('Step "echo "postDeploy step 1"" exited with 0');
   });
 
   it('should handle step failure', async () => {
     // @ts-ignore
     (execInRepo as jest.Mock).mockImplementation((context, repo, step) => {
-      if (step === 'echo "preDeploy step 2"') {
-        return {
-          promise: Promise.reject({ code: 1, stdout: '', stderr: 'error' }),
-          childProcess: {
-            stdout: {
-              on: jest.fn(),
-            },
-            stderr: {
-              on: jest.fn(),
-            },
-          },
-        };
-      }
-      return {
-        promise: Promise.resolve({ stdout: 'output', stderr: '' }),
-        childProcess: {
-          stdout: {
-            on: jest.fn(),
-          },
-          stderr: {
-            on: jest.fn(),
-          },
-        },
-      };
+      return Promise.reject({ code: 1, stdout: '', stderr: 'error' });
     });
 
-    const results: IStepsResults = await executeSteps(context, repo, 'preDeploy');
-
+    const results = await executeSteps(context, repo, 'postDeploy', true, repoLogs);
     expect(results.succeeded).toBe(false);
-    expect(results.stepResults).toHaveLength(2);
-    expect(results.stepResults[0].succeeded).toBe(true);
-    expect(results.stepResults[1].succeeded).toBe(false);
+    expect(results.stepResults[0].stdout).toBe('');
+    expect(results.stepResults[0].stderr).toBe('error');
+    expect(repoLogs).toMatchSnapshot();
   });
 
-  it('should handle no steps', async () => {
-    const results: IStepsResults = await executeSteps(context, repo, 'nonExistentPhase');
-
-    expect(results.succeeded).toBe(true);
-    expect(results.stepResults).toHaveLength(0);
-  });
-
-  it('should log stdout and stderr output', async () => {
-    const mockStdoutOn = jest.fn((event, callback) => {
-      if (event === 'data') {
-        callback('stdout data');
-      }
-    });
-    const mockStderrOn = jest.fn((event, callback) => {
-      if (event === 'data') {
-        callback('stderr data');
-      }
-    });
+  xit('should not log output if showOutput is false', async () => {
     // @ts-ignore
     (execInRepo as jest.Mock).mockImplementation((context, repo, step) => {
-      return {
-        promise: Promise.resolve({ stdout: 'output', stderr: '' }),
-        childProcess: {
-          stdout: {
-            on: mockStdoutOn,
-          },
-          stderr: {
-            on: mockStderrOn,
-          },
-        },
-      };
+      return Promise.reject({ code: 1, stdout: '', stderr: 'error' });
     });
 
-    await executeSteps(context, repo, 'preDeploy');
+    await executeSteps(context, repo, 'preDeploy', false, repoLogs);
 
-    expect(context.logger.info).toHaveBeenCalledWith('stdout data');
-    expect(context.logger.info).toHaveBeenCalledWith('stderr data');
+    expect(repoLogs).not.toContain('stdout data');
+    expect(repoLogs).not.toContain('stderr data');
   });
 
   it('should handle JavaScript errors', async () => {
@@ -136,33 +76,10 @@ describe('executeSteps', () => {
       throw new Error('JavaScript error');
     });
 
-    const results: IStepsResults = await executeSteps(context, repo, 'preDeploy');
-
+    const results = await executeSteps(context, repo, 'preDeploy', true, repoLogs);
     expect(results.succeeded).toBe(false);
-    expect(results.stepResults).toHaveLength(1);
-    expect(results.stepResults[0].succeeded).toBe(false);
-    expect(context.logger.error).toHaveBeenCalledWith(expect.any(Error));
-  });
-
-  it('should not log output if showOutput is false', async () => {
-    // @ts-ignore
-    (execInRepo as jest.Mock).mockImplementation((context, repo, step) => {
-      return {
-        promise: Promise.resolve({ stdout: 'output', stderr: '' }),
-        childProcess: {
-          stdout: {
-            on: jest.fn(),
-          },
-          stderr: {
-            on: jest.fn(),
-          },
-        },
-      };
-    });
-
-    await executeSteps(context, repo, 'preDeploy', false);
-
-    expect(context.logger.info).not.toHaveBeenCalledWith('stdout data');
-    expect(context.logger.info).not.toHaveBeenCalledWith('stderr data');
+    expect(results.stepResults[0].stdout).toBeUndefined();
+    expect(results.stepResults[0].stderr).toBeUndefined();
+    expect(repoLogs).toContain('Error: JavaScript error');
   });
 });

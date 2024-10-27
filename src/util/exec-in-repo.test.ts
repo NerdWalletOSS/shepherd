@@ -31,10 +31,11 @@ describe('execInRepo utility', () => {
     };
   });
 
-  it('should call spawn with the correct arguments', async () => {
-    const result = await execInRepo(mockContext, { name: 'selectedRepos' }, 'command');
-    expect(result.promise).toBeDefined();
-    expect(result.childProcess).toBeDefined();
-    expect(result.promise.childProcess).toBe(result.childProcess);
+  it('should execute a command in a repo', async () => {
+    const repo = { name: 'repo' };
+    const command = 'command';
+    const { stdout, stderr } = await execInRepo(mockContext, repo, command);
+    expect(stdout).toBe('');
+    expect(stderr).toBe('');
   });
 });
