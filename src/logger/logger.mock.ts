@@ -12,7 +12,7 @@ const mockLogger: ILogger = {
   failIcon: jest.fn() as unknown as (message: string) => void,
   warnIcon: jest.fn() as unknown as (message: string) => void,
   infoIcon: jest.fn() as unknown as (message: string) => void,
-  spinner: jest.fn().mockImplementation(() => mockSpinner),
+  spinner: jest.fn(() => mockSpinner),
 };
 
 export default mockLogger;

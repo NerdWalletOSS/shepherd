@@ -15,17 +15,68 @@ export interface IStepsResults {
   stepResults: IStepResult[];
 }
 
+const executeStep = async (
+  context: IMigrationContext,
+  repo: IRepo,
+  step: string,
+  showOutput: boolean,
+  repoLogs: string[]
+): Promise<IStepResult> => {
+  repoLogs.push(`\$ ${step}`);
+
+  try {
+    const { stdout, stderr } = await execInRepo(context, repo, step);
+
+    if (showOutput) {
+      repoLogs.push(stdout);
+    }
+
+    repoLogs.push(stderr);
+    repoLogs.push(chalk.green(`Step "${step}" exited with 0`));
+
+    return {
+      step,
+      succeeded: true,
+      stdout: stdout,
+      stderr: stderr,
+    };
+  } catch (e: any) {
+    if (e.code !== undefined) {
+      repoLogs.push(`Step "${step}" exited with ${e.code}`);
+    } else {
+      repoLogs.push(e.toString());
+    }
+
+    return {
+      step,
+      succeeded: false,
+      stdout: e.stdout,
+      stderr: e.stderr,
+    };
+  }
+};
+
+/**
+ * Executes a series of migration steps for a given phase.
+ *
+ * @param context - The migration context containing necessary information and configurations.
+ * @param repo - The repository interface to interact with the repository.
+ * @param phase - The phase of the migration to execute steps for.
+ * @param showOutput - Optional flag to determine if output should be shown. Defaults to true.
+ * @param repoLogs - Array to collect logs from the repository.
+ * @returns A promise that resolves to the results of the executed steps.
+ */
 export default async (
   context: IMigrationContext,
   repo: IRepo,
   phase: string,
-  showOutput = true
+  showOutput = true,
+  repoLogs: string[] = []
 ): Promise<IStepsResults> => {
   const {
     migration: {
       spec: { hooks },
     },
-    logger,
   } = context;
 
   const results: IStepsResults = {
@@ -34,36 +85,12 @@ export default async (
   };
 
   const steps = hooks[phase] || [];
+
   for (const step of steps) {
-    logger.info(`\$ ${step}`);
-    try {
-      const { promise, childProcess } = await execInRepo(context, repo, step);
-      if (showOutput) {
-        childProcess.stdout?.on('data', (out) => logger.info(out.toString().trim()));
-      }
-      childProcess.stderr?.on('data', (out) => logger.info(out.toString().trim()));
-      const childProcessResult = await promise;
-      logger.info(chalk.green(`Step "${step}" exited with 0`));
-      results.stepResults.push({
-        step,
-        succeeded: true,
-        stdout: childProcessResult.stdout,
-        stderr: childProcessResult.stderr,
-      });
-    } catch (e: any) {
-      // This could either be an error from the process itself (which will have an exit code)
-      // or an error from JavaScript world (e.g. the script wasn't executable)
-      if (e.code !== undefined) {
-        logger.warn(`Step "${step}" exited with ${e.code}`);
-      } else {
-        logger.error(e);
-      }
-      results.stepResults.push({
-        step,
-        succeeded: false,
-        stdout: e.stdout,
-        stderr: e.stderr,
-      });
+    const stepResult = await executeStep(context, repo, step, showOutput, repoLogs);
+    results.stepResults.push(stepResult);
+
+    if (!stepResult.succeeded) {
       return results;
     }
   }

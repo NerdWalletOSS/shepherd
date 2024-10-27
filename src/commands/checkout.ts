@@ -24,9 +24,9 @@ const loadRepos = async (
     logger.info(`Using ${selectedRepos.length} selected repos`);
     return selectedRepos;
   } else {
-    const spinner = logger.spinner('Loading candidate repos');
+    logger.info('Loading candidate repos');
     const repos = (await adapter.getCandidateRepos(onRetry)) || [];
-    spinner.succeed(`Loaded ${repos.length} repos`);
+    logger.info(`Loaded ${repos.length} repos`);
     return repos;
   }
 };
@@ -51,7 +51,7 @@ const loadRepos = async (
  * 4. Runs the 'post_checkout' steps and discards the repository if they fail.
  * 5. Adds the repository to the checkedOutRepos array if all steps succeed.
  */
-const handleRepoCheckout = async (
+export const handleRepoCheckout = async (
   context: IMigrationContext,
   repo: IRepo,
   checkedOutRepos: IRepo[],
@@ -103,6 +103,16 @@ const logRepoInfo = (
   repoLogs.push(chalk.bold(`\n[${adapter.stringifyRepo(repo)}] ${indexString}`));
 };
 
+/**
+ * Checks out a list of repositories.
+ *
+ * @param context - The migration context containing the adapter and logger.
+ * @param repos - The list of repositories to be checked out.
+ * @param checkedOutRepos - The list to store successfully checked out repositories.
+ * @param discardedRepos - The list to store repositories that were discarded during the checkout process.
+ *
+ * @returns A promise that resolves when all repositories have been processed.
+ */
 const checkoutRepos = async (
   context: IMigrationContext,
   repos: IRepo[],
@@ -124,12 +134,24 @@ const checkoutRepos = async (
   logger.info(`Checked out ${checkedOutRepos.length} out of ${repos.length} repos`);
 };
 
+/**
+ * The purpose of the checkout function in the checkout.ts file is to manage the process
+ * of checking out repositories within a migration context. It handles the extraction
+ * of necessary dependencies, manages rate limits, loads and updates repositories,
+ * and tracks the status of each repository throughout the checkout process.
+ * This function ensures that the repositories are correctly checked out and mapped,
+ * updating the migration context accordingly.
+ *
+ * @param context - The migration context containing necessary dependencies and state.
+ * @returns A promise that resolves when the checkout process is complete.
+ */
 export default async (context: IMigrationContext) => {
   const { adapter, logger } = context;
   const onRetry = (numSeconds: number) =>
     logger.info(`Hit rate limit; waiting ${numSeconds} seconds and retrying.`);
 
   const repos = await loadRepos(context, onRetry);
+
   context.migration.repos = repos;
 
   const checkedOutRepos: IRepo[] = [];
