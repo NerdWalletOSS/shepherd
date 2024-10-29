@@ -72,7 +72,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.13",
     "@types/lodash": "^4.17.10",
-    "@types/node": "^20.11.0",
+    "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^8.8.0",
     "@typescript-eslint/parser": "^8.8.0",
     "babel-jest": "^29.7.0",
