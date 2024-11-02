@@ -276,17 +276,19 @@ describe('GithubAdapter', () => {
 
     it('returns the SSH URL, when not given a protocol', () => {
       delete process.env.SHEPHERD_GITHUB_PROTOCOL;
-      expect(adapter['getRepositoryUrl'](repo)).toBe('git@github.com:NerdWallet/shepherd.git');
+      expect(adapter['getRepositoryUrl'](repo)).toBe('git@api.github.com:NerdWallet/shepherd.git');
     });
 
     it('returns the SSH URL, when given protocol=ssh', () => {
       process.env.SHEPHERD_GITHUB_PROTOCOL = 'ssh';
-      expect(adapter['getRepositoryUrl'](repo)).toBe('git@github.com:NerdWallet/shepherd.git');
+      expect(adapter['getRepositoryUrl'](repo)).toBe('git@api.github.com:NerdWallet/shepherd.git');
     });
 
     it('returns the HTTPS URL when given protocol=https', () => {
       process.env.SHEPHERD_GITHUB_PROTOCOL = 'https';
-      expect(adapter['getRepositoryUrl'](repo)).toBe('https://github.com/NerdWallet/shepherd.git');
+      expect(adapter['getRepositoryUrl'](repo)).toBe(
+        'https://api.github.com/NerdWallet/shepherd.git'
+      );
     });
 
     it('throws on unexpected protocols', () => {
