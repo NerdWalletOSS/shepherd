@@ -3,6 +3,7 @@ module.exports = {
   testEnvironment: 'node',
   extensionsToTreatAsEsm: ['.ts', '.mts'],
   coveragePathIgnorePatterns: ['\\.mock\\.ts$'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleFileExtensions: ['ts', 'mts', 'tsx', 'js', 'mjs', 'jsx', 'json', 'node'],
   testRegex: '(/(__tests__|e2e)/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?|mts)$',
   transform: {
