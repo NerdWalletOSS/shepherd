@@ -48,13 +48,22 @@ describe('pr commmand', () => {
 
   it('should call executeSteps for each repo', async () => {
     mockContext.migration.spec.hooks.pr_message = ['pr_message'];
+    mockContext.migration.selectedRepos = [{ name: 'repo1' }, { name: 'repo2' }];
     (executeSteps as jest.Mock).mockResolvedValueOnce({ succeeded: true, results: [] });
     await pr(mockContext);
 
-    expect(executeSteps).toHaveBeenCalledTimes(1);
-    expect(executeSteps).toHaveBeenCalledWith(
+    expect(executeSteps).toHaveBeenCalledTimes(2);
+    expect(executeSteps).toHaveBeenNthCalledWith(
+      1,
       mockContext,
-      { name: 'selectedRepos' },
+      { name: 'repo1' },
+      'pr_message',
+      false
+    );
+    expect(executeSteps).toHaveBeenNthCalledWith(
+      2,
+      mockContext,
+      { name: 'repo2' },
       'pr_message',
       false
     );
@@ -81,7 +90,7 @@ describe('pr commmand', () => {
     (mockAdapter.createPullRequest as jest.Mock).mockRejectedValueOnce('createPullRequest error');
     await pr(mockContext);
 
-    expect(mockLogger.error).toHaveBeenCalledTimes(2);
+    expect(mockLogger.error).toHaveBeenCalledTimes(1);
     expect(mockLogger.error).toHaveBeenCalledWith('createPullRequest error');
   });
 
