@@ -8,6 +8,14 @@ jest.mock('fs-extra');
 
 class TestGitAdapter extends GitAdapter {
   // @ts-ignore
+  createIssue(repo: IRepo): Promise<string> {
+    return Promise.resolve('');
+  }
+  // @ts-ignore
+  updateIssue(repo: IRepo, issueNumber: number): Promise<void> {
+    return Promise.resolve();
+  }
+  // @ts-ignore
   getCandidateRepos(onRetry: RetryMethod): Promise<IRepo[]> {
     return Promise.resolve([]);
   }
