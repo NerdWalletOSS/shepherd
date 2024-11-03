@@ -1,7 +1,8 @@
 import Joi from 'joi';
 import fs from 'fs';
 import * as yaml from 'js-yaml';
-import { cloneDeep, mapValues } from 'lodash';
+import _ from 'lodash';
+const { cloneDeep, mapValues } = _;
 import path from 'path';
 
 export interface IMigrationHooks {
