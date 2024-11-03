@@ -2,16 +2,16 @@ import globals from 'globals';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import importPlugin from 'eslint-plugin-import';
-import preferArrowPlugin from 'eslint-plugin-prefer-arrow'; // Correct import for prefer-arrow
+import preferArrowPlugin from 'eslint-plugin-prefer-arrow';
 
 export default [
   {
     files: ['**/*.{js,mjs,cjs,ts,tsx}'],
     languageOptions: {
-      ecmaVersion: 2020, // Supports ES6+ features
-      sourceType: 'module', // ES6 module support
-      globals: globals.browser, // Browser globals
-      parser: tsParser, // Use TypeScript parser
+      ecmaVersion: 2020,
+      sourceType: 'module',
+      globals: globals.browser,
+      parser: tsParser,
     },
     plugins: {
       '@typescript-eslint': tseslint,
