@@ -4,28 +4,30 @@ exports[`CLI End-to-End Tests should display help information 1`] = `
 "Usage: cli [options] [command]
 
 Options:
-  -h, --help                        display help for command
+  -h, --help                         display help for command
 
 Commands:
-  checkout [options] <migration>    Check out any repositories that are
-                                    candidates for a given migration
-  apply [options] <migration>       Apply a migration to all checked out
-                                    repositories
-  commit [options] <migration>      Commit all changes for the specified
-                                    migration
-  reset [options] <migration>       Reset all changes for the specified
-                                    migration
-  push [options] <migration>        Push all changes for the specified
-                                    migration
-  pr-preview [options] <migration>  View a preview of the PR messages for the
-                                    specified migration
-  pr [options] <migration>          Create PRs for the specified migration
-  pr-status [options] <migration>   Check the status of all PRs for the
-                                    specified migration
-  list <migration>                  List all checked out repositories for the
-                                    given migration
-  version                           Print Shepherd version
-  help [command]                    display help for command
+  checkout [options] <migration>     Check out any repositories that are
+                                     candidates for a given migration
+  apply [options] <migration>        Apply a migration to all checked out
+                                     repositories
+  commit [options] <migration>       Commit all changes for the specified
+                                     migration
+  reset [options] <migration>        Reset all changes for the specified
+                                     migration
+  push [options] <migration>         Push all changes for the specified
+                                     migration
+  pr-preview [options] <migration>   View a preview of the PR messages for the
+                                     specified migration
+  pr [options] <migration>           Create PRs for the specified migration
+  pr-status [options] <migration>    Check the status of all PRs for the
+                                     specified migration
+  list <migration>                   List all checked out repositories for the
+                                     given migration
+  issue [options] <migration>        open an issue for the specified repos
+  list-issues [options] <migration>  List all opened issues using migration
+  version                            Print Shepherd version
+  help [command]                     display help for command
 "
 `;
 
