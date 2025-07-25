@@ -2,6 +2,7 @@
 
 <img alt="Illustration of a sheep" width=160 align=right src="images/shepherd-logo.png">
 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/NerdWalletOSS/shepherd/release.yml?style=flat-square)](https://github.com/NerdWalletOSS/shepherd/actions)
 [![semantic-release: conventionalcommits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 ![npm version](https://img.shields.io/npm/v/@nerdwallet/shepherd.svg?style=flat-square)
