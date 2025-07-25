@@ -87,12 +87,10 @@ hooks:
 ### Fields
 
 - `id`:
-
   - **Description**: Specifies a unique identifier for this migration.
   - **Usage**: Used as a branch name for the migration and internally by Shepherd to track migration state.
 
 - `title`:
-
   - **Description**: A title for the migration.
   - **Usage**: Used as the commit message.
 
@@ -109,17 +107,14 @@ hooks:
 Hooks define the core functionality of a migration in Shepherd.
 
 - `should_migrate`:
-
   - **Description**: Commands to determine if a repo requires migration.
   - **Behavior**: Non-zero exit values indicate the repo should not be migrated.
 
 - `post_checkout`:
-
   - **Description**: Commands executed after a repo passes `should_migrate` checks.
   - **Usage**: Ideal for one-time setup actions per repo, like installing dependencies.
 
 - `apply`:
-
   - **Description**: Commands that perform the actual migration.
   - **Note**: This can range from simple to complex sequences, depending on migration needs.
 
