@@ -288,4 +288,50 @@ describe('GithubAdapter', () => {
       );
     });
   });
+
+  describe('getBaseBranch', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      jest.resetModules();
+      process.env = { ...originalEnv };
+    });
+
+    afterAll(() => {
+      process.env = originalEnv;
+    });
+
+    it('returns the repo defaultBranch when SHEPHERD_BASE_BRANCH is not set', () => {
+      const mocktokit = {} as any as Octokit;
+      const context = mockMigrationContext();
+      const service = new GithubService(context, mocktokit);
+      const adapter = new GithubAdapter(context, service);
+      const repo = { owner: 'NerdWallet', name: 'shepherd', defaultBranch: 'main' };
+      delete process.env.SHEPHERD_BASE_BRANCH;
+
+      expect(adapter.getBaseBranch(repo)).toBe('main');
+    });
+
+    it('returns the environment variable value when SHEPHERD_BASE_BRANCH is set', () => {
+      const mocktokit = {} as any as Octokit;
+      const context = mockMigrationContext();
+      const service = new GithubService(context, mocktokit);
+      const adapter = new GithubAdapter(context, service);
+      const repo = { owner: 'NerdWallet', name: 'shepherd', defaultBranch: 'main' };
+      process.env.SHEPHERD_BASE_BRANCH = 'develop';
+
+      expect(adapter.getBaseBranch(repo)).toBe('develop');
+    });
+
+    it('returns an empty string when SHEPHERD_BASE_BRANCH is an empty string', () => {
+      const mocktokit = {} as any as Octokit;
+      const context = mockMigrationContext();
+      const service = new GithubService(context, mocktokit);
+      const adapter = new GithubAdapter(context, service);
+      const repo = { owner: 'NerdWallet', name: 'shepherd', defaultBranch: 'main' };
+      process.env.SHEPHERD_BASE_BRANCH = '';
+
+      expect(adapter.getBaseBranch(repo)).toBe('');
+    });
+  });
 });
