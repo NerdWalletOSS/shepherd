@@ -2,6 +2,7 @@
 
 <img alt="Illustration of a sheep" width=160 align=right src="images/shepherd-logo.png">
 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/NerdWalletOSS/shepherd/release.yml?style=flat-square)](https://github.com/NerdWalletOSS/shepherd/actions)
 [![semantic-release: conventionalcommits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 ![npm version](https://img.shields.io/npm/v/@nerdwallet/shepherd.svg?style=flat-square)
@@ -87,12 +88,10 @@ hooks:
 ### Fields
 
 - `id`:
-
   - **Description**: Specifies a unique identifier for this migration.
   - **Usage**: Used as a branch name for the migration and internally by Shepherd to track migration state.
 
 - `title`:
-
   - **Description**: A title for the migration.
   - **Usage**: Used as the commit message.
 
@@ -109,17 +108,14 @@ hooks:
 Hooks define the core functionality of a migration in Shepherd.
 
 - `should_migrate`:
-
   - **Description**: Commands to determine if a repo requires migration.
   - **Behavior**: Non-zero exit values indicate the repo should not be migrated.
 
 - `post_checkout`:
-
   - **Description**: Commands executed after a repo passes `should_migrate` checks.
   - **Usage**: Ideal for one-time setup actions per repo, like installing dependencies.
 
 - `apply`:
-
   - **Description**: Commands that perform the actual migration.
   - **Note**: This can range from simple to complex sequences, depending on migration needs.
 
