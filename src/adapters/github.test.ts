@@ -256,32 +256,6 @@ describe('GithubAdapter', () => {
     });
   });
 
-  describe('getBaseBranch', () => {
-    const context = mockMigrationContext();
-    const mocktokit = {} as any as Octokit;
-    const service = new GithubService(context, mocktokit);
-    const adapter = new GithubAdapter(context, service);
-    const repo = { owner: 'NerdWallet', name: 'shepherd', defaultBranch: 'main' };
-
-    afterEach(() => {
-      delete process.env.SHEPHERD_BASE_BRANCH;
-    });
-
-    it('returns SHEPHERD_BASE_BRANCH env var if set', () => {
-      process.env.SHEPHERD_BASE_BRANCH = 'feature-branch';
-      expect(adapter.getBaseBranch(repo)).toBe('feature-branch');
-    });
-
-    it('trims SHEPHERD_BASE_BRANCH env var', () => {
-      process.env.SHEPHERD_BASE_BRANCH = '  develop  ';
-      expect(adapter.getBaseBranch(repo)).toBe('develop');
-    });
-
-    it('returns repo.defaultBranch if SHEPHERD_BASE_BRANCH is not set', () => {
-      expect(adapter.getBaseBranch(repo)).toBe('main');
-    });
-  });
-
   describe('getRepositoryUrl', () => {
     const context = mockMigrationContext();
     const octokit = {} as any as Octokit;
