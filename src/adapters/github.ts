@@ -290,7 +290,7 @@ class GithubAdapter extends GitAdapter {
   }
 
   public getBaseBranch(repo: IRepo): string {
-    return repo.defaultBranch;
+    return process.env.SHEPHERD_BASE_BRANCH ?? repo.defaultBranch;
   }
 
   public async getEnvironmentVariables(repo: IRepo): Promise<IEnvironmentVariables> {
