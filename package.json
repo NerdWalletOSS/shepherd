@@ -1,6 +1,6 @@
 {
   "name": "@nerdwallet/shepherd",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "description": "A utility for applying code changes across many repositories",
   "type": "module",
   "keywords": [
