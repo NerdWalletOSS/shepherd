@@ -1,3 +1,11 @@
+## [2.6.2](https://github.com/NerdWalletOSS/shepherd/compare/v2.6.1...v2.6.2) (2025-08-24)
+
+
+### Bug Fixes
+
+* **defaultBranch:** use SHEPHERD_BASE_BRANCH if set 👨‍🔧 ([a6bc9e9](https://github.com/NerdWalletOSS/shepherd/commit/a6bc9e9558b69baca6f07b8da818d8abe076f6ba))
+* **env-vars:** SHEPHERD_BASE_BRANCH var fix ([c47db64](https://github.com/NerdWalletOSS/shepherd/commit/c47db64df17bf9100534b7f02216e3b0b7eca36e))
+
 ## [2.6.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.6.0...v2.6.1) (2024-10-05)
 
 
