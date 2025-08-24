@@ -120,7 +120,6 @@ Hooks define the core functionality of a migration in Shepherd.
   - **Behavior**: Non-zero exit values indicate the repo should not be migrated.
 
 - `should_create_issue`:
-
   - **Description**: Commands to determine if issue needs to be posted in the repo.
   - **Behavior**: Non-zero exit values indicate the issue should not be posted to repo.
 
@@ -133,12 +132,10 @@ Hooks define the core functionality of a migration in Shepherd.
   - **Note**: This can range from simple to complex sequences, depending on migration needs.
 
 - `pr_message`:
-
   - **Description**: Commands to generate a pull request message.
   - **Output**: Anything written to `stdout` is used for the message. Multiple commands will have their outputs concatenated.
 
 - `issue`:
-
   - **Description**: Command to create, update, or close issues.
   - **Output**: Depending on the details provided in migration scripts, the issues will be created, updated or closed.
 
