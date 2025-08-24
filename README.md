@@ -2,6 +2,7 @@
 
 <img alt="Illustration of a sheep" width=160 align=right src="images/shepherd-logo.png">
 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/NerdWalletOSS/shepherd/release.yml?style=flat-square)](https://github.com/NerdWalletOSS/shepherd/actions)
 [![semantic-release: conventionalcommits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 ![npm version](https://img.shields.io/npm/v/@nerdwallet/shepherd.svg?style=flat-square)
@@ -79,20 +80,26 @@ hooks:
   should_migrate:
     - ls .eslintrc # Check that this file actually exists in the repo
     - git log -1 --format=%cd | grep 2018 --silent # Only migrate things that have seen commits in 2018
+  should_create_issue:
+    - node $SHEPHERD_MIGRATION_DIR/should_create_issue.js
   post_checkout: npm install
   apply: mv .eslintrc .eslintrc.json
   pr_message: echo 'Hey! This PR renames `.eslintrc` to `.eslintrc.json`'
+issues:
+  title: 'this is my first updated issue'
+  description: 'this is my first updated issue'
+  labels: ['ENHANCEMENT', 'BUG']
+  state: closed
+  state_reason: completed
 ```
 
 ### Fields
 
 - `id`:
-
   - **Description**: Specifies a unique identifier for this migration.
   - **Usage**: Used as a branch name for the migration and internally by Shepherd to track migration state.
 
 - `title`:
-
   - **Description**: A title for the migration.
   - **Usage**: Used as the commit message.
 
@@ -109,17 +116,18 @@ hooks:
 Hooks define the core functionality of a migration in Shepherd.
 
 - `should_migrate`:
-
   - **Description**: Commands to determine if a repo requires migration.
   - **Behavior**: Non-zero exit values indicate the repo should not be migrated.
 
-- `post_checkout`:
+- `should_create_issue`:
+  - **Description**: Commands to determine if issue needs to be posted in the repo.
+  - **Behavior**: Non-zero exit values indicate the issue should not be posted to repo.
 
+- `post_checkout`:
   - **Description**: Commands executed after a repo passes `should_migrate` checks.
   - **Usage**: Ideal for one-time setup actions per repo, like installing dependencies.
 
 - `apply`:
-
   - **Description**: Commands that perform the actual migration.
   - **Note**: This can range from simple to complex sequences, depending on migration needs.
 
@@ -127,9 +135,17 @@ Hooks define the core functionality of a migration in Shepherd.
   - **Description**: Commands to generate a pull request message.
   - **Output**: Anything written to `stdout` is used for the message. Multiple commands will have their outputs concatenated.
 
+- `issue`:
+  - **Description**: Command to create, update, or close issues.
+  - **Output**: Depending on the details provided in migration scripts, the issues will be created, updated or closed.
+
+- `list-issues`:
+  - **Description**: Commands to list all issues associated with a migration.
+  - **Output**: All the posted issues are listed in the table format.
+
 ### Requirements
 
-- Optional: `should_migrate`, `post_checkout`
+- Optional: `should_migrate`, `post_checkout`, `should_create_issue`
 - Required: `apply`, `pr_message`
 
 ### Environment Variables
@@ -180,6 +196,8 @@ There are a number of commands that must be run to execute a migration:
 - `pr-preview`: Prints the commit message that would be used for each repository without actually creating a PR; uses the `pr_message` hook.
 - `pr`: Creates a PR for each repo with the message generated from the `pr_message` hook.
 - `version`: Prints Shepherd version
+- `issue`: Create, update, or close issues across multiple repository.
+- `list-issues`: List all issues associated with a migration.
 
 By default, `checkout` will use the adapter to figure out which repositories to check out, and the remaining commands will operate on all checked-out repos. To only checkout a specific repo or to operate on only a subset of the checked-out repos, you can use the `--repos` flag, which specifies a comma-separated list of repos:
 

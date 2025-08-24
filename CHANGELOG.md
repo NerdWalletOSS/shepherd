@@ -1,3 +1,27 @@
+# [3.0.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.6.2...v3.0.0) (2025-08-24)
+
+
+### Bug Fixes
+
+* **test:** updated tests ([b5439d5](https://github.com/NerdWalletOSS/shepherd/commit/b5439d576c92304bd6645a26b0d69d2ead33bc72))
+* **unit-test:** github url ([1d781de](https://github.com/NerdWalletOSS/shepherd/commit/1d781de6a4573f6ba526447a37713dc0465038f7))
+* **v3:** lodash errors and e2e tests ([f137e73](https://github.com/NerdWalletOSS/shepherd/commit/f137e73c08394b6a465a13ff122784f706125ca6))
+
+
+### Features
+
+* **async/await:** update commands ([e9d9057](https://github.com/NerdWalletOSS/shepherd/commit/e9d90570c25a67519ea5865410204639ca356bc2))
+* create and list issues ([80ed7e2](https://github.com/NerdWalletOSS/shepherd/commit/80ed7e2570438bef46e69a53bf8b978d6cfcd407))
+* **issue:** added should_create_issue ([4601058](https://github.com/NerdWalletOSS/shepherd/commit/46010583b1be081ffb154166a38f7781f1298675))
+
+## [2.6.2](https://github.com/NerdWalletOSS/shepherd/compare/v2.6.1...v2.6.2) (2025-08-24)
+
+
+### Bug Fixes
+
+* **defaultBranch:** use SHEPHERD_BASE_BRANCH if set 👨‍🔧 ([a6bc9e9](https://github.com/NerdWalletOSS/shepherd/commit/a6bc9e9558b69baca6f07b8da818d8abe076f6ba))
+* **env-vars:** SHEPHERD_BASE_BRANCH var fix ([c47db64](https://github.com/NerdWalletOSS/shepherd/commit/c47db64df17bf9100534b7f02216e3b0b7eca36e))
+
 ## [2.6.1](https://github.com/NerdWalletOSS/shepherd/compare/v2.6.0...v2.6.1) (2024-10-05)
 
 

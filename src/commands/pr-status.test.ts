@@ -1,7 +1,7 @@
-import prStatus from './pr-status';
-import { IMigrationContext } from '../migration-context';
-import mockAdapter from '../adapters/adapter.mock';
-import mockLogger from '../logger/logger.mock';
+import prStatus from './pr-status.js';
+import { IMigrationContext } from '../migration-context.js';
+import mockAdapter from '../adapters/adapter.mock.js';
+import mockLogger from '../logger/logger.mock.js';
 
 describe('pr-status commmand', () => {
   let mockContext: IMigrationContext;
@@ -41,10 +41,11 @@ describe('pr-status commmand', () => {
 
   it('should log the status for each repo', async () => {
     (mockAdapter.getPullRequestStatus as jest.Mock).mockResolvedValue(['status1', 'status2']);
-
+    mockContext.migration.selectedRepos = [{ name: 'repo1' }, { name: 'repo2' }];
+    mockContext.migration.repos = [{ name: 'repo1' }, { name: 'repo2' }];
     await prStatus(mockContext);
 
-    expect(mockLogger.info).toHaveBeenCalledTimes(3);
+    expect(mockLogger.info).toHaveBeenCalledTimes(4);
     expect(mockLogger.info).toHaveBeenCalledWith('status1');
     expect(mockLogger.info).toHaveBeenCalledWith('status2');
   });
@@ -54,7 +55,7 @@ describe('pr-status commmand', () => {
 
     await prStatus(mockContext);
 
-    expect(mockLogger.error).toHaveBeenCalledTimes(2);
+    expect(mockLogger.error).toHaveBeenCalledTimes(1);
     expect(mockLogger.error).toHaveBeenCalledWith('getPullRequestStatus error');
   });
 });

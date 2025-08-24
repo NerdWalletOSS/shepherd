@@ -2,6 +2,10 @@ export interface IRepo {
   [key: string]: any;
 }
 
+export interface IssueTracker {
+  [key: string]: any;
+}
+
 export interface IEnvironmentVariables {
   [key: string]: string;
 }
@@ -40,6 +44,10 @@ interface IRepoAdapter {
   getBaseBranch(repo: IRepo): string;
 
   getEnvironmentVariables(repo: IRepo): Promise<IEnvironmentVariables>;
+
+  createIssue(repo: IRepo): Promise<string>;
+
+  updateIssue(repo: IRepo, issueNumber: number): Promise<void>;
 }
 
 export default IRepoAdapter;

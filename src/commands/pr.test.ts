@@ -1,9 +1,9 @@
-import pr from './pr';
-import { IMigrationContext } from '../migration-context';
-import mockAdapter from '../adapters/adapter.mock';
-import mockLogger from '../logger/logger.mock';
-import executeSteps from '../util/execute-steps';
-import { generatePrMessageWithFooter } from '../util/generate-pr-message';
+import pr from './pr.js';
+import { IMigrationContext } from '../migration-context.js';
+import mockAdapter from '../adapters/adapter.mock.js';
+import mockLogger from '../logger/logger.mock.js';
+import executeSteps from '../util/execute-steps.js';
+import { generatePrMessageWithFooter } from '../util/generate-pr-message.js';
 
 jest.mock('../util/execute-steps');
 jest.mock('../util/generate-pr-message');
@@ -48,13 +48,22 @@ describe('pr commmand', () => {
 
   it('should call executeSteps for each repo', async () => {
     mockContext.migration.spec.hooks.pr_message = ['pr_message'];
+    mockContext.migration.selectedRepos = [{ name: 'repo1' }, { name: 'repo2' }];
     (executeSteps as jest.Mock).mockResolvedValueOnce({ succeeded: true, results: [] });
     await pr(mockContext);
 
-    expect(executeSteps).toHaveBeenCalledTimes(1);
-    expect(executeSteps).toHaveBeenCalledWith(
+    expect(executeSteps).toHaveBeenCalledTimes(2);
+    expect(executeSteps).toHaveBeenNthCalledWith(
+      1,
       mockContext,
-      { name: 'selectedRepos' },
+      { name: 'repo1' },
+      'pr_message',
+      false
+    );
+    expect(executeSteps).toHaveBeenNthCalledWith(
+      2,
+      mockContext,
+      { name: 'repo2' },
       'pr_message',
       false
     );
@@ -81,7 +90,7 @@ describe('pr commmand', () => {
     (mockAdapter.createPullRequest as jest.Mock).mockRejectedValueOnce('createPullRequest error');
     await pr(mockContext);
 
-    expect(mockLogger.error).toHaveBeenCalledTimes(2);
+    expect(mockLogger.error).toHaveBeenCalledTimes(1);
     expect(mockLogger.error).toHaveBeenCalledWith('createPullRequest error');
   });
 
