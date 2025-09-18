@@ -1,6 +1,6 @@
 # Shepherd
 
-<img alt="Illustration of a sheep" width=160 align=right src="images/shepherd-logo.png">
+<img alt="A shepherd walking into the sunset" width=120 align=right src="images/sunset.png">
 
 > **⚠️ PROJECT SUNSET NOTICE ⚠️**
 >
