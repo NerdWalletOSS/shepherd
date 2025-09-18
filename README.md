@@ -10,6 +10,7 @@
 > We want to extend our heartfelt gratitude to **[Aori Nevo](https://github.com/aorinevo)** for their significant contributions and dedication to maintaining this project in recent years. Their work has been invaluable to the Shepherd community.
 >
 > **🔄 Recommended Alternatives:**
+>
 > - **[git-xargs](https://github.com/gruntwork-io/git-xargs)** - A powerful command-line tool for making updates across multiple GitHub repositories with a single command. Written in Go with excellent performance and wide community support.
 > - **[multi-gitter](https://github.com/lindell/multi-gitter)** - A tool to update multiple repositories with one command. Features include parallel execution, flexible configuration, and support for multiple git providers.
 >
