@@ -1,20 +1,17 @@
 # Shepherd
 
-<img alt="A shepherd walking into the sunset" width=120 align=right src="images/sunset.png">
+![Project moved](https://img.shields.io/badge/Project%20moved%20to-shepherd--tools%2Fshepherd-blue?style=for-the-badge&logo=github)
 
-> **⚠️ PROJECT SUNSET NOTICE ⚠️**
+> ⚠️ **NerdWalletOSS Repository Archived & Relocated to Shepherd-Tools**
 >
-> **This project is no longer actively maintained by NerdWallet.** While Shepherd has served the community well for automating code changes across multiple repositories, we have decided to sunset this project to focus our efforts elsewhere.
+> This project has been **relocated** to [**shepherd-tools/shepherd**](https://github.com/shepherd-tools/shepherd) and is **no longer actively maintained by NerdWalletOSS.**
+>
+> Future development, issue tracking, and releases will continue at the new location.
+>
+> 👉 Please update your references and [star ⭐ the new repo](https://github.com/shepherd-tools/shepherd) to stay up to date!
 >
 > **🙏 Special Thanks:**
 > We want to extend our heartfelt gratitude to **[Aori Nevo](https://github.com/aorinevo)** for their significant contributions and dedication to maintaining this project in recent years. Their work has been invaluable to the Shepherd community.
->
-> **🔄 Recommended Alternatives:**
->
-> - **[git-xargs](https://github.com/gruntwork-io/git-xargs)** - A powerful command-line tool for making updates across multiple GitHub repositories with a single command. Written in Go with excellent performance and wide community support.
-> - **[multi-gitter](https://github.com/lindell/multi-gitter)** - A tool to update multiple repositories with one command. Features include parallel execution, flexible configuration, and support for multiple git providers.
->
-> We encourage existing users to migrate to one of these well-maintained alternatives. Thank you for your support of Shepherd over the years!
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/NerdWalletOSS/shepherd/release.yml?style=flat-square)](https://github.com/NerdWalletOSS/shepherd/actions)
@@ -22,7 +19,7 @@
 ![npm version](https://img.shields.io/npm/v/@nerdwallet/shepherd.svg?style=flat-square)
 ![GitHub issues](https://img.shields.io/github/issues/NerdWalletOSS/shepherd.svg?style=flat-square)
 
-## About Shepherd (Legacy Documentation)
+## About Shepherd
 
 Shepherd is a utility for applying code changes across many repositories.
 
