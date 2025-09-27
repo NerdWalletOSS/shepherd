@@ -1,12 +1,25 @@
 # Shepherd
 
-<img alt="Illustration of a sheep" width=160 align=right src="images/shepherd-logo.png">
+![Project moved](https://img.shields.io/badge/Project%20moved%20to-shepherd--tools%2Fshepherd-blue?style=for-the-badge&logo=github)
+
+> ⚠️ **NerdWalletOSS Repository Archived & Relocated to Shepherd-Tools**
+>
+> This project has been **relocated** to [**shepherd-tools/shepherd**](https://github.com/shepherd-tools/shepherd) and is **no longer actively maintained by NerdWalletOSS.**
+>
+> Future development, issue tracking, and releases will continue at the new location.
+>
+> 👉 Please update your references and [star ⭐ the new repo](https://github.com/shepherd-tools/shepherd) to stay up to date!
+>
+> **🙏 Special Thanks:**
+> We want to extend our heartfelt gratitude to **[Aori Nevo](https://github.com/aorinevo)** for their significant contributions and dedication to maintaining this project in recent years. Their work has been invaluable to the Shepherd community.
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/NerdWalletOSS/shepherd/release.yml?style=flat-square)](https://github.com/NerdWalletOSS/shepherd/actions)
 [![semantic-release: conventionalcommits](https://img.shields.io/badge/semantic--release-conventionalcommits-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 ![npm version](https://img.shields.io/npm/v/@nerdwallet/shepherd.svg?style=flat-square)
 ![GitHub issues](https://img.shields.io/github/issues/NerdWalletOSS/shepherd.svg?style=flat-square)
+
+## About Shepherd
 
 Shepherd is a utility for applying code changes across many repositories.
 
