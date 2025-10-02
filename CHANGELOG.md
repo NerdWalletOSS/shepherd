@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/shepherd-tools/shepherd/compare/v3.0.0...v3.1.0) (2025-10-02)
+
+
+### Features
+
+* **transfer:** transfer shepherd to shepherd-tools org ([28a8e32](https://github.com/shepherd-tools/shepherd/commit/28a8e320423b96e00e5a690b2b6a1f0a8658b483))
+
 # [3.0.0](https://github.com/NerdWalletOSS/shepherd/compare/v2.6.2...v3.0.0) (2025-08-24)
 
 
