@@ -1,3 +1,12 @@
+# [4.0.0](https://github.com/shepherd-tools/shepherd/compare/v3.1.0...v4.0.0) (2025-10-19)
+
+
+### Bug Fixes
+
+* **npm:** publish ([5a1487a](https://github.com/shepherd-tools/shepherd/commit/5a1487af27a176303c952a2e43d8e31b8334ea47))
+
+# [4.0.0](https://github.com/shepherd-tools/shepherd/compare/v3.1.0...v4.0.0) (2025-10-19)
+
 # [3.1.0](https://github.com/shepherd-tools/shepherd/compare/v3.0.0...v3.1.0) (2025-10-02)
 
 
