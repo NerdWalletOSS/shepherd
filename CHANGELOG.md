@@ -1,3 +1,5 @@
+# [4.0.0](https://github.com/shepherd-tools/shepherd/compare/v3.1.0...v4.0.0) (2025-10-19)
+
 # [3.1.0](https://github.com/shepherd-tools/shepherd/compare/v3.0.0...v3.1.0) (2025-10-02)
 
 
