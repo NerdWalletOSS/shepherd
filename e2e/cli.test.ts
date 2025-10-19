@@ -12,7 +12,7 @@ describe('CLI End-to-End Tests', () => {
       '.shepherd',
       '2024.10.06-test-migration',
       'repos',
-      'NerdWalletOSS',
+      'shepherd-tools',
       'shepherd'
     );
   });
@@ -55,7 +55,7 @@ describe('CLI End-to-End Tests', () => {
     const output = runCLI(`apply ${path.join(__dirname, './assets/checkout-apply')}`);
     expect(output).toContain('shepherd-test-repo-1');
     expect(output).toContain('shepherd-test-repo-2');
-    expect(output).toContain('NerdWalletOSS/shepherd');
+    expect(output).toContain('shepherd-tools/shepherd');
     const repoDir = path.resolve(shepherdRepoDir, '../../aorinevo/shepherd-test-repo-1');
     const gitDiffOutput = execSync(`cd ${repoDir} && git diff`, { encoding: 'utf-8' });
     expect(gitDiffOutput).toMatchSnapshot();

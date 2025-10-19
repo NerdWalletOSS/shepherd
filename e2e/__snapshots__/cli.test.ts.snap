@@ -38,7 +38,7 @@ exports[`CLI End-to-End Tests should successfully run checkout on a migration ta
 Loaded 1 repos
 Checking out repos
 
-[NerdWalletOSS/shepherd] 1/1
+[shepherd-tools/shepherd] 1/1
 Checked out repo
 > Running should_migrate steps
 Completed all should_migrate steps successfully
