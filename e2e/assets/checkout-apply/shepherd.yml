@@ -3,7 +3,7 @@ title: |
   feat: test migration
 adapter:
   type: github
-  search_query: repo:NerdWalletOSS/shepherd path:/
+  search_query: repo:shepherd-tools/shepherd path:/
 hooks:
   apply: 'touch $SHEPHERD_REPO_DIR/testfile.js && echo "some content" > $SHEPHERD_REPO_DIR/testfile.js'
   pr_message: |
