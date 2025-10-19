@@ -58,7 +58,7 @@
     "lodash": "^4.17.21",
     "log-symbols": "^7.0.0",
     "netrc": "^0.1.4",
-    "ora": "^8.1.0",
+    "ora": "^9.0.0",
     "preferences": "^2.0.2",
     "simple-git": "^3.27.0"
   },
