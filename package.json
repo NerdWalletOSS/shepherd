@@ -50,7 +50,6 @@
     "@types/js-yaml": "^4.0.9",
     "chalk": "^5.3.0",
     "child-process-promise": "^2.2.1",
-    "table": "^6.8.1",
     "commander": "^12.1.0",
     "fs-extra": "^11.2.0",
     "joi": "^17.13.3",
@@ -58,9 +57,10 @@
     "lodash": "^4.17.21",
     "log-symbols": "^7.0.0",
     "netrc": "^0.1.4",
-    "ora": "^8.1.0",
+    "ora": "^9.0.0",
     "preferences": "^2.0.2",
-    "simple-git": "^3.27.0"
+    "simple-git": "^3.27.0",
+    "table": "^6.8.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.25.7",
@@ -90,6 +90,9 @@
     "ts-jest": "^29.2.5",
     "typescript": "5.9",
     "typescript-eslint": "^8.8.0"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "publishConfig": {
     "access": "public"
