@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/shepherd-tools/shepherd/compare/v3.1.0...v3.2.0) (2025-10-19)
+
+
+### Features
+
+* **build:** drop node v18 support, add node v24 ([73d3170](https://github.com/shepherd-tools/shepherd/commit/73d31707e9f42cacaf005f9ae2b2a648ecf3d4de))
+
 # [4.0.0](https://github.com/shepherd-tools/shepherd/compare/v3.1.0...v4.0.0) (2025-10-19)
 
 
